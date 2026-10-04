@@ -253,7 +253,7 @@ function valuesEqual(a: unknown, b: unknown) {
   return a === b
 }
 
-function rightsFieldDiff(current: Right | null, proposed: Right): RightsFieldDiff[] {
+export function rightsFieldDiff(current: Right | null, proposed: Right): RightsFieldDiff[] {
   const pairs: Array<[RightsFieldDiff['field'], unknown, unknown]> = [
     ['title', current?.title ?? null, proposed.title ?? null],
     ['kind', current?.kind ?? null, proposed.kind ?? null],
