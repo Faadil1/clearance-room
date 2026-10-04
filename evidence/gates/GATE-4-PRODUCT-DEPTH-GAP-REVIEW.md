@@ -47,7 +47,7 @@ RUNTIME PROVEN — user-defined Scenario Lab:
 - PROVEN: replacement proof becomes `CLEAR / FRESH`
 - PROVEN: replacement proof supersedes the stale baseline
 - PROVEN: post-write usage intent changes to `isPaid=false`
-- IMPLEMENTED / proof pending: multiple governing rights in one user-created scenario
+- PROVEN: multiple governing rights in one user-created scenario
 - IMPLEMENTED / proof pending: user-created scenario deletion
 - SEPARATE PROOF STILL REQUIRED: visible no-action Live Content API auto-update of an already-open portfolio/detail view
 - change-centric rights-document view
@@ -78,8 +78,7 @@ MISSING / not yet load-bearing:
 
 ## Immediate product expansion order
 
-1. Runtime-prove multiple governing rights in one user-created scenario.
-2. Exercise the window REVIEW path end-to-end through that user-created scenario.
+1. Exercise the window REVIEW path end-to-end through the now-proven multi-right user-created scenario.
 3. Add explicit UNKNOWN path by allowing required structured evidence to be absent in a controlled user-created record.
 4. Runtime-prove free-text/status/territory/channel operator filters.
 5. Runtime-prove user-created scenario deletion.
@@ -174,3 +173,22 @@ RUNTIME PROVEN — change-centric view core:
 - exact field before/after values are visible
 - linked downstream usage is visible
 - after remediation, linked usage correctly remains `CLEAR → CLEAR` even while a rights field still differs, proving downstream effect is computed from the whole usage context rather than from field-change presence alone
+
+
+## Runtime proof — 2026-10-04 multi-right user scenario
+
+PROVEN:
+- existing user-created scenario opened in edit mode
+- operator added a second governing right after initial scenario creation
+- new right persisted as real published + draft Sanity documents
+- asset now reports 2 governing rights
+- same usage reopens in the deterministic clearance engine with both draft rights in `causedBy`
+- all axes are recomputed against the intersection of both governing rights
+
+Observed result in this recording:
+- usage is organic, so proposed paid PROHIBIT on the added right does not block the usage
+- both governing rights remain valid through 2026-12-31 while usage ends 2026-11-30
+- therefore window remains CLEAR
+
+Conclusion:
+multi-right composition is proven; window REVIEW is not yet proven because no proposed validity boundary was actually moved inside the usage window.
