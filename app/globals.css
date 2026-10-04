@@ -595,3 +595,57 @@ footer strong {
     animation: none !important;
   }
 }
+
+
+.evidenceCard {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.evidenceMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.evidenceMeta span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.evidenceMeta strong {
+  text-align: right;
+}
+
+.evidenceCard details {
+  margin-top: 18px;
+}
+
+.evidenceCard pre {
+  max-height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  margin: 14px 0 0;
+  padding: 16px;
+  background: #f1ede4;
+  border: 1px solid var(--line);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+@media (max-width: 800px) {
+  .evidenceMeta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .evidenceMeta strong {
+    text-align: left;
+  }
+}
