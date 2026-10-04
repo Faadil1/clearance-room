@@ -4,7 +4,6 @@ import {
   HERO_REMEDIATED_PROOF_ID,
   HERO_USAGE_ID,
 } from '../../../src/heroScenario'
-import {impactProofId, replacementProofId} from '../../../src/productSurface'
 import {getServerSanity} from '../../../src/serverSanity'
 
 export const dynamic = 'force-dynamic'
@@ -20,14 +19,22 @@ export async function POST(request: Request) {
   }
 
   try {
-    await serverSanity
+    const proofIds = await serverSanity.fetch<string[]>(
+      `*[_type == "clearanceProof" && usageRequest._ref == $id]._id`,
+      {id: HERO_USAGE_ID},
+    )
+
+    let transaction = serverSanity
       .transaction()
       .patch(HERO_USAGE_ID, (patch) => patch.set({isPaid: true}))
       .delete(HERO_BASELINE_PROOF_ID)
       .delete(HERO_REMEDIATED_PROOF_ID)
-      .delete(impactProofId(HERO_USAGE_ID))
-      .delete(replacementProofId(HERO_USAGE_ID))
-      .commit()
+
+    for (const proofId of proofIds) {
+      transaction = transaction.delete(proofId)
+    }
+
+    await transaction.commit()
 
     return NextResponse.json({
       reset: true,
@@ -35,6 +42,7 @@ export async function POST(request: Request) {
       restored: {
         usageRequestId: HERO_USAGE_ID,
         isPaid: true,
+        deletedProofs: proofIds.length,
       },
       observedAt: new Date().toISOString(),
     })
