@@ -26,3 +26,7 @@ export const USAGE_GRAPH_QUERY = /* groq */ `
   }
 }
 `
+
+export function usageGraphQueryFor(id: string) {
+  return USAGE_GRAPH_QUERY.replace('$id', JSON.stringify(id))
+}
