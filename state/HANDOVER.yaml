@@ -17,7 +17,7 @@ active:
   gate_4:
     name: Live Product Surface
     status: ACTIVE
-    plan: evidence/gates/GATE-4-JUDGE-WORKFLOW-PLAN.md
+    plan: evidence/gates/GATE-4-LIVE-PRODUCT-SURFACE-PLAN.md
     primary_question: "What breaks if this rights change goes live?"
     flow: "What breaks → Why → Evidence → Repair → Approve → Recompile"
 
