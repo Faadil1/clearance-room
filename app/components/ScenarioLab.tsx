@@ -288,7 +288,9 @@ export default function ScenarioLab({
   const [expanded, setExpanded] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editScenario, setEditScenario] = useState<ScenarioRecord | null>(null)
-  const [busy, setBusy] = useState<'list' | 'create' | 'save' | 'delete' | null>(null)
+  const [addingRight, setAddingRight] = useState(false)
+  const [newRight, setNewRight] = useState<ScenarioRightForm>(() => defaultRight())
+  const [busy, setBusy] = useState<'list' | 'create' | 'save' | 'delete' | 'right' | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
@@ -354,8 +356,64 @@ export default function ScenarioLab({
   function startEditing(scenario: ScenarioRecord) {
     setEditingId(scenario.id)
     setEditScenario(structuredClone(scenario))
+    setAddingRight(false)
+    setNewRight(defaultRight())
     setError(null)
     setNotice(null)
+  }
+
+  async function addGoverningRight() {
+    if (!editScenario) return
+    setBusy('right')
+    setError(null)
+    setNotice(null)
+
+    try {
+      await jsonRequest(
+        `/api/scenarios/${encodeURIComponent(editScenario.id)}/rights`,
+        {
+          method: 'POST',
+          body: JSON.stringify(newRight),
+        },
+      )
+      setNotice('Governing right added as real published + draft Sanity documents.')
+      setAddingRight(false)
+      setNewRight(defaultRight())
+      setEditingId(null)
+      setEditScenario(null)
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Adding governing right failed')
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  async function removeGoverningRight(rightId: string) {
+    if (!editScenario) return
+    if (!window.confirm('Remove this governing right from the scenario and delete its published + draft documents?')) return
+
+    setBusy('right')
+    setError(null)
+    setNotice(null)
+
+    try {
+      await jsonRequest(
+        `/api/scenarios/${encodeURIComponent(editScenario.id)}/rights`,
+        {
+          method: 'DELETE',
+          body: JSON.stringify({approved: true, rightId}),
+        },
+      )
+      setNotice('Governing right removed from the live scenario.')
+      setEditingId(null)
+      setEditScenario(null)
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Removing governing right failed')
+    } finally {
+      setBusy(null)
+    }
   }
 
   async function saveEdit() {
@@ -734,12 +792,83 @@ export default function ScenarioLab({
                       <span>Usage requests paid media</span>
                     </label>
 
-                    <h5>Edit proposed rights</h5>
+                    <div className="editRightsHeading">
+                      <div>
+                        <h5>Edit proposed rights</h5>
+                        <span>{editScenario.asset.rights.length} governing right{editScenario.asset.rights.length === 1 ? '' : 's'} attached</span>
+                      </div>
+                      {editScenario.asset.rights.length < 6 && (
+                        <button
+                          className="secondaryButton"
+                          onClick={() => setAddingRight((value) => !value)}
+                        >
+                          {addingRight ? 'Cancel new right' : '+ Add governing right'}
+                        </button>
+                      )}
+                    </div>
+
+                    {addingRight && (
+                      <div className="scenarioNewRight">
+                        <div className="scenarioFieldGrid">
+                          <label>
+                            <span>Rights title</span>
+                            <input
+                              value={newRight.title}
+                              onChange={(event) => setNewRight({...newRight, title: event.target.value})}
+                            />
+                          </label>
+                          <label>
+                            <span>Kind</span>
+                            <select
+                              value={newRight.kind}
+                              onChange={(event) => setNewRight({...newRight, kind: event.target.value as Kind})}
+                            >
+                              <option value="talent_release">Talent release</option>
+                              <option value="music_license">Music license</option>
+                              <option value="photo_agreement">Photographer agreement</option>
+                            </select>
+                          </label>
+                        </div>
+
+                        <div className="termsSplit">
+                          <TermsEditor
+                            legend="Current / published terms"
+                            value={newRight.current}
+                            onChange={(current) => setNewRight({...newRight, current})}
+                          />
+                          <div className="proposedTerms">
+                            <button
+                              className="secondaryButton"
+                              onClick={() => setNewRight({...newRight, proposed: structuredClone(newRight.current)})}
+                            >
+                              Copy current → proposed
+                            </button>
+                            <TermsEditor
+                              legend="Proposed / draft terms"
+                              value={newRight.proposed}
+                              onChange={(proposed) => setNewRight({...newRight, proposed})}
+                            />
+                          </div>
+                        </div>
+
+                        <button className="primaryButton" onClick={addGoverningRight} disabled={busy !== null}>
+                          {busy === 'right' ? 'Adding live right…' : 'Add right to live scenario'}
+                        </button>
+                      </div>
+                    )}
+
                     {editScenario.asset.rights.map((right, rightIndex) => (
                       <div className="scenarioEditRight" key={right.id}>
-                        <div>
-                          <strong>{right.title}</strong>
-                          <code>{right.id}</code>
+                        <div className="scenarioEditRightHeader">
+                          <div>
+                            <strong>{right.title}</strong>
+                            <code>{right.id}</code>
+                          </div>
+                          {editScenario.asset.rights.length > 1 && (
+                            <button className="textButton" onClick={() => removeGoverningRight(right.id)} disabled={busy !== null}>
+                              Remove right
+                            </button>
+                          )}
                         </div>
                         <div className="scenarioFieldGrid">
                           <label>
