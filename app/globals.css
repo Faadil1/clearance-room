@@ -1877,3 +1877,46 @@ footer strong {
     grid-column: auto;
   }
 }
+
+
+.editRightsHeading,
+.scenarioEditRightHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.editRightsHeading > div,
+.scenarioEditRightHeader > div {
+  display: grid;
+  gap: 4px;
+}
+
+.editRightsHeading h5 {
+  margin: 0;
+}
+
+.editRightsHeading span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.scenarioNewRight {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--accent);
+  background: #fff8f3;
+}
+
+.scenarioNewRight > .primaryButton {
+  justify-self: start;
+}
+
+@media (max-width: 700px) {
+  .editRightsHeading,
+  .scenarioEditRightHeader {
+    flex-direction: column;
+  }
+}
