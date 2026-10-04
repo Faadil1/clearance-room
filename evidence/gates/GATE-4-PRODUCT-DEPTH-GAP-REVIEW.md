@@ -24,9 +24,17 @@ ACTIVE / needs runtime proof:
 - multi-impact product behavior after canonical reset
 - proof-history behavior across repeated real runs
 
+IMPLEMENTED / runtime proof pending:
+- change-centric rights-document view
+  - published vs draft field-level diff
+  - revision identifiers
+  - linked assets/usages
+  - downstream deterministic status transitions
+  - direct drill-down into affected usage
+  - Live Content API refresh path includes rights-change view
+
 MISSING / not yet load-bearing:
 - agent orchestration in the product
-- change-centric rights-document view
 - filtering/search across portfolio
 - UNKNOWN / missing-evidence product path
 - live integration degraded/offline recovery
@@ -39,7 +47,7 @@ MISSING / not yet load-bearing:
 ## Immediate product expansion order
 
 1. Prove Context MCP + Live Content API in browser with a real draft edit.
-2. Add **rights-change view**: select one draft rights document and see all affected usages.
+2. Runtime-prove the **rights-change view** against a real draft edit.
 3. Add filters/search for status, territory, channel, asset, and causal right.
 4. Exercise the music-window REVIEW path end-to-end through the product.
 5. Add explicit UNKNOWN path by removing required evidence from a controlled test record.
