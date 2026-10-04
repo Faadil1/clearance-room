@@ -3,8 +3,8 @@ import {
   HERO_BASELINE_PROOF_ID,
   HERO_REMEDIATED_PROOF_ID,
   HERO_USAGE_ID,
-} from '../../../src/heroScenario.js'
-import {getServerSanity} from '../../../src/serverSanity.js'
+} from '../../../src/heroScenario'
+import {getServerSanity} from '../../../src/serverSanity'
 
 export const dynamic = 'force-dynamic'
 
