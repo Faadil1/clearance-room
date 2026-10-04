@@ -15,7 +15,7 @@ proven:
 
 active:
   gate_4:
-    name: Judge / Operator Workflow Productization
+    name: Live Product Surface
     status: ACTIVE
     plan: evidence/gates/GATE-4-JUDGE-WORKFLOW-PLAN.md
     primary_question: "What breaks if this rights change goes live?"
@@ -32,4 +32,4 @@ next:
   - implement product surface
   - keep live path primary
   - add deterministic seeded fallback only for demo reliability
-  - prove judge can complete hero flow without Sanity Manage or terminal
+  - prove operators can browse and resolve multiple live impacts without Sanity Manage or terminal
