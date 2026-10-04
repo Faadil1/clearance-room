@@ -50,9 +50,13 @@ export async function analyzeHeroImpact({persist = false} = {}) {
   }
 
   const proposedPaidFinding = proposed.findings.find((finding) => finding.axis === 'paid')
-  const proposedRight = drafts.asset.rights.find((right) =>
-    proposedPaidFinding?.causedBy.includes(right._originalId || right._id),
-  )
+  const proposedRight =
+    drafts.asset.rights.find((right) =>
+      proposedPaidFinding?.causedBy.includes(right._originalId || right._id),
+    ) ||
+    drafts.asset.rights.find((right) =>
+      (right._originalId || right._id).includes('rights-maya-2026'),
+    )
 
   return {
     usage: {
