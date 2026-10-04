@@ -1736,3 +1736,34 @@ footer strong {
   font-size: 11px;
   line-height: 1.6;
 }
+
+
+.evidenceOnlyReceipt {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.consistencyWarning {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-left: 3px solid var(--review);
+  background: var(--review-bg);
+  color: #6c4a19;
+}
+
+.consistencyWarning strong {
+  font-size: 12px;
+}
+
+.consistencyWarning span,
+.consistencyWarning li {
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.consistencyWarning ul {
+  margin: 0;
+  padding-left: 18px;
+}
