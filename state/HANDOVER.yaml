@@ -1,36 +1,35 @@
 project: clearance-room
 handover_date: 2026-10-04
-branch: gate/proof-remediation-2
+branch: product/judge-workflow-4
 
-completed:
-  - Gate #1 merged to main
-  - Gate #2 local tests 5/5 passed
-  - real music-right partial-window scenario seeded
-  - persistent baseline clearanceProof runtime PASS
-  - explicit human-approved remediation runtime PASS
-  - baseline proof marked stale
-  - usage request shortened to 2026-10-31
-  - deterministic recompile returned CLEAR
-  - replacement proof persisted and supersedes baseline
+proven:
+  gate_1:
+    status: PROVEN
+    capability: published vs drafts blast-radius computation through real Context MCP
+  gate_2:
+    status: PROVEN
+    capability: persisted proof, explicit human-approved mutation, stale proof, deterministic recompile
+  gate_3:
+    status: PROVEN
+    capability: source-bound Knowledge Base evidence through separate KB-only MCP endpoint
 
-gate_2_verdict: PROVEN
+active:
+  gate_4:
+    name: Judge / Operator Workflow Productization
+    status: ACTIVE
+    plan: evidence/gates/GATE-4-JUDGE-WORKFLOW-PLAN.md
+    primary_question: "What breaks if this rights change goes live?"
+    flow: "What breaks → Why → Evidence → Repair → Approve → Recompile"
 
-gate_3:
-  name: Knowledge Base grounding
-  status: PROVEN
+architecture_invariants:
+  statusAuthority: deterministic evaluator only
+  graphEndpoint: clearance-room-graph
+  evidenceEndpoint: clearance-room-evidence
   knowledgeBaseId: kbjKMGM1H2uf
-  endpoint: clearance-room-evidence
-  canonicalEntry: music_licensing
-  provenEvidence:
-    documentId: rights-music-c09
-    kind: music_license
-    channel: instagram_reels
-    territory: CA
-    paidAdvertisingAllowed: true
-    validTo: 2026-10-31
-    source: C09 Original Soundtrack License — Dataset
+  mutationBoundary: explicit human approval required
 
 next:
-  - move from infrastructure gates into productization
-  - build judge/operator-facing workflow around blast radius, proof, remediation, and evidence
-  - preserve all truth boundaries
+  - implement product surface
+  - keep live path primary
+  - add deterministic seeded fallback only for demo reliability
+  - prove judge can complete hero flow without Sanity Manage or terminal
