@@ -88,3 +88,22 @@ Current state:
 At every material product touch, re-evaluate the gap list before changing workstream priority. If seeded reset, judge flow, replay, receipts, screenshots, video, story or submission packaging begin displacing justified live product depth, mark `WORKSTREAM_DRIFT` and restore product exploitation.
 
 **Product architecture generates the demo path; the demo path must not define product architecture.**
+
+
+## Runtime proof — 2026-10-04 user Scenario Lab edit
+
+RUNTIME PROVEN — evidence truth-boundary behavior:
+- user-created custom rights document is not yet indexed in the Knowledge Base
+- product explicitly reports KB state as `not_indexed`
+- product does not substitute an unrelated Knowledge Base entry
+- exact published structured rights document is shown as `STRUCTURED SOURCE`
+- status authority remains `deterministic evaluator only`
+
+RUNTIME PROVEN — read-only proof behavior:
+- opening a user-created impact shows `Proposed proof: not persisted`
+- ordinary inspection no longer creates a proof snapshot
+
+UX issue discovered and corrected:
+- user edited source-clause text to say paid amplification was prohibited but left the structured paid-permission field set to ALLOW
+- deterministic result correctly remained CLEAR
+- Scenario Lab now separates structured decision inputs from evidence text, uses explicit ALLOW/PROHIBIT controls, and previews structured decision changes before save
