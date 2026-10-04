@@ -3,30 +3,42 @@ import {callContextMcp} from '../../../src/contextMcp'
 
 export const dynamic = 'force-dynamic'
 
-function extractPublishedMayaEvidence(raw: string) {
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^{}()|[\]\\]/g, '\\$&')
+}
+
+function extractEvidence(raw: string, documentId: string) {
+  const escaped = escapeRegExp(documentId)
   const section =
-    raw.match(/## rights-maya-2026[^\n]*\n([\s\S]*?)(?=\n---|\n## rights-|$)/)?.[0] ||
+    raw.match(new RegExp(`##\\s+${escaped}[^\\n]*\\n[\\s\\S]*?(?=\\n---|\\n##\\s+rights-|$)`))?.[0] ||
     raw
 
-  const sourceClause =
-    section.match(/>\s*"?([^"\n]*Paid social advertising[^"\n]*2026-12-31[^"\n]*)"?/)?.[1]?.trim() ||
-    'Paid social advertising permitted in Canada and the United States through 2026-12-31.'
+  const title =
+    section.match(new RegExp(`##\\s+${escaped}\\s+[—-]\\s+([^\\n]+)`))?.[1]?.trim() ||
+    documentId
 
-  const validTo =
-    section.match(/\|\s*Valid to\s*\|\s*([^|\n]+)\|/i)?.[1]?.trim() ||
-    '2026-12-31'
+  const sourceClause =
+    section.match(/>\s*"?([^"\n]+)"?/)?.[1]?.trim() ||
+    'No source clause was extracted from the Knowledge Base entry.'
+
+  const tableValue = (label: string) =>
+    section.match(new RegExp(`\\|\\s*${label}\\s*\\|\\s*([^|\\n]+)\\|`, 'i'))?.[1]?.trim() || null
 
   return {
-    documentId: 'rights-maya-2026',
-    title: 'Maya Talent Release 2026',
-    kind: 'talent_release',
+    documentId,
+    title,
+    kind: tableValue('Kind'),
+    channels: tableValue('Allowed channels?'),
+    territories: tableValue('Allowed territories?'),
+    paidAdvertising: tableValue('Paid advertising'),
+    validFrom: tableValue('Valid from'),
+    validTo: tableValue('Valid to'),
     sourceClause,
-    validTo,
-    source: 'Maya Talent Release 2026 — Dataset',
+    source: `${title} — Dataset`,
   }
 }
 
-export async function POST() {
+export async function POST(request: Request) {
   const endpoint = process.env.SANITY_EVIDENCE_MCP_URL
   const token = process.env.SANITY_ORGANIZATION_TOKEN
   const knowledgeBase = process.env.SANITY_KNOWLEDGE_BASE_ID || 'kbjKMGM1H2uf'
@@ -39,6 +51,10 @@ export async function POST() {
   }
 
   try {
+    const body = await request.json().catch(() => ({}))
+    const documentId =
+      typeof body?.documentId === 'string' ? body.documentId : 'rights-maya-2026'
+
     const raw = await callContextMcp(
       endpoint,
       token,
@@ -53,7 +69,7 @@ export async function POST() {
       knowledgeBase,
       queryMode: 'knowledge_base_read',
       entryPath: 'source_clauses',
-      evidence: extractPublishedMayaEvidence(raw),
+      evidence: extractEvidence(raw, documentId),
       raw,
       authority: 'evidence-only',
       observedAt: new Date().toISOString(),
