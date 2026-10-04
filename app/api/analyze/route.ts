@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server'
-import {analyzeHeroImpact} from '../../../src/heroScenario.js'
+import {analyzeHeroImpact} from '../../../src/heroScenario'
 
 export const dynamic = 'force-dynamic'
 
