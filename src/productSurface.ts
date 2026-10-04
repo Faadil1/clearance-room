@@ -223,8 +223,6 @@ export async function getUsageImpact(usageRequestId: string, persist = false) {
 
 export type RightsFieldDiff = {
   field:
-    | 'title'
-    | 'kind'
     | 'allowedTerritories'
     | 'allowedChannels'
     | 'paidAdvertisingAllowed'
@@ -255,8 +253,6 @@ function valuesEqual(a: unknown, b: unknown) {
 
 export function rightsFieldDiff(current: Right | null, proposed: Right): RightsFieldDiff[] {
   const pairs: Array<[RightsFieldDiff['field'], unknown, unknown]> = [
-    ['title', current?.title ?? null, proposed.title ?? null],
-    ['kind', current?.kind ?? null, proposed.kind ?? null],
     ['allowedTerritories', normalizedArray(current?.allowedTerritories), normalizedArray(proposed.allowedTerritories)],
     ['allowedChannels', normalizedArray(current?.allowedChannels), normalizedArray(proposed.allowedChannels)],
     ['paidAdvertisingAllowed', current?.paidAdvertisingAllowed ?? null, proposed.paidAdvertisingAllowed ?? null],
