@@ -1,7 +1,7 @@
 type JsonRpcEnvelope = {
   result?: {
     content?: Array<{type?: string; text?: string}>
-    structuredContent?: unknown
+    structuredContent?: {result?: unknown} | unknown
   }
   error?: unknown
 }
@@ -17,12 +17,12 @@ function parseEnvelope(raw: string): JsonRpcEnvelope {
   return JSON.parse(dataLines.length ? dataLines[dataLines.length - 1] : raw)
 }
 
-export async function callContextMcp(
+async function requestContextMcp(
   endpoint: string,
   token: string,
   toolName: string,
   args: Record<string, unknown>,
-) {
+): Promise<JsonRpcEnvelope> {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -52,6 +52,17 @@ export async function callContextMcp(
     throw new Error(`Context MCP error: ${JSON.stringify(envelope.error)}`)
   }
 
+  return envelope
+}
+
+export async function callContextMcp(
+  endpoint: string,
+  token: string,
+  toolName: string,
+  args: Record<string, unknown>,
+) {
+  const envelope = await requestContextMcp(endpoint, token, toolName, args)
+
   const text = envelope.result?.content
     ?.filter((item) => item.type === 'text' && typeof item.text === 'string')
     .map((item) => item.text)
@@ -59,4 +70,39 @@ export async function callContextMcp(
 
   if (!text) throw new Error('Context MCP returned no readable text content')
   return text
+}
+
+export async function callContextMcpJson<T>(
+  endpoint: string,
+  token: string,
+  toolName: string,
+  args: Record<string, unknown>,
+): Promise<T> {
+  const envelope = await requestContextMcp(endpoint, token, toolName, args)
+
+  const structured = envelope.result?.structuredContent
+  if (
+    structured &&
+    typeof structured === 'object' &&
+    'result' in structured &&
+    (structured as {result?: unknown}).result !== undefined
+  ) {
+    return (structured as {result: T}).result
+  }
+
+  const blocks = envelope.result?.content || []
+  for (const block of blocks) {
+    if (block.type !== 'text' || typeof block.text !== 'string') continue
+    try {
+      const parsed = JSON.parse(block.text)
+      if (parsed && typeof parsed === 'object' && 'result' in parsed) {
+        return parsed.result as T
+      }
+      return parsed as T
+    } catch {
+      // Keep looking for a JSON content block.
+    }
+  }
+
+  throw new Error('Context MCP returned no structured JSON result')
 }
