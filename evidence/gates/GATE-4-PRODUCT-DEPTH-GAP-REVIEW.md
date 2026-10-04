@@ -59,3 +59,21 @@ MISSING / not yet load-bearing:
 ## Non-negotiable
 
 Do not switch back to "demo polish" as the primary workstream until this gap list has been materially reduced and every remaining item is explicitly classified.
+
+
+## Workstream priority enforcement
+
+Central canon: `Faadil1/faadil-agent-system@ff101a6e79c20d5b9c3ba370bc48c9b07d5fd3fa` / Product Reality v1.4.
+
+Current state:
+- first live vertical slice: **PROVEN**
+- remaining material depth gaps: **YES**
+- primary workstream: **PRODUCT_EXPLOITATION**
+- valid stop condition: **NONE**
+- demo packaging allowed as primary workstream: **NO**
+- prior drift: **CORRECTED_FROM_WORKSTREAM_DRIFT**
+- next highest-value delta: **prove Context MCP + Live Content API as load-bearing runtime integrations**
+
+At every material product touch, re-evaluate the gap list before changing workstream priority. If seeded reset, judge flow, replay, receipts, screenshots, video, story or submission packaging begin displacing justified live product depth, mark `WORKSTREAM_DRIFT` and restore product exploitation.
+
+**Product architecture generates the demo path; the demo path must not define product architecture.**
