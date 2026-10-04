@@ -138,14 +138,14 @@ export async function createUserScenario(raw: unknown) {
         title: right.title,
         kind: right.kind,
         ...right.current,
-      })
+      } as any)
       .create({
         _id: `drafts.${rightId}`,
         _type: 'rightsDocument',
         title: `${right.title} — Proposed`,
         kind: right.kind,
         ...right.proposed,
-      })
+      } as any)
   })
 
   tx = tx
@@ -158,14 +158,14 @@ export async function createUserScenario(raw: unknown) {
         _ref: id,
         _key: id,
       })),
-    })
+    } as any)
     .create({
       _id: usageId,
       _type: 'usageRequest',
       title: input.title,
       asset: {_type: 'reference', _ref: assetId},
       ...input.usage,
-    })
+    } as any)
 
   await tx.commit()
 
@@ -308,23 +308,27 @@ export async function deleteUserScenario(usageId: string) {
   assertUserScenarioId(usageId)
   const client = getServerSanity()
 
-  const record = await client.fetch<{
-    assetId: string
-    rightIds: string[]
-    proofIds: string[]
-  } | null>(
-    `*[_type == "usageRequest" && _id == $id][0]{
-      "assetId": asset._ref,
-      "rightIds": asset->rights[]._ref,
-      "proofIds": *[_type == "clearanceProof" && usageRequest._ref == ^._id]._id
-    }`,
-    {id: usageId},
-  )
+  const [record, proofIds] = await Promise.all([
+    client.fetch<{
+      assetId: string
+      rightIds: string[]
+    } | null>(
+      `*[_type == "usageRequest" && _id == $id][0]{
+        "assetId": asset._ref,
+        "rightIds": asset->rights[]._ref
+      }`,
+      {id: usageId},
+    ),
+    client.fetch<string[]>(
+      `*[_type == "clearanceProof" && usageRequest._ref == $id]._id`,
+      {id: usageId},
+    ),
+  ])
 
   if (!record?.assetId) throw new Error('User scenario was not found')
 
   let tx = client.transaction().delete(usageId)
-  for (const proofId of record.proofIds || []) tx = tx.delete(proofId)
+  for (const proofId of proofIds || []) tx = tx.delete(proofId)
   tx = tx.delete(record.assetId)
 
   for (const rightId of record.rightIds || []) {
