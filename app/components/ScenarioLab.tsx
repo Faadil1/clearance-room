@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useMemo, useState} from 'react'
+import {useEffect, useState} from 'react'
 
 type Kind = 'talent_release' | 'music_license' | 'photo_agreement'
 
@@ -117,6 +117,14 @@ function TermsEditor({
   value: Terms
   onChange: (next: Terms) => void
 }) {
+  const [territoriesText, setTerritoriesText] = useState(joinList(value.allowedTerritories))
+  const [channelsText, setChannelsText] = useState(joinList(value.allowedChannels))
+
+  useEffect(() => {
+    setTerritoriesText(joinList(value.allowedTerritories))
+    setChannelsText(joinList(value.allowedChannels))
+  }, [value.allowedTerritories, value.allowedChannels])
+
   return (
     <fieldset className="termsEditor">
       <legend>{legend}</legend>
@@ -124,9 +132,10 @@ function TermsEditor({
       <label>
         <span>Territories</span>
         <input
-          value={joinList(value.allowedTerritories)}
-          onChange={(event) =>
-            onChange({...value, allowedTerritories: parseList(event.target.value)})
+          value={territoriesText}
+          onChange={(event) => setTerritoriesText(event.target.value)}
+          onBlur={() =>
+            onChange({...value, allowedTerritories: parseList(territoriesText)})
           }
           placeholder="CA, US"
         />
@@ -135,9 +144,10 @@ function TermsEditor({
       <label>
         <span>Channels</span>
         <input
-          value={joinList(value.allowedChannels)}
-          onChange={(event) =>
-            onChange({...value, allowedChannels: parseList(event.target.value)})
+          value={channelsText}
+          onChange={(event) => setChannelsText(event.target.value)}
+          onBlur={() =>
+            onChange({...value, allowedChannels: parseList(channelsText)})
           }
           placeholder="instagram_reels, organic_social"
         />
@@ -338,11 +348,6 @@ export default function ScenarioLab({
       setBusy(null)
     }
   }
-
-  const editable = useMemo(
-    () => scenarios.find((scenario) => scenario.id === editingId) || null,
-    [editingId, scenarios],
-  )
 
   return (
     <section className="scenarioLab">
@@ -645,8 +650,8 @@ export default function ScenarioLab({
                           <label>
                             <span>Territories</span>
                             <input
-                              value={joinList(right.allowedTerritories)}
-                              onChange={(event) => {
+                              defaultValue={joinList(right.allowedTerritories)}
+                              onBlur={(event) => {
                                 const rights = [...editScenario.asset.rights]
                                 rights[rightIndex] = {
                                   ...right,
@@ -662,8 +667,8 @@ export default function ScenarioLab({
                           <label>
                             <span>Channels</span>
                             <input
-                              value={joinList(right.allowedChannels)}
-                              onChange={(event) => {
+                              defaultValue={joinList(right.allowedChannels)}
+                              onBlur={(event) => {
                                 const rights = [...editScenario.asset.rights]
                                 rights[rightIndex] = {
                                   ...right,
