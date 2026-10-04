@@ -1,0 +1,28 @@
+{
+  "name": "clearance-room",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "schema:deploy": "sanity schema deploy",
+    "seed": "tsx scripts/seed.ts",
+    "gate:fixture": "tsx scripts/gate-fixture.ts",
+    "gate:sanity": "tsx scripts/gate-sanity.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sanity/client": "latest",
+    "@sanity/vision": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "sanity": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "tsx": "latest",
+    "typescript": "latest",
+    "vitest": "latest"
+  }
+}
