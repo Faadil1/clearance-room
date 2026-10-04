@@ -1,6 +1,6 @@
 project: clearance-room
 source_of_truth: github
-branch: gate/knowledge-base-3
+branch: product/judge-workflow-4
 updated: 2026-10-04
 
 concept:
@@ -18,12 +18,16 @@ gates:
   knowledge_base_grounding_3:
     status: PROVEN
     evidence: evidence/gates/GATE-3-KNOWLEDGE-BASE-PASS.md
-    objectives:
-      - create a Sanity Knowledge Base for rights-source evidence
-      - index published rights-document clauses
-      - expose it through a Knowledge-Base-only Context MCP endpoint
-      - prove retrieval of the music-license expiry evidence
-      - preserve deterministic evaluator authority
+  judge_operator_workflow_4:
+    status: ACTIVE
+    plan: evidence/gates/GATE-4-JUDGE-WORKFLOW-PLAN.md
+    hero_flow:
+      - what_breaks
+      - why
+      - source_evidence
+      - proposed_repair
+      - human_approval
+      - recompile
 
 truth_boundaries:
   - deterministic evaluator is the only authority for CLEAR/BLOCK/REVIEW/UNKNOWN
@@ -31,24 +35,28 @@ truth_boundaries:
   - Context MCP remains read-only
   - writes use a separate Sanity mutation path
   - changed intent or governing source revision invalidates prior proof
+  - repair predictions remain proposals until a real post-mutation recompile
 
 proven_runtime:
-  gate_2_baseline:
-    proof: proof-usage-holiday-ca-baseline
-    status: REVIEW
+  gate_1:
+    published: CLEAR
+    drafts: BLOCK
+    changedAxis: paid
+  gate_2:
+    baselineStatus: REVIEW
     allowedThrough: 2026-10-31
     blockedFrom: 2026-11-01
-    causedBy: rights-music-c09
-  gate_2_remediation:
-    action: shorten_campaign_end_date
-    oldEndDate: 2026-11-30
-    newEndDate: 2026-10-31
     oldProofStale: true
-    newProof: proof-usage-holiday-ca-remediated
-    newStatus: CLEAR
+    remediatedStatus: CLEAR
+  gate_3:
+    knowledgeBaseId: kbjKMGM1H2uf
+    canonicalEntry: music_licensing
+    sourceDocument: rights-music-c09
+    validTo: 2026-10-31
 
 next:
-  - productize the proven graph, proof, remediation, and evidence mechanisms
-  - build the judge/operator-facing workflow
-  - preserve deterministic status authority and source-bound evidence
-  - prepare live demo, story, and submission evidence
+  - implement judge/operator-facing app shell
+  - wire live current/proposed blast-radius data
+  - expose source evidence without status authority
+  - wire human-approved remediation and recompile
+  - harden hero demo and negative paths
