@@ -1045,3 +1045,51 @@ footer strong {
     grid-template-columns: 1fr;
   }
 }
+
+
+.liveReceipt {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.62);
+}
+
+.liveReceipt > div {
+  display: grid;
+  gap: 3px;
+}
+
+.liveReceipt > div:last-child {
+  justify-items: end;
+  min-width: 110px;
+}
+
+.liveReceipt strong {
+  font-size: 12px;
+}
+
+.liveReceipt > div:last-child strong {
+  font-family: Georgia, serif;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.liveReceipt span:not(.liveDot) {
+  color: var(--muted);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+  .liveReceipt {
+    grid-template-columns: auto 1fr;
+  }
+
+  .liveReceipt > div:last-child {
+    grid-column: 2;
+    justify-items: start;
+  }
+}
