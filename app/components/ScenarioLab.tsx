@@ -48,12 +48,12 @@ type ScenarioRecord = {
       id: string
       title: string
       kind: string
-      allowedTerritories?: string[]
-      allowedChannels?: string[]
-      paidAdvertisingAllowed?: boolean
-      validFrom?: string
-      validTo?: string
-      sourceClause?: string
+      allowedTerritories?: string[] | null
+      allowedChannels?: string[] | null
+      paidAdvertisingAllowed?: boolean | null
+      validFrom?: string | null
+      validTo?: string | null
+      sourceClause?: string | null
     }>
   }
 }
@@ -95,7 +95,11 @@ function joinList(value?: string[]) {
   return (value || []).join(', ')
 }
 
-function sameList(a?: string[], b?: string[]) {
+function permissionLabel(value: boolean | null | undefined) {
+  return value === true ? 'ALLOW' : value === false ? 'PROHIBIT' : 'NOT DOCUMENTED'
+}
+
+function sameList(a?: string[] | null, b?: string[] | null) {
   return JSON.stringify([...(a || [])].sort()) === JSON.stringify([...(b || [])].sort())
 }
 
@@ -151,8 +155,8 @@ function structuredScenarioChanges(original: ScenarioRecord, edited: ScenarioRec
     if (!sameList(before.allowedChannels, right.allowedChannels)) {
       changes.push(`${label} channels: ${joinList(before.allowedChannels)} → ${joinList(right.allowedChannels)}`)
     }
-    if (Boolean(before.paidAdvertisingAllowed) !== Boolean(right.paidAdvertisingAllowed)) {
-      changes.push(`${label} paid permission: ${before.paidAdvertisingAllowed ? 'ALLOW' : 'PROHIBIT'} → ${right.paidAdvertisingAllowed ? 'ALLOW' : 'PROHIBIT'}`)
+    if (permissionLabel(before.paidAdvertisingAllowed) !== permissionLabel(right.paidAdvertisingAllowed)) {
+      changes.push(`${label} paid permission: ${permissionLabel(before.paidAdvertisingAllowed)} → ${permissionLabel(right.paidAdvertisingAllowed)}`)
     }
     if (before.validFrom !== right.validFrom) {
       changes.push(`${label} valid from: ${before.validFrom || '—'} → ${right.validFrom || '—'}`)
@@ -456,12 +460,12 @@ export default function ScenarioLab({
           body: JSON.stringify({
             rightId: right.id,
             proposed: {
-              allowedTerritories: right.allowedTerritories || [],
-              allowedChannels: right.allowedChannels || [],
-              paidAdvertisingAllowed: Boolean(right.paidAdvertisingAllowed),
-              validFrom: right.validFrom,
-              validTo: right.validTo,
-              sourceClause: right.sourceClause,
+              allowedTerritories: right.allowedTerritories ?? null,
+              allowedChannels: right.allowedChannels ?? null,
+              paidAdvertisingAllowed: right.paidAdvertisingAllowed ?? null,
+              validFrom: right.validFrom ?? null,
+              validTo: right.validTo ?? null,
+              sourceClause: right.sourceClause ?? null,
             },
           }),
         })
@@ -920,11 +924,12 @@ export default function ScenarioLab({
                               }}
                             />
                           </label>
-                          <label>
+                          <div className="scenarioDecisionField">
                             <span>Valid to</span>
                             <input
                               type="date"
                               value={right.validTo || ''}
+                              disabled={right.validTo == null}
                               onChange={(event) => {
                                 const rights = [...editScenario.asset.rights]
                                 rights[rightIndex] = {...right, validTo: event.target.value}
@@ -934,14 +939,42 @@ export default function ScenarioLab({
                                 })
                               }}
                             />
-                          </label>
+                            <div className="evidencePresenceToggle">
+                              <button
+                                type="button"
+                                className={right.validTo != null ? 'evidencePresenceChoice evidencePresenceChoice--selected' : 'evidencePresenceChoice'}
+                                onClick={() => {
+                                  const rights = [...editScenario.asset.rights]
+                                  rights[rightIndex] = {
+                                    ...right,
+                                    validTo: right.validTo || '2026-12-31',
+                                  }
+                                  setEditScenario({...editScenario, asset: {...editScenario.asset, rights}})
+                                }}
+                              >
+                                DOCUMENTED
+                              </button>
+                              <button
+                                type="button"
+                                className={right.validTo == null ? 'evidencePresenceChoice evidencePresenceChoice--selected evidencePresenceChoice--unknown' : 'evidencePresenceChoice'}
+                                onClick={() => {
+                                  const rights = [...editScenario.asset.rights]
+                                  rights[rightIndex] = {...right, validTo: null}
+                                  setEditScenario({...editScenario, asset: {...editScenario.asset, rights}})
+                                }}
+                              >
+                                NOT DOCUMENTED
+                              </button>
+                            </div>
+                            <small>Removing the validity end creates an evidence gap. The window axis must become UNKNOWN rather than guessing an expiry.</small>
+                          </div>
                         </div>
                         <div className="scenarioDecisionField">
                           <span>Proposed paid advertising permission</span>
-                          <div className="permissionToggle" role="group" aria-label="Proposed paid advertising permission">
+                          <div className="permissionToggle permissionToggle--three" role="group" aria-label="Proposed paid advertising permission">
                             <button
                               type="button"
-                              className={right.paidAdvertisingAllowed ? 'permissionChoice permissionChoice--selected' : 'permissionChoice'}
+                              className={right.paidAdvertisingAllowed === true ? 'permissionChoice permissionChoice--selected' : 'permissionChoice'}
                               onClick={() => {
                                 const rights = [...editScenario.asset.rights]
                                 rights[rightIndex] = {...right, paidAdvertisingAllowed: true}
@@ -952,7 +985,7 @@ export default function ScenarioLab({
                             </button>
                             <button
                               type="button"
-                              className={!right.paidAdvertisingAllowed ? 'permissionChoice permissionChoice--selected permissionChoice--prohibit' : 'permissionChoice'}
+                              className={right.paidAdvertisingAllowed === false ? 'permissionChoice permissionChoice--selected permissionChoice--prohibit' : 'permissionChoice'}
                               onClick={() => {
                                 const rights = [...editScenario.asset.rights]
                                 rights[rightIndex] = {...right, paidAdvertisingAllowed: false}
@@ -961,8 +994,19 @@ export default function ScenarioLab({
                             >
                               PROHIBIT
                             </button>
+                            <button
+                              type="button"
+                              className={right.paidAdvertisingAllowed == null ? 'permissionChoice permissionChoice--selected permissionChoice--unknown' : 'permissionChoice'}
+                              onClick={() => {
+                                const rights = [...editScenario.asset.rights]
+                                rights[rightIndex] = {...right, paidAdvertisingAllowed: null}
+                                setEditScenario({...editScenario, asset: {...editScenario.asset, rights}})
+                              }}
+                            >
+                              NOT DOCUMENTED
+                            </button>
                           </div>
-                          <small>This structured field—not the clause text below—controls the deterministic paid finding.</small>
+                          <small>NOT DOCUMENTED removes this field from the draft. If paid media is requested and no governing right explicitly blocks it, the paid axis becomes UNKNOWN.</small>
                         </div>
                         <label className="evidenceTextField">
                           <span>Proposed source clause · evidence only</span>
