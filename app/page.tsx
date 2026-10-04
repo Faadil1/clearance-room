@@ -221,6 +221,7 @@ export default function Home() {
         approved: true,
         usageRequestId: detail.usage.id,
         repairId: selectedRepair,
+        baselineProofId: detail.persistedProof?.id,
       })
       setReceipt(result)
       setDetail(null)
