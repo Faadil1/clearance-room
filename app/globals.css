@@ -1093,3 +1093,250 @@ footer strong {
     justify-items: start;
   }
 }
+
+
+.changeCentricSurface {
+  display: grid;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.changeSummary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.changeSummary > div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  background: #f8f4ec;
+}
+
+.changeSummary span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.changeSummary strong {
+  display: block;
+  margin-top: 6px;
+  font-family: Georgia, serif;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.changeWorkspace {
+  display: grid;
+  grid-template-columns: minmax(240px, .7fr) minmax(0, 2fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.changeList,
+.changeDetail,
+.fieldDiffList,
+.downstreamList {
+  display: grid;
+  gap: 10px;
+}
+
+.changeCard {
+  width: 100%;
+  display: grid;
+  gap: 7px;
+  padding: 16px;
+  text-align: left;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.56);
+}
+
+.changeCard:hover,
+.changeCard--selected {
+  border-color: var(--accent);
+  background: #fff8f3;
+}
+
+.changeCard code {
+  color: var(--muted);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+.changeKind {
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.changeCardMetrics {
+  display: grid;
+  gap: 3px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.revisionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.revisionGrid > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: #f9f6ef;
+}
+
+.revisionGrid span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.revisionGrid code {
+  overflow-wrap: anywhere;
+  font-size: 10px;
+}
+
+.fieldDiffList {
+  margin-top: 18px;
+}
+
+.fieldDiff {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.fieldDiff > strong {
+  font-size: 12px;
+}
+
+.fieldDiff > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.diffBefore,
+.diffAfter {
+  min-height: 38px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: #f3efe7;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.diffAfter {
+  border-color: #c99d92;
+  background: #fff2ee;
+}
+
+.changeMetrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.changeMetrics span {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  background: #f7f3eb;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.changeMetrics strong {
+  color: var(--ink);
+}
+
+.downstreamList {
+  margin-top: 16px;
+}
+
+.downstreamRow {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(90px, .6fr) auto 125px;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  text-align: left;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: #fbf8f2;
+}
+
+.downstreamRow--changed {
+  border-left: 4px solid var(--accent);
+  background: #fff9f6;
+}
+
+.downstreamRow > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.downstreamRow > div:first-child span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+@media (max-width: 960px) {
+  .changeWorkspace {
+    grid-template-columns: 1fr;
+  }
+
+  .changeList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .revisionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .downstreamRow {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .changeSummary,
+  .changeList {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldDiff,
+  .fieldDiff > div,
+  .downstreamRow {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldDiff > div .arrow {
+    transform: rotate(90deg);
+    justify-self: center;
+  }
+}
