@@ -1,4 +1,4 @@
-import type {ClearanceProof, Finding} from './types.js'
+import type {ClearanceProof, Finding} from './types'
 
 export interface ClearanceDiff {
   from: ClearanceProof['status']
