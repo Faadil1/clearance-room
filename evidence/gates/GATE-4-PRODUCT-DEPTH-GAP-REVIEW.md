@@ -49,7 +49,7 @@ RUNTIME PROVEN — user-defined Scenario Lab:
 - PROVEN: post-write usage intent changes to `isPaid=false`
 - PROVEN: multiple governing rights in one user-created scenario
 - IMPLEMENTED / proof pending: user-created scenario deletion
-- SEPARATE PROOF STILL REQUIRED: visible no-action Live Content API auto-update of an already-open portfolio/detail view
+- PROVEN: visible no-action Live Content API auto-update of an already-open portfolio/detail view
 - change-centric rights-document view
   - published vs draft field-level diff
   - revision identifiers
@@ -71,15 +71,14 @@ MISSING / not yet load-bearing:
 - UNKNOWN / missing-evidence product path
 - live integration degraded/offline recovery
 - write-failure recovery
-- second remediation class exercised through the browser
+- UNKNOWN / missing-evidence product path
 - native App SDK surface evaluation
 - Workflows fit / availability verification
 - release-aware perspective evaluation if available
 
 ## Immediate product expansion order
 
-1. Exercise the window REVIEW path end-to-end through the now-proven multi-right user-created scenario.
-3. Add explicit UNKNOWN path by allowing required structured evidence to be absent in a controlled user-created record.
+1. Add explicit UNKNOWN path by allowing required structured evidence to be absent in a controlled user-created record.
 4. Runtime-prove free-text/status/territory/channel operator filters.
 5. Runtime-prove user-created scenario deletion.
 7. Add product agent using MCP/KB + deterministic receipts.
@@ -192,3 +191,26 @@ Observed result in this recording:
 
 Conclusion:
 multi-right composition is proven; window REVIEW is not yet proven because no proposed validity boundary was actually moved inside the usage window.
+
+
+## Runtime proof — 2026-10-04 window REVIEW remediation
+
+PROVEN sequence on user-created multi-right content:
+1. Operator changed one proposed governing right validity end from `2026-12-31` to `2026-10-31`.
+2. Usage still requested campaign through `2026-11-30`.
+3. Deterministic window finding became `REVIEW`.
+4. Finding stated the usage is cleared only through `2026-10-31` and continues beyond that boundary.
+5. Product exposed only the justified remediation `Shorten campaign through 2026-10-31`.
+6. Human explicitly approved mutation `endDate → 2026-10-31`.
+7. Approval-time baseline proof recorded `REVIEW`.
+8. Previous proof became `STALE`.
+9. Real usage request end date changed to `2026-10-31`.
+10. Deterministic recompile returned `CLEAR`.
+11. Replacement proof persisted as `CLEAR / FRESH`.
+
+Verdict:
+**WINDOW REVIEW → HUMAN-APPROVED SHORTEN CAMPAIGN → CLEAR = PROVEN**
+
+The product now has two materially different proven remediation classes on user-supplied content:
+- paid `BLOCK` → organic-only
+- window `REVIEW` → shorten campaign
