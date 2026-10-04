@@ -3,6 +3,7 @@ import {diffProofs} from './diff'
 import {proofDocument} from './proof'
 import {ALL_USAGE_GRAPHS_QUERY, USAGE_GRAPH_QUERY} from './query'
 import {getServerSanity} from './serverSanity'
+import {queryRightsGraph} from './contextGraph'
 import type {Finding, UsageGraph} from './types'
 
 export type RepairOption =
@@ -79,10 +80,9 @@ function causalRights(graph: UsageGraph, findings: Finding[]) {
 }
 
 export async function scanLiveImpacts() {
-  const client = getServerSanity()
   const [publishedGraphs, draftGraphs] = await Promise.all([
-    client.fetch<UsageGraph[]>(ALL_USAGE_GRAPHS_QUERY, {}, {perspective: 'published'}),
-    client.fetch<UsageGraph[]>(ALL_USAGE_GRAPHS_QUERY, {}, {perspective: 'drafts'}),
+    queryRightsGraph<UsageGraph[]>('published', ALL_USAGE_GRAPHS_QUERY),
+    queryRightsGraph<UsageGraph[]>('drafts', ALL_USAGE_GRAPHS_QUERY),
   ])
 
   const publishedById = new Map(publishedGraphs.map((graph) => [graph._id, graph]))
@@ -139,6 +139,8 @@ export async function scanLiveImpacts() {
       currentPerspective: 'published',
       proposedPerspective: 'drafts',
       statusAuthority: 'deterministic-evaluator',
+      graphReadIntegration: 'sanity-context-mcp',
+      graphReadIntegration: 'sanity-context-mcp',
       scope: 'all-usage-requests',
     },
   }
@@ -146,17 +148,10 @@ export async function scanLiveImpacts() {
 
 export async function getUsageImpact(usageRequestId: string, persist = false) {
   const client = getServerSanity()
+  const query = USAGE_GRAPH_QUERY.replace('$id', JSON.stringify(usageRequestId))
   const [published, drafts] = await Promise.all([
-    client.fetch<UsageGraph>(
-      USAGE_GRAPH_QUERY,
-      {id: usageRequestId},
-      {perspective: 'published'},
-    ),
-    client.fetch<UsageGraph>(
-      USAGE_GRAPH_QUERY,
-      {id: usageRequestId},
-      {perspective: 'drafts'},
-    ),
+    queryRightsGraph<UsageGraph>('published', query),
+    queryRightsGraph<UsageGraph>('drafts', query),
   ])
 
   if (!published || !drafts) {
