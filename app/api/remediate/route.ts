@@ -25,19 +25,27 @@ export async function POST(request: Request) {
       typeof body?.usageRequestId === 'string' ? body.usageRequestId : null
     const repairId =
       typeof body?.repairId === 'string' ? body.repairId : null
+    const baselineId =
+      typeof body?.baselineProofId === 'string' ? body.baselineProofId : null
 
-    if (!usageRequestId || !repairId) {
+    if (!usageRequestId || !repairId || !baselineId) {
       return NextResponse.json(
-        {error: 'usageRequestId and repairId are required'},
+        {error: 'usageRequestId, repairId, and baselineProofId are required'},
         {status: 400},
       )
     }
 
-    const baselineId = impactProofId(usageRequestId)
     const baseline = await client.getDocument<any>(baselineId)
     if (!baseline) {
       return NextResponse.json(
         {error: 'Open this impact first so a baseline proposed proof is persisted'},
+        {status: 409},
+      )
+    }
+
+    if (baseline.usageRequest?._ref !== usageRequestId) {
+      return NextResponse.json(
+        {error: 'The supplied proof does not belong to this usage request'},
         {status: 409},
       )
     }
@@ -90,7 +98,7 @@ export async function POST(request: Request) {
       {perspective: 'drafts'},
     )
 
-    const replacement = await client.createOrReplace(
+    const replacement = await client.create(
       proofDocument(replacementId, proposedGraph, after.proposed, {
         perspective: 'drafts',
         supersedes: baselineId,
