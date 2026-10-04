@@ -8,8 +8,9 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}))
     const usageRequestId =
       typeof body?.usageRequestId === 'string' ? body.usageRequestId : 'usage-winter-ca'
+    const persist = body?.persist !== false
 
-    return NextResponse.json(await getUsageImpact(usageRequestId, true))
+    return NextResponse.json(await getUsageImpact(usageRequestId, persist))
   } catch (error) {
     return NextResponse.json(
       {error: error instanceof Error ? error.message : 'Impact analysis failed'},
