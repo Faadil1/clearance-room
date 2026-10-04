@@ -1767,3 +1767,113 @@ footer strong {
   margin: 0;
   padding-left: 18px;
 }
+
+
+.operatorFilterPanel {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.56);
+}
+
+.operatorFilterHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.operatorFilterHeader h3 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -.025em;
+}
+
+.filterSummary {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.filterSummary strong {
+  color: var(--ink);
+  font-family: Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.operatorFilters {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.6fr) repeat(5, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.operatorFilters label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.operatorFilters label > span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.operatorFilters input,
+.operatorFilters select {
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.operatorFilterPanel > .textButton {
+  justify-self: start;
+}
+
+@media (max-width: 1180px) {
+  .operatorFilters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .filterSearch {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 800px) {
+  .operatorFilterHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .filterSummary {
+    justify-content: flex-start;
+  }
+
+  .operatorFilters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filterSearch {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 520px) {
+  .operatorFilters,
+  .filterSearch {
+    grid-template-columns: 1fr;
+    grid-column: auto;
+  }
+}
