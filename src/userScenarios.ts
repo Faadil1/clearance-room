@@ -54,7 +54,7 @@ function dateString(value: unknown, label: string) {
   return string
 }
 
-function normalizeRight(input: any, index: number): ScenarioRightInput {
+export function normalizeRight(input: any, index = 0): ScenarioRightInput {
   const kind = input?.kind
   if (!['talent_release', 'music_license', 'photo_agreement'].includes(kind)) {
     throw new Error(`rights[${index}].kind is invalid`)
@@ -341,5 +341,123 @@ export async function deleteUserScenario(usageId: string) {
     usageId,
     deleted: true,
     deletedAt: new Date().toISOString(),
+  }
+}
+
+
+export async function addUserScenarioRight(
+  usageId: string,
+  raw: unknown,
+) {
+  assertUserScenarioId(usageId)
+  const right = normalizeRight(raw, 0)
+  const client = getServerSanity()
+
+  const record = await client.fetch<{
+    assetId: string
+    rightIds: string[]
+  } | null>(
+    `*[_type == "usageRequest" && _id == $id][0]{
+      "assetId": asset._ref,
+      "rightIds": asset->rights[]._ref
+    }`,
+    {id: usageId},
+  )
+
+  if (!record?.assetId) throw new Error('User scenario was not found')
+  if ((record.rightIds || []).length >= 6) {
+    throw new Error('A scenario can contain at most 6 governing rights')
+  }
+
+  const scenarioKey = usageId.replace(/^usage-user-/, '')
+  const usedIndexes = (record.rightIds || [])
+    .map((id) => Number(id.match(/-(\d+)$/)?.[1] || 0))
+    .filter((value) => Number.isFinite(value))
+  const nextIndex = Math.max(0, ...usedIndexes) + 1
+  const rightId = `rights-user-${scenarioKey}-${nextIndex}`
+
+  await client
+    .transaction()
+    .create({
+      _id: rightId,
+      _type: 'rightsDocument',
+      title: right.title,
+      kind: right.kind,
+      ...right.current,
+    } as any)
+    .create({
+      _id: `drafts.${rightId}`,
+      _type: 'rightsDocument',
+      title: `${right.title} — Proposed`,
+      kind: right.kind,
+      ...right.proposed,
+    } as any)
+    .patch(record.assetId, (builder) =>
+      builder.append('rights', [{
+        _type: 'reference',
+        _ref: rightId,
+        _key: rightId,
+      }]),
+    )
+    .commit()
+
+  return {
+    usageId,
+    assetId: record.assetId,
+    rightId,
+    addedAt: new Date().toISOString(),
+  }
+}
+
+export async function removeUserScenarioRight(
+  usageId: string,
+  rightId: string,
+) {
+  assertUserScenarioId(usageId)
+  if (!/^rights-user-[a-z0-9]+-\d+$/.test(rightId)) {
+    throw new Error('Only user-created rights can be removed from Scenario Lab')
+  }
+
+  const client = getServerSanity()
+  const record = await client.fetch<{
+    assetId: string
+    rightIds: string[]
+  } | null>(
+    `*[_type == "usageRequest" && _id == $id][0]{
+      "assetId": asset._ref,
+      "rightIds": asset->rights[]._ref
+    }`,
+    {id: usageId},
+  )
+
+  if (!record?.assetId) throw new Error('User scenario was not found')
+  if (!(record.rightIds || []).includes(rightId)) {
+    throw new Error('That right is not attached to this scenario')
+  }
+  if ((record.rightIds || []).length <= 1) {
+    throw new Error('A scenario must retain at least one governing right')
+  }
+
+  const remaining = record.rightIds
+    .filter((id) => id !== rightId)
+    .map((id) => ({
+      _type: 'reference',
+      _ref: id,
+      _key: id,
+    }))
+
+  await client
+    .transaction()
+    .patch(record.assetId, (builder) => builder.set({rights: remaining}))
+    .delete(`drafts.${rightId}`)
+    .delete(rightId)
+    .commit()
+
+  return {
+    usageId,
+    assetId: record.assetId,
+    rightId,
+    removed: true,
+    removedAt: new Date().toISOString(),
   }
 }
