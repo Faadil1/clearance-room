@@ -17,22 +17,20 @@ gate_2_verdict: PROVEN
 
 gate_3:
   name: Knowledge Base grounding
-  status: ACTIVE
-  purpose: source-clause evidence and explanation only
-  must_not:
-    - decide clearance status
-    - override deterministic evaluator
-    - write to Sanity
-
-recommended_knowledge_base_source:
-  type: dataset
-  project: 041j2som
-  dataset: production
-  query: '*[_type == "rightsDocument"]{_id,title,kind,sourceClause,allowedTerritories,allowedChannels,paidAdvertisingAllowed,validFrom,validTo}'
-  note: dataset Knowledge Base sources index published documents only
+  status: PROVEN
+  knowledgeBaseId: kbjKMGM1H2uf
+  endpoint: clearance-room-evidence
+  canonicalEntry: music_licensing
+  provenEvidence:
+    documentId: rights-music-c09
+    kind: music_license
+    channel: instagram_reels
+    territory: CA
+    paidAdvertisingAllowed: true
+    validTo: 2026-10-31
+    source: C09 Original Soundtrack License — Dataset
 
 next:
-  - create KB in Sanity Context
-  - build KB
-  - create separate KB-only MCP endpoint
-  - verify retrieval of music license expiry clause
+  - move from infrastructure gates into productization
+  - build judge/operator-facing workflow around blast radius, proof, remediation, and evidence
+  - preserve all truth boundaries
