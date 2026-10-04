@@ -64,3 +64,20 @@ export const ALL_USAGE_GRAPHS_QUERY = /* groq */ `
   }
 }
 `
+
+
+export const ALL_RIGHTS_DOCUMENTS_QUERY = /* groq */ `
+*[_type == "rightsDocument"] | order(title asc){
+  _id,
+  _rev,
+  _originalId,
+  title,
+  kind,
+  allowedTerritories,
+  allowedChannels,
+  paidAdvertisingAllowed,
+  validFrom,
+  validTo,
+  sourceClause
+}
+`
