@@ -13,28 +13,42 @@ gates:
     status: PROVEN
     evidence: evidence/gates/GATE-1-TECHNICAL-REALITY-PASS.md
   proof_remediation_2:
+    status: PROVEN
+    evidence: evidence/gates/GATE-2-PROOF-REMEDIATION-PASS.md
+  knowledge_base_grounding_3:
     status: ACTIVE
     objectives:
-      - persist clearanceProof as first-class structured content
-      - add music-right partial-window scenario
-      - prove REVIEW with allowedThrough/blockedFrom
-      - require explicit human approval before consequential mutation
-      - mark prior proof STALE in the same transaction as the usage mutation
-      - recompile to a new CLEAR proof
-      - add Knowledge Base evidence after deterministic write/recompute loop is proven
+      - create a Sanity Knowledge Base for rights-source evidence
+      - index published rights-document clauses
+      - expose it through a Knowledge-Base-only Context MCP endpoint
+      - prove retrieval of the music-license expiry evidence
+      - preserve deterministic evaluator authority
 
 truth_boundaries:
   - deterministic evaluator is the only authority for CLEAR/BLOCK/REVIEW/UNKNOWN
-  - agent may explain or propose but may not override status
+  - Knowledge Base is evidence/explanation only, never normative status authority
   - Context MCP remains read-only
   - writes use a separate Sanity mutation path
-  - any changed intent or governing source revision invalidates prior proof
+  - changed intent or governing source revision invalidates prior proof
+
+proven_runtime:
+  gate_2_baseline:
+    proof: proof-usage-holiday-ca-baseline
+    status: REVIEW
+    allowedThrough: 2026-10-31
+    blockedFrom: 2026-11-01
+    causedBy: rights-music-c09
+  gate_2_remediation:
+    action: shorten_campaign_end_date
+    oldEndDate: 2026-11-30
+    newEndDate: 2026-10-31
+    oldProofStale: true
+    newProof: proof-usage-holiday-ca-remediated
+    newStatus: CLEAR
 
 next:
-  - pull gate/proof-remediation-2
-  - run npm install
-  - run npm test
-  - deploy updated schema
-  - run npm run seed
-  - run npm run gate:proof
-  - run npm run gate:remediate -- --approve
+  - create Knowledge Base
+  - bind published rightsDocument dataset source
+  - build Knowledge Base
+  - create KB-only Context MCP endpoint
+  - prove retrieval of rights-music-c09 source evidence
