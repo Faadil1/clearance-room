@@ -167,14 +167,21 @@ export default function Home() {
   useEffect(() => {
     const source = new EventSource('/api/live')
 
-    source.onopen = () => setLiveState('connected')
+    source.onopen = () => setLiveState('connecting')
     source.onerror = () => setLiveState('offline')
 
     source.onmessage = async (event) => {
       try {
         const payload = JSON.parse(event.data)
-        if (payload.type === 'welcome' || payload.type === 'heartbeat') {
+        if (payload.type === 'welcome') {
           setLiveState('connected')
+          return
+        }
+
+        if (payload.type === 'heartbeat') return
+
+        if (payload.type === 'error' || payload.type === 'goaway') {
+          setLiveState('offline')
           return
         }
 
@@ -231,6 +238,7 @@ export default function Home() {
   }
 
   async function scan({keepReceipt = false}: {keepReceipt?: boolean} = {}) {
+    openUsageRef.current = null
     setBusy('scan')
     setError(null)
     setDetail(null)
