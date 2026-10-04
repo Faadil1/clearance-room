@@ -13,7 +13,10 @@
     "test": "vitest run",
     "gate:context": "tsx scripts/gate-context.ts",
     "gate:proof": "tsx scripts/gate-proof.ts",
-    "gate:remediate": "tsx scripts/gate-remediation.ts"
+    "gate:remediate": "tsx scripts/gate-remediation.ts",
+    "app:dev": "next dev",
+    "app:build": "next build",
+    "app:start": "next start"
   },
   "dependencies": {
     "@sanity/client": "latest",
@@ -21,7 +24,8 @@
     "react": "^19.2.2",
     "react-dom": "^19.2.2",
     "sanity": "latest",
-    "styled-components": "^6.1.15"
+    "styled-components": "^6.1.15",
+    "next": "^16.0.0"
   },
   "devDependencies": {
     "@types/node": "latest",
