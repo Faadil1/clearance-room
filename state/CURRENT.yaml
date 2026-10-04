@@ -61,3 +61,27 @@ next:
   - add degraded-integration and write-failure recovery
   - evaluate App SDK and Workflows with explicit PROVEN/N/A/BLOCKED verdicts
   - rerun Product Depth Gap Review before any submission/demo-polish phase
+
+
+product_workstream_priority:
+  central_policy: Faadil1/faadil-agent-system@ff101a6e79c20d5b9c3ba370bc48c9b07d5fd3fa
+  product_reality_version: "1.4.0"
+  first_live_slice_proven: true
+  remaining_material_depth_gaps:
+    - Context_MCP_primary_graph_read_runtime_proof
+    - Live_Content_API_auto_refresh_with_drafts
+    - change_centric_rights_document_blast_radius_view
+    - portfolio_filters_and_search
+    - UNKNOWN_and_missing_evidence_path
+    - constrained_agent_orchestration
+    - degraded_integration_and_write_failure_recovery
+    - second_material_remediation_class_browser_proof
+    - App_SDK_evaluation
+    - Workflows_fit_and_availability_evaluation
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  next_highest_value_depth_delta: CONTEXT_MCP_AND_LIVE_CONTENT_API_LOAD_BEARING_RUNTIME_PROOF
+  valid_stop_condition: null
+  demo_packaging_allowed: false
+  workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
+  last_priority_reconciliation_at: 2026-10-04
+  invariant: PRODUCT_ARCHITECTURE_GENERATES_DEMO_PATH__DEMO_PATH_MUST_NOT_DEFINE_PRODUCT_ARCHITECTURE
