@@ -1340,3 +1340,313 @@ footer strong {
     justify-self: center;
   }
 }
+
+
+.scenarioWorkspace {
+  padding-top: 26px;
+}
+
+.scenarioLab {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.5);
+}
+
+.scenarioLabHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.scenarioLabHeader h2,
+.scenarioLibrary h3 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+
+.scenarioLabHeader h2 {
+  font-size: 38px;
+}
+
+.scenarioLabHeader p.muted {
+  max-width: 760px;
+  line-height: 1.55;
+}
+
+.scenarioTruthRail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.scenarioTruthRail span {
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .08em;
+}
+
+.scenarioNotice {
+  padding: 12px 14px;
+  border-left: 3px solid var(--clear);
+  background: var(--clear-bg);
+  color: var(--clear);
+  font-weight: 750;
+}
+
+.scenarioBuilder {
+  display: grid;
+  gap: 22px;
+}
+
+.scenarioBuilder label,
+.scenarioLiveEditor label,
+.termsEditor label {
+  display: grid;
+  gap: 6px;
+}
+
+.scenarioBuilder label > span,
+.scenarioLiveEditor label > span,
+.termsEditor label > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.scenarioBuilder input,
+.scenarioBuilder select,
+.scenarioBuilder textarea,
+.scenarioLiveEditor input,
+.scenarioLiveEditor textarea,
+.termsEditor input,
+.termsEditor textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+  color: var(--ink);
+  padding: 10px 11px;
+}
+
+.scenarioBasics,
+.scenarioFieldGrid,
+.scenarioDateGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+}
+
+.scenarioUsage,
+.scenarioRightBuilder,
+.scenarioLiveEditor,
+.scenarioEditRight {
+  display: grid;
+  gap: 14px;
+}
+
+.scenarioUsage h4,
+.scenarioLiveEditor h5 {
+  margin: 0;
+}
+
+.scenarioCheckbox {
+  grid-template-columns: auto 1fr !important;
+  align-items: center;
+}
+
+.scenarioCheckbox input {
+  width: 18px !important;
+  height: 18px;
+  padding: 0 !important;
+}
+
+.scenarioRightsStack {
+  display: grid;
+  gap: 16px;
+}
+
+.scenarioRightBuilder {
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: #faf7f0;
+}
+
+.scenarioRightHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.scenarioRightHeader > div {
+  display: grid;
+  gap: 4px;
+}
+
+.scenarioRightHeader span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.termsSplit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.termsEditor {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+}
+
+.termsEditor legend {
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.proposedTerms {
+  display: grid;
+  gap: 8px;
+}
+
+.proposedTerms > .secondaryButton {
+  justify-self: start;
+}
+
+.scenarioBuilderActions,
+.scenarioCardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.scenarioBuilderActions {
+  justify-content: space-between;
+}
+
+.scenarioLibrary {
+  display: grid;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.scenarioEmpty {
+  display: grid;
+  gap: 4px;
+  padding: 18px;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+}
+
+.scenarioEmpty strong {
+  color: var(--ink);
+}
+
+.scenarioCards {
+  display: grid;
+  gap: 12px;
+}
+
+.scenarioCard {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.scenarioCardTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.scenarioCardTop > div {
+  display: grid;
+  gap: 4px;
+}
+
+.scenarioCardTop h4 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.scenarioCardTop code {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.scenarioCardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.scenarioCardMeta span {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  background: #f8f4ec;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.scenarioLiveEditor {
+  margin-top: 4px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.scenarioEditRight {
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: #faf7f0;
+}
+
+.scenarioEditRight > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.scenarioEditRight code {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+@media (max-width: 800px) {
+  .scenarioLabHeader,
+  .scenarioCardTop,
+  .scenarioRightHeader {
+    flex-direction: column;
+  }
+
+  .scenarioBasics,
+  .scenarioFieldGrid,
+  .scenarioDateGrid,
+  .termsSplit {
+    grid-template-columns: 1fr;
+  }
+
+  .scenarioBuilderActions {
+    justify-content: flex-start;
+  }
+}
