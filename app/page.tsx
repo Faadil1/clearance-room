@@ -921,9 +921,15 @@ export default function Home() {
               </div>
 
               {detail.repairs.length === 0 ? (
-                <div className="proposalNote">
-                  No safe structured remediation is registered for the observed findings. The product will not invent one.
-                </div>
+                detail.proposed.status === 'UNKNOWN' ? (
+                  <div className="proposalNote">
+                    Clearance is UNKNOWN because required structured evidence is missing. Clearance Room will not convert missing evidence into permission or prohibition. Complete the missing rights data, then recompile.
+                  </div>
+                ) : (
+                  <div className="proposalNote">
+                    No safe structured remediation is registered for the observed findings. The product will not invent one.
+                  </div>
+                )
               ) : (
                 <>
                   <div className="repairOptions">
