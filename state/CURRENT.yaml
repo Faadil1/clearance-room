@@ -18,7 +18,7 @@ gates:
   knowledge_base_grounding_3:
     status: PROVEN
     evidence: evidence/gates/GATE-3-KNOWLEDGE-BASE-PASS.md
-  judge_operator_workflow_4:
+  live_product_surface_4:
     status: ACTIVE
     plan: evidence/gates/GATE-4-JUDGE-WORKFLOW-PLAN.md
     hero_flow:
@@ -55,8 +55,10 @@ proven_runtime:
     validTo: 2026-10-31
 
 next:
-  - implement judge/operator-facing app shell
-  - wire live current/proposed blast-radius data
-  - expose source evidence without status authority
-  - wire human-approved remediation and recompile
-  - harden hero demo and negative paths
+  - scan all live usage requests for published vs drafts impact
+  - rank and browse affected usages
+  - open any impact with proof history and source evidence
+  - offer only remediation actions justified by the observed finding
+  - require explicit human approval before any mutation
+  - recompile and persist replacement proof after write
+  - keep seeded reset only as reproducibility harness
