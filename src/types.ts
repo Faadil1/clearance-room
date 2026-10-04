@@ -16,13 +16,14 @@ export interface Right {
 
 export interface UsageGraph {
   _id: string
+  _rev?: string
   title: string
   territory: string
   channel: string
   isPaid: boolean
   startDate: string
   endDate: string
-  asset: {_id: string; title: string; rights: Right[]}
+  asset: {_id: string; _rev?: string; title: string; rights: Right[]}
 }
 
 export interface Finding {
@@ -30,6 +31,14 @@ export interface Finding {
   status: Status
   causedBy: string[]
   reason: string
+  allowedThrough?: string
+  blockedFrom?: string
+}
+
+export interface SourceRevision {
+  id: string
+  originalId?: string
+  rev?: string
 }
 
 export interface ClearanceProof {
@@ -37,5 +46,6 @@ export interface ClearanceProof {
   assetId: string
   status: Status
   findings: Finding[]
-  sourceRevisions: Array<{id: string; originalId?: string; rev?: string}>
+  sourceRevisions: SourceRevision[]
+  intentSignature?: string
 }
