@@ -29,6 +29,30 @@ gates:
       - human_approval
       - recompile
 
+integrations:
+  context_mcp_graph_read:
+    status: ACTIVE
+    role: load-bearing published/drafts rights-graph read path
+  live_content_api:
+    status: ACTIVE
+    role: realtime invalidation stream with draft changes included
+  context_knowledge_base:
+    status: PROVEN
+    role: source-bound evidence retrieval
+  content_lake_mutations:
+    status: PROVEN
+    role: human-approved writes and proof persistence
+  ai_agent_orchestration:
+    status: ACTIVE
+    role: explanation/planning layer constrained by deterministic receipts
+  app_sdk:
+    status: ACTIVE
+    role: evaluate native Sanity app surface for challenge depth
+  workflows:
+    status: BLOCKED
+    role: approval lifecycle integration
+    blocker: availability/plan and API fit not yet verified
+
 truth_boundaries:
   - deterministic evaluator is the only authority for CLEAR/BLOCK/REVIEW/UNKNOWN
   - Knowledge Base is evidence/explanation only, never normative status authority
@@ -55,6 +79,11 @@ proven_runtime:
     validTo: 2026-10-31
 
 next:
+  - prove Context MCP is load-bearing in the product runtime
+  - prove Live Content API auto-refreshes on published and draft changes
+  - add constrained AI agent orchestration over deterministic + MCP receipts
+  - evaluate App SDK as native Sanity surface
+  - verify Workflows availability and fit
   - scan all live usage requests for published vs drafts impact
   - rank and browse affected usages
   - open any impact with proof history and source evidence
