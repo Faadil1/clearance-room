@@ -229,6 +229,8 @@ export async function listUserScenarios() {
         }
       }
     }`,
+    {},
+    {perspective: 'drafts'},
   )
 }
 
