@@ -1,4 +1,4 @@
-# Gate #4 — Judge / Operator Workflow Productization
+# Gate #4 — Live Product Surface
 
 Status: ACTIVE  
 Date: 2026-10-04
@@ -7,7 +7,7 @@ Date: 2026-10-04
 
 **Clearance Room — See what breaks before a rights change goes live.**
 
-The judge/operator-facing workflow must make the proven backend mechanisms legible without requiring explanation of Sanity internals.
+The product surface must operationalize the proven backend mechanisms across the live rights graph, not only one seeded hero scenario.
 
 Primary question:
 
@@ -17,9 +17,9 @@ Primary workflow:
 
 `WHAT BREAKS → WHY → SOURCE EVIDENCE → PROPOSED REPAIR → HUMAN APPROVAL → RECOMPILE`
 
-## Hero scenario
+## Product scope
 
-A proposed rights change or usage state causes a downstream clearance impact.
+The primary product scans all live usage requests, compares published and proposed/draft rights state, ranks affected usages, and lets an operator investigate and resolve each impact.
 
 The product must show:
 
@@ -34,9 +34,9 @@ The product must show:
 - stale prior proof after mutation
 - new deterministic proof after recompile
 
-## Judge-facing information hierarchy
+## Product information hierarchy
 
-### Above the fold
+### Portfolio / blast-radius view
 
 1. **Question / impact headline**
    - "What breaks if this rights change goes live?"
@@ -86,13 +86,13 @@ The product must show:
 
 ## Required runtime modes
 
-### Live primary
+### Live product primary
 
-Uses the real Sanity project, deterministic evaluator, persisted proofs, and evidence endpoint.
+Uses the real Sanity project, all current usage requests, deterministic evaluator, persisted proofs, and evidence endpoint.
 
-### Deterministic demo fallback
+### Seeded reproducibility harness
 
-May use seeded canonical records for reliability but must still execute real product logic. It must never be represented as a separate live external event if it is only preseeded data.
+A canonical seeded scenario may be reset for judging/reproducibility, but it is explicitly secondary to the live product path and never represented as the product itself.
 
 ## MUST
 
@@ -103,7 +103,11 @@ May use seeded canonical records for reliability but must still execute real pro
 - show KB evidence independently from status calculation
 - require human approval before mutation
 - show recompile result after mutation
-- provide a one-click/reliable hero scenario
+- scan and rank multiple live usage requests
+- allow opening any affected usage
+- expose proof history per usage
+- support more than one remediation class where findings justify it
+- keep a one-click seeded reproducibility harness for judging
 - support mobile and desktop judge viewing
 - preserve reduced-motion friendliness and keyboard-accessible core actions
 
@@ -149,13 +153,15 @@ Gate #4 is PROVEN when a judge can, from the product surface:
 9. distinguish observed/live facts from proposals and seeded demo context;
 10. complete the hero scenario without visiting Sanity Manage or the terminal.
 
-## Initial implementation order
+## Current implementation order
 
-1. app shell + hero blast-radius view
-2. live current/proposed data adapter
-3. evidence drawer/card
-4. repair proposal + explicit approval
-5. post-mutation recompile receipt
-6. loading/error/unknown paths
-7. responsive + accessibility pass
-8. demo hardening + receipts
+1. portfolio blast-radius scan across all usage requests
+2. ranked affected-usage list + unaffected context
+3. impact detail with deterministic findings and proof history
+4. source-evidence lookup by causal rights document
+5. remediation registry (paid → organic; window → shorten when supported)
+6. explicit approval + real mutation + recompile
+7. audit trail / supersession display
+8. loading/error/UNKNOWN paths
+9. responsive + accessibility pass
+10. seeded reproducibility harness hardening
