@@ -16,7 +16,8 @@ gates:
     status: PROVEN
     evidence: evidence/gates/GATE-2-PROOF-REMEDIATION-PASS.md
   knowledge_base_grounding_3:
-    status: ACTIVE
+    status: PROVEN
+    evidence: evidence/gates/GATE-3-KNOWLEDGE-BASE-PASS.md
     objectives:
       - create a Sanity Knowledge Base for rights-source evidence
       - index published rights-document clauses
@@ -47,8 +48,7 @@ proven_runtime:
     newStatus: CLEAR
 
 next:
-  - create Knowledge Base
-  - bind published rightsDocument dataset source
-  - build Knowledge Base
-  - create KB-only Context MCP endpoint
-  - prove retrieval of rights-music-c09 source evidence
+  - productize the proven graph, proof, remediation, and evidence mechanisms
+  - build the judge/operator-facing workflow
+  - preserve deterministic status authority and source-bound evidence
+  - prepare live demo, story, and submission evidence
