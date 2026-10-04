@@ -7,12 +7,13 @@ import {
   HERO_USAGE_ID,
 } from '../../../src/heroScenario.js'
 import {proofDocument} from '../../../src/proof.js'
-import {serverSanity} from '../../../src/serverSanity.js'
+import {getServerSanity} from '../../../src/serverSanity.js'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
   try {
+    const serverSanity = getServerSanity()
     const body = await request.json().catch(() => ({}))
     if (body?.approved !== true) {
       return NextResponse.json(
