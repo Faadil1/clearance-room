@@ -25,6 +25,13 @@ ACTIVE / needs runtime proof:
 - proof-history behavior across repeated real runs
 
 IMPLEMENTED / runtime proof pending:
+- user-defined Scenario Lab
+  - creates real Sanity rights/asset/usage documents
+  - supports current vs proposed rights state
+  - supports multiple governing rights
+  - user can edit proposed rights and usage intent live
+  - user can open the scenario in the same clearance engine
+  - user-created scenarios are namespaced and independently deletable
 - change-centric rights-document view
   - published vs draft field-level diff
   - revision identifiers
@@ -46,15 +53,16 @@ MISSING / not yet load-bearing:
 
 ## Immediate product expansion order
 
-1. Prove Context MCP + Live Content API in browser with a real draft edit.
-2. Runtime-prove the **rights-change view** against a real draft edit.
-3. Add filters/search for status, territory, channel, asset, and causal right.
-4. Exercise the music-window REVIEW path end-to-end through the product.
-5. Add explicit UNKNOWN path by removing required evidence from a controlled test record.
-6. Add product agent using MCP/KB + deterministic receipts.
-7. Add recovery UI for MCP unavailable, Live API offline, KB unavailable, write failure.
-8. Evaluate App SDK native surface and Workflows; mark PROVEN/N/A/BLOCKED with evidence.
-9. Run final Product Depth Gap Review again before submission.
+1. Runtime-prove a user-created Scenario Lab case end-to-end.
+2. Prove Context MCP + Live Content API in browser with a real user-created draft edit.
+3. Runtime-prove the **rights-change view** against that user-created draft edit.
+4. Add filters/search for status, territory, channel, asset, and causal right.
+5. Exercise the music-window REVIEW path end-to-end through the product.
+6. Add explicit UNKNOWN path by removing required evidence from a controlled test record.
+7. Add product agent using MCP/KB + deterministic receipts.
+8. Add recovery UI for MCP unavailable, Live API offline, KB unavailable, write failure.
+9. Evaluate App SDK native surface and Workflows; mark PROVEN/N/A/BLOCKED with evidence.
+10. Run final Product Depth Gap Review again before submission.
 
 ## Non-negotiable
 
