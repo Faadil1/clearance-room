@@ -91,7 +91,7 @@ function parseList(value: string) {
   return [...new Set(value.split(',').map((item) => item.trim()).filter(Boolean))]
 }
 
-function joinList(value?: string[]) {
+function joinList(value?: string[] | null) {
   return (value || []).join(', ')
 }
 
