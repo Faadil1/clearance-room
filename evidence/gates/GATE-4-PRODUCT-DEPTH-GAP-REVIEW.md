@@ -21,6 +21,8 @@ PROVEN:
 ACTIVE / needs runtime proof:
 - Context MCP as primary graph-read path in the product
 - Live Content API auto-refresh with drafts included
+  - IMPLEMENTED: auditable automatic-refresh receipt distinct from manual refresh
+  - receipt records triggering event id/type, completion time, Context MCP reread, and affected-count before→after
 - multi-impact product behavior after canonical reset
 - proof-history behavior across repeated real runs
 
@@ -51,9 +53,18 @@ RUNTIME PROVEN — user-defined Scenario Lab:
   - direct drill-down into affected usage
   - Live Content API refresh path includes rights-change view
 
+IMPLEMENTED / runtime proof pending:
+- operator portfolio search + combined filters
+  - free-text usage/asset/right search
+  - proposed status
+  - territory
+  - channel
+  - asset
+  - causal right
+  - visible result count + active-filter count + clear-all
+
 MISSING / not yet load-bearing:
 - agent orchestration in the product
-- filtering/search across portfolio
 - UNKNOWN / missing-evidence product path
 - live integration degraded/offline recovery
 - write-failure recovery
@@ -64,12 +75,12 @@ MISSING / not yet load-bearing:
 
 ## Immediate product expansion order
 
-1. Prove visible no-action Live Content API auto-update on an already-open product view.
+1. Prove visible no-action Live Content API auto-update on an already-open product view using the new AUTO receipt.
 2. Runtime-prove the **rights-change view** against a user-created material draft edit before remediation.
-3. Runtime-prove multiple governing rights in one user-created scenario.
-4. Add filters/search for status, territory, channel, asset, and causal right.
-5. Exercise the music-window REVIEW path end-to-end through the product.
-6. Add explicit UNKNOWN path by removing required evidence from a controlled test record.
+3. Runtime-prove operator search/filters on the live portfolio.
+4. Runtime-prove multiple governing rights in one user-created scenario.
+5. Exercise the window REVIEW path end-to-end through a user-created scenario.
+6. Add explicit UNKNOWN path by removing required structured evidence from a controlled user-created record.
 7. Add product agent using MCP/KB + deterministic receipts.
 8. Add recovery UI for MCP unavailable, Live API offline, KB unavailable, write failure.
 9. Evaluate App SDK native surface and Workflows; mark PROVEN/N/A/BLOCKED with evidence.
