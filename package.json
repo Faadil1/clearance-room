@@ -15,10 +15,10 @@
   "dependencies": {
     "@sanity/client": "latest",
     "@sanity/vision": "latest",
-    "react": "latest",
-    "react-dom": "latest",
+    "react": "^19.2.2",
+    "react-dom": "^19.2.2",
     "sanity": "latest",
-    "styled-components": "latest"
+    "styled-components": "^6.1.15"
   },
   "devDependencies": {
     "@types/node": "latest",
