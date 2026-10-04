@@ -95,6 +95,44 @@ function joinList(value?: string[]) {
   return (value || []).join(', ')
 }
 
+function sameList(a?: string[], b?: string[]) {
+  return JSON.stringify([...(a || [])].sort()) === JSON.stringify([...(b || [])].sort())
+}
+
+function structuredScenarioChanges(original: ScenarioRecord, edited: ScenarioRecord) {
+  const changes: string[] = []
+
+  if (original.territory !== edited.territory) changes.push(`usage territory: ${original.territory} → ${edited.territory}`)
+  if (original.channel !== edited.channel) changes.push(`usage channel: ${original.channel} → ${edited.channel}`)
+  if (original.isPaid !== edited.isPaid) changes.push(`usage paid intent: ${original.isPaid ? 'paid' : 'organic'} → ${edited.isPaid ? 'paid' : 'organic'}`)
+  if (original.startDate !== edited.startDate) changes.push(`usage start: ${original.startDate} → ${edited.startDate}`)
+  if (original.endDate !== edited.endDate) changes.push(`usage end: ${original.endDate} → ${edited.endDate}`)
+
+  edited.asset.rights.forEach((right, index) => {
+    const before = original.asset.rights[index]
+    if (!before) return
+    const label = right.title || right.id
+
+    if (!sameList(before.allowedTerritories, right.allowedTerritories)) {
+      changes.push(`${label} territories: ${joinList(before.allowedTerritories)} → ${joinList(right.allowedTerritories)}`)
+    }
+    if (!sameList(before.allowedChannels, right.allowedChannels)) {
+      changes.push(`${label} channels: ${joinList(before.allowedChannels)} → ${joinList(right.allowedChannels)}`)
+    }
+    if (Boolean(before.paidAdvertisingAllowed) !== Boolean(right.paidAdvertisingAllowed)) {
+      changes.push(`${label} paid permission: ${before.paidAdvertisingAllowed ? 'ALLOW' : 'PROHIBIT'} → ${right.paidAdvertisingAllowed ? 'ALLOW' : 'PROHIBIT'}`)
+    }
+    if (before.validFrom !== right.validFrom) {
+      changes.push(`${label} valid from: ${before.validFrom || '—'} → ${right.validFrom || '—'}`)
+    }
+    if (before.validTo !== right.validTo) {
+      changes.push(`${label} valid to: ${before.validTo || '—'} → ${right.validTo || '—'}`)
+    }
+  })
+
+  return changes
+}
+
 async function jsonRequest(path: string, init?: RequestInit) {
   const response = await fetch(path, {
     ...init,
@@ -153,16 +191,26 @@ function TermsEditor({
         />
       </label>
 
-      <label className="scenarioCheckbox">
-        <input
-          type="checkbox"
-          checked={value.paidAdvertisingAllowed}
-          onChange={(event) =>
-            onChange({...value, paidAdvertisingAllowed: event.target.checked})
-          }
-        />
-        <span>Paid advertising allowed</span>
-      </label>
+      <div className="scenarioDecisionField">
+        <span>Paid advertising permission</span>
+        <div className="permissionToggle" role="group" aria-label="Paid advertising permission">
+          <button
+            type="button"
+            className={value.paidAdvertisingAllowed ? 'permissionChoice permissionChoice--selected' : 'permissionChoice'}
+            onClick={() => onChange({...value, paidAdvertisingAllowed: true})}
+          >
+            ALLOW
+          </button>
+          <button
+            type="button"
+            className={!value.paidAdvertisingAllowed ? 'permissionChoice permissionChoice--selected permissionChoice--prohibit' : 'permissionChoice'}
+            onClick={() => onChange({...value, paidAdvertisingAllowed: false})}
+          >
+            PROHIBIT
+          </button>
+        </div>
+        <small>This structured decision field controls the deterministic paid-media axis.</small>
+      </div>
 
       <div className="scenarioDateGrid">
         <label>
@@ -183,8 +231,9 @@ function TermsEditor({
         </label>
       </div>
 
-      <label>
-        <span>Source clause / evidence</span>
+      <label className="evidenceTextField">
+        <span>Source clause / evidence · evidence only</span>
+        <small>Changing this text alone does not change clearance status. Update the structured decision fields above when the contractual permission changes.</small>
         <textarea
           rows={4}
           value={value.sourceClause}
@@ -712,26 +761,37 @@ export default function ScenarioLab({
                             />
                           </label>
                         </div>
-                        <label className="scenarioCheckbox">
-                          <input
-                            type="checkbox"
-                            checked={Boolean(right.paidAdvertisingAllowed)}
-                            onChange={(event) => {
-                              const rights = [...editScenario.asset.rights]
-                              rights[rightIndex] = {
-                                ...right,
-                                paidAdvertisingAllowed: event.target.checked,
-                              }
-                              setEditScenario({
-                                ...editScenario,
-                                asset: {...editScenario.asset, rights},
-                              })
-                            }}
-                          />
-                          <span>Proposed rights allow paid advertising</span>
-                        </label>
-                        <label>
-                          <span>Proposed source clause</span>
+                        <div className="scenarioDecisionField">
+                          <span>Proposed paid advertising permission</span>
+                          <div className="permissionToggle" role="group" aria-label="Proposed paid advertising permission">
+                            <button
+                              type="button"
+                              className={right.paidAdvertisingAllowed ? 'permissionChoice permissionChoice--selected' : 'permissionChoice'}
+                              onClick={() => {
+                                const rights = [...editScenario.asset.rights]
+                                rights[rightIndex] = {...right, paidAdvertisingAllowed: true}
+                                setEditScenario({...editScenario, asset: {...editScenario.asset, rights}})
+                              }}
+                            >
+                              ALLOW
+                            </button>
+                            <button
+                              type="button"
+                              className={!right.paidAdvertisingAllowed ? 'permissionChoice permissionChoice--selected permissionChoice--prohibit' : 'permissionChoice'}
+                              onClick={() => {
+                                const rights = [...editScenario.asset.rights]
+                                rights[rightIndex] = {...right, paidAdvertisingAllowed: false}
+                                setEditScenario({...editScenario, asset: {...editScenario.asset, rights}})
+                              }}
+                            >
+                              PROHIBIT
+                            </button>
+                          </div>
+                          <small>This structured field—not the clause text below—controls the deterministic paid finding.</small>
+                        </div>
+                        <label className="evidenceTextField">
+                          <span>Proposed source clause · evidence only</span>
+                          <small>The clause is preserved for provenance/explanation. It does not override structured permissions.</small>
                           <textarea
                             rows={3}
                             value={right.sourceClause || ''}
@@ -747,6 +807,25 @@ export default function ScenarioLab({
                         </label>
                       </div>
                     ))}
+
+                    <div className="structuredChangePreview">
+                      {(() => {
+                        const changes = structuredScenarioChanges(scenario, editScenario)
+                        return changes.length > 0 ? (
+                          <>
+                            <strong>{changes.length} structured decision change{changes.length === 1 ? '' : 's'} ready to save</strong>
+                            <ul>
+                              {changes.map((change) => <li key={change}>{change}</li>)}
+                            </ul>
+                          </>
+                        ) : (
+                          <>
+                            <strong>No structured decision fields changed.</strong>
+                            <span>Editing evidence text alone will not change CLEAR/BLOCK/REVIEW/UNKNOWN.</span>
+                          </>
+                        )
+                      })()}
+                    </div>
 
                     <div className="scenarioCardActions">
                       <button className="primaryButton" onClick={saveEdit} disabled={busy !== null}>
