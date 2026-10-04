@@ -21,19 +21,19 @@ export type RepairOption =
       basedOnAxis: 'window'
     }
 
-export function impactProofId(usageRequestId: string) {
-  return `proof-impact-${usageRequestId}-proposed`
+export function impactProofId(usageRequestId: string, nonce = Date.now()) {
+  return `proof-impact-${usageRequestId}-proposed-${nonce}`
 }
 
-export function replacementProofId(usageRequestId: string) {
-  return `proof-impact-${usageRequestId}-resolved`
+export function replacementProofId(usageRequestId: string, nonce = Date.now()) {
+  return `proof-impact-${usageRequestId}-resolved-${nonce}`
 }
 
 function severity(status: string) {
   return status === 'BLOCK' ? 4 : status === 'UNKNOWN' ? 3 : status === 'REVIEW' ? 2 : 1
 }
 
-function repairOptions(graph: UsageGraph, findings: Finding[]): RepairOption[] {
+export function deriveRepairOptions(graph: UsageGraph, findings: Finding[]): RepairOption[] {
   const options: RepairOption[] = []
   const paid = findings.find((finding) => finding.axis === 'paid')
   const window = findings.find((finding) => finding.axis === 'window')
@@ -114,7 +114,7 @@ export async function scanLiveImpacts() {
       changedAxes: diff.changedAxes,
       nonClearFindings: findings,
       causalRights: causalRights(proposedGraph, findings.length ? findings : proposed.findings),
-      repairCount: repairOptions(proposedGraph, proposed.findings).length,
+      repairCount: deriveRepairOptions(proposedGraph, proposed.findings).length,
       severity: severity(proposed.status),
     }]
   }).sort((a, b) => {
@@ -167,11 +167,11 @@ export async function getUsageImpact(usageRequestId: string, persist = false) {
   const proposed = compileClearance(drafts)
   const diff = diffProofs(current, proposed)
   const findings = proposed.findings.filter((finding) => finding.status !== 'CLEAR')
-  const repairs = repairOptions(drafts, proposed.findings)
+  const repairs = deriveRepairOptions(drafts, proposed.findings)
 
   let persistedProof: {id: string; rev?: string} | null = null
   if (persist) {
-    const saved = await client.createOrReplace(
+    const saved = await client.create(
       proofDocument(impactProofId(usageRequestId), drafts, proposed, {
         perspective: 'drafts',
       }),
