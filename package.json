@@ -10,7 +10,8 @@
     "seed": "tsx scripts/seed.ts",
     "gate:fixture": "tsx scripts/gate-fixture.ts",
     "gate:sanity": "tsx scripts/gate-sanity.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "gate:context": "tsx scripts/gate-context.ts"
   },
   "dependencies": {
     "@sanity/client": "latest",
