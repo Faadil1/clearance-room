@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server'
-import {callContextMcp} from '../../../src/contextMcp.js'
+import {callContextMcp} from '../../../src/contextMcp'
 
 export const dynamic = 'force-dynamic'
 
