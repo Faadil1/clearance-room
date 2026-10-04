@@ -1,10 +1,16 @@
 'use client'
 
-import {useEffect, useRef, useState} from 'react'
+import {useEffect, useMemo, useRef, useState} from 'react'
 import RightsChangePortfolio, {
   type RightsChangePortfolioData,
 } from './components/RightsChangePortfolio'
 import ScenarioLab from './components/ScenarioLab'
+import {
+  EMPTY_IMPACT_FILTERS,
+  filterImpacts,
+  impactFilterOptions,
+  type ImpactFilters,
+} from '../src/portfolioFilters'
 
 type Status = 'CLEAR' | 'BLOCK' | 'REVIEW' | 'UNKNOWN'
 
@@ -146,6 +152,18 @@ type Evidence = {
   observedAt: string
 }
 
+type AutoRefreshReceipt = {
+  sequence: number
+  triggerType: string
+  triggerId: string | null
+  eventObservedAt: string
+  completedAt: string
+  beforeAffected: number | null
+  afterAffected: number
+  graphRead: 'sanity-context-mcp'
+  invalidation: 'sanity-live-content-api'
+}
+
 type RemediationReceipt = {
   action: string
   label: string
@@ -183,9 +201,13 @@ export default function Home() {
   const [liveState, setLiveState] = useState<'connecting' | 'connected' | 'reconnecting' | 'offline'>('connecting')
   const [lastLiveSync, setLastLiveSync] = useState<string | null>(null)
   const [lastLiveEvent, setLastLiveEvent] = useState<{type: string; id: string | null; observedAt: string} | null>(null)
+  const [liveEventCount, setLiveEventCount] = useState(0)
   const [liveRefreshCount, setLiveRefreshCount] = useState(0)
+  const [autoRefreshReceipt, setAutoRefreshReceipt] = useState<AutoRefreshReceipt | null>(null)
+  const [filters, setFilters] = useState<ImpactFilters>({...EMPTY_IMPACT_FILTERS})
   const scannedRef = useRef(false)
   const openUsageRef = useRef<string | null>(null)
+  const portfolioRef = useRef<Portfolio | null>(null)
 
   useEffect(() => {
     const source = new EventSource('/api/live')
@@ -218,12 +240,13 @@ export default function Home() {
         setLiveState('connected')
         const observedAt = payload.observedAt || new Date().toISOString()
         setLastLiveSync(observedAt)
+        const triggerId = typeof payload.id === 'string' ? payload.id : null
         setLastLiveEvent({
           type: payload.type,
-          id: typeof payload.id === 'string' ? payload.id : null,
+          id: triggerId,
           observedAt,
         })
-        setLiveRefreshCount((count) => count + 1)
+        setLiveEventCount((count) => count + 1)
 
         if (scannedRef.current) {
           const [impactResponse, changeResponse] = await Promise.all([
@@ -234,7 +257,26 @@ export default function Home() {
             impactResponse.json(),
             changeResponse.json(),
           ])
-          if (impactResponse.ok) setPortfolio(refreshedImpacts)
+          if (impactResponse.ok) {
+            const beforeAffected = portfolioRef.current?.summary.affectedUsageRequests ?? null
+            portfolioRef.current = refreshedImpacts
+            setPortfolio(refreshedImpacts)
+            setLiveRefreshCount((count) => {
+              const sequence = count + 1
+              setAutoRefreshReceipt({
+                sequence,
+                triggerType: payload.type,
+                triggerId,
+                eventObservedAt: observedAt,
+                completedAt: new Date().toISOString(),
+                beforeAffected,
+                afterAffected: refreshedImpacts.summary.affectedUsageRequests,
+                graphRead: 'sanity-context-mcp',
+                invalidation: 'sanity-live-content-api',
+              })
+              return sequence
+            })
+          }
           if (changeResponse.ok) setRightsChanges(refreshedChanges)
         }
 
@@ -290,6 +332,7 @@ export default function Home() {
         run('/api/changes'),
       ])
       scannedRef.current = true
+      portfolioRef.current = impactResult
       setPortfolio(impactResult)
       setRightsChanges(changeResult)
     } catch (err) {
@@ -352,6 +395,7 @@ export default function Home() {
         run('/api/impacts'),
         run('/api/changes'),
       ])
+      portfolioRef.current = refreshed
       setPortfolio(refreshed)
       setRightsChanges(refreshedChanges)
     } catch (err) {
@@ -375,8 +419,20 @@ export default function Home() {
   }
 
   const selectedRepairOption = detail?.repairs.find((repair) => repair.id === selectedRepair)
-  const affected = portfolio?.impacts.filter((impact) => impact.changed) || []
-  const stable = portfolio?.impacts.filter((impact) => !impact.changed) || []
+
+  const filterOptions = useMemo(
+    () => impactFilterOptions(portfolio?.impacts || []),
+    [portfolio],
+  )
+  const filteredImpacts = useMemo(
+    () => filterImpacts(portfolio?.impacts || [], filters),
+    [portfolio, filters],
+  )
+  const affected = filteredImpacts.filter((impact) => impact.changed)
+  const stable = filteredImpacts.filter((impact) => !impact.changed)
+  const activeFilterCount = Object.entries(filters).filter(([key, value]) =>
+    key === 'search' ? Boolean(value.trim()) : value !== 'ALL',
+  ).length
 
   return (
     <main>
@@ -428,7 +484,7 @@ export default function Home() {
       <section className="workspace scenarioWorkspace">
         <ScenarioLab
           onOpenUsage={openImpact}
-          liveRefreshCount={liveRefreshCount}
+          liveRefreshCount={liveEventCount}
         />
       </section>
 
@@ -465,7 +521,7 @@ export default function Home() {
             <div>
               <span>Realtime</span>
               <strong>Sanity Live Content API</strong>
-              <small>{liveState === 'connected' ? `connected · drafts included · ${liveRefreshCount} auto-refresh${liveRefreshCount === 1 ? '' : 'es'}` : liveState}</small>
+              <small>{liveState === 'connected' ? `connected · drafts included · ${liveRefreshCount} completed auto-refresh${liveRefreshCount === 1 ? '' : 'es'}` : liveState}</small>
             </div>
             <div>
               <span>Evidence</span>
@@ -484,14 +540,21 @@ export default function Home() {
             <div>
               <strong>Live integration receipt</strong>
               <span>
-                {lastLiveEvent
-                  ? `${lastLiveEvent.type} event${lastLiveEvent.id ? ` · ${lastLiveEvent.id}` : ''} · ${formatWhen(lastLiveEvent.observedAt)}`
-                  : 'Waiting for the next Sanity content event…'}
+                {autoRefreshReceipt
+                  ? `AUTO #${autoRefreshReceipt.sequence} · ${autoRefreshReceipt.triggerType}${autoRefreshReceipt.triggerId ? ` · ${autoRefreshReceipt.triggerId}` : ''} · completed ${formatWhen(autoRefreshReceipt.completedAt)}`
+                  : lastLiveEvent
+                    ? `Event received · ${lastLiveEvent.type}${lastLiveEvent.id ? ` · ${lastLiveEvent.id}` : ''} · waiting for an active portfolio to auto-refresh`
+                    : 'Waiting for the next Sanity content event…'}
               </span>
+              {autoRefreshReceipt && (
+                <span>
+                  Sanity Live Content API → Context MCP reread · affected {autoRefreshReceipt.beforeAffected ?? '—'} → {autoRefreshReceipt.afterAffected}
+                </span>
+              )}
             </div>
             <div>
               <strong>{liveRefreshCount}</strong>
-              <span>automatic graph refreshes</span>
+              <span>completed automatic graph refreshes</span>
             </div>
           </div>
 
@@ -536,6 +599,96 @@ export default function Home() {
               </div>
             </article>
           )}
+
+          <section className="operatorFilterPanel">
+            <div className="operatorFilterHeader">
+              <div>
+                <p className="cardKicker">Operator controls</p>
+                <h3>Search and narrow the live portfolio</h3>
+              </div>
+              <div className="filterSummary">
+                <strong>{filteredImpacts.length}</strong>
+                <span>of {portfolio.impacts.length} usages visible</span>
+                {activeFilterCount > 0 && <span>· {activeFilterCount} active filter{activeFilterCount === 1 ? '' : 's'}</span>}
+              </div>
+            </div>
+
+            <div className="operatorFilters">
+              <label className="filterSearch">
+                <span>Search</span>
+                <input
+                  type="search"
+                  value={filters.search}
+                  onChange={(event) => setFilters((current) => ({...current, search: event.target.value}))}
+                  placeholder="Usage, asset, right, territory, channel…"
+                />
+              </label>
+
+              <label>
+                <span>Status</span>
+                <select
+                  value={filters.status}
+                  onChange={(event) => setFilters((current) => ({...current, status: event.target.value}))}
+                >
+                  <option value="ALL">All statuses</option>
+                  {filterOptions.statuses.map((status) => <option key={status} value={status}>{status}</option>)}
+                </select>
+              </label>
+
+              <label>
+                <span>Territory</span>
+                <select
+                  value={filters.territory}
+                  onChange={(event) => setFilters((current) => ({...current, territory: event.target.value}))}
+                >
+                  <option value="ALL">All territories</option>
+                  {filterOptions.territories.map((territory) => <option key={territory} value={territory}>{territory}</option>)}
+                </select>
+              </label>
+
+              <label>
+                <span>Channel</span>
+                <select
+                  value={filters.channel}
+                  onChange={(event) => setFilters((current) => ({...current, channel: event.target.value}))}
+                >
+                  <option value="ALL">All channels</option>
+                  {filterOptions.channels.map((channel) => <option key={channel} value={channel}>{formatChannel(channel)}</option>)}
+                </select>
+              </label>
+
+              <label>
+                <span>Asset</span>
+                <select
+                  value={filters.asset}
+                  onChange={(event) => setFilters((current) => ({...current, asset: event.target.value}))}
+                >
+                  <option value="ALL">All assets</option>
+                  {filterOptions.assets.map((asset) => <option key={asset.id} value={asset.id}>{asset.title}</option>)}
+                </select>
+              </label>
+
+              <label>
+                <span>Causal right</span>
+                <select
+                  value={filters.causalRight}
+                  onChange={(event) => setFilters((current) => ({...current, causalRight: event.target.value}))}
+                >
+                  <option value="ALL">All rights</option>
+                  {filterOptions.causalRights.map((right) => <option key={right.id} value={right.id}>{right.title}</option>)}
+                </select>
+              </label>
+            </div>
+
+            {activeFilterCount > 0 && (
+              <button
+                className="textButton"
+                onClick={() => setFilters({...EMPTY_IMPACT_FILTERS})}
+              >
+                Clear all filters
+              </button>
+            )}
+          </section>
 
           <section className="impactSection">
             <div className="sectionHeading">
