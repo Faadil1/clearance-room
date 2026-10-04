@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       typeof body?.usageRequestId === 'string' ? body.usageRequestId : null
     const repairId =
       typeof body?.repairId === 'string' ? body.repairId : null
-    const effectiveBaselineId =
+    const baselineId =
       typeof body?.baselineProofId === 'string' ? body.baselineProofId : null
 
     if (!usageRequestId || !repairId) {
