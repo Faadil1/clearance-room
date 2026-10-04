@@ -1,13 +1,13 @@
 import {NextResponse} from 'next/server'
-import {compileClearance} from '../../../src/compiler.js'
+import {compileClearance} from '../../../src/compiler'
 import {
   getHeroGraphs,
   HERO_BASELINE_PROOF_ID,
   HERO_REMEDIATED_PROOF_ID,
   HERO_USAGE_ID,
-} from '../../../src/heroScenario.js'
-import {proofDocument} from '../../../src/proof.js'
-import {getServerSanity} from '../../../src/serverSanity.js'
+} from '../../../src/heroScenario'
+import {proofDocument} from '../../../src/proof'
+import {getServerSanity} from '../../../src/serverSanity'
 
 export const dynamic = 'force-dynamic'
 
