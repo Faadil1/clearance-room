@@ -48,7 +48,16 @@ type Analysis = {
 
 type Evidence = {
   knowledgeBase: string
-  evidence: string
+  entryPath: string
+  evidence: {
+    documentId: string
+    title: string
+    kind: string
+    sourceClause: string
+    validTo: string
+    source: string
+  }
+  raw: string
   authority: string
   observedAt: string
 }
@@ -218,8 +227,8 @@ export default function Home() {
               <div className="panelHeading">
                 <span className="stepIndex">01</span>
                 <div>
-                  <p className="cardKicker">What breaks</p>
-                  <h3>{changed ? `${changed.axis} permission changes` : 'No changed axis detected'}</h3>
+                  <p className="cardKicker">{changed ? 'What breaks' : 'Live verification'}</p>
+                  <h3>{changed ? `${changed.axis} permission changes` : 'No clearance regression remains'}</h3>
                 </div>
               </div>
               {changed && (
@@ -250,12 +259,17 @@ export default function Home() {
                 <span className="stepIndex">02</span>
                 <div>
                   <p className="cardKicker">Why</p>
-                  <h3>Draft amendment removes paid amplification</h3>
+                  <h3>{changed ? 'Draft amendment removes paid amplification' : 'The draft restriction remains, but this usage is now organic'}</h3>
                 </div>
               </div>
               <blockquote>
-                {analysis.source?.sourceClause || 'No draft source clause was returned.'}
+                {analysis.source?.sourceClause || 'No governing draft clause was returned.'}
               </blockquote>
+              {!changed && (
+                <p className="proposalNote">
+                  The draft still prohibits paid amplification. The recompiled usage is CLEAR because it no longer requests paid media.
+                </p>
+              )}
               <div className="receiptLine">
                 <span>rights document</span>
                 <code>{analysis.source?.id || 'unknown'}</code>
@@ -271,8 +285,8 @@ export default function Home() {
             <div className="panelHeading">
               <span className="stepIndex">03</span>
               <div>
-                <p className="cardKicker">Source evidence</p>
-                <h3>Keep evidence separate from the decision engine</h3>
+                <p className="cardKicker">Published baseline evidence</p>
+                <h3>Why the current published state still clears paid media</h3>
               </div>
               <button className="secondaryButton" onClick={loadEvidence} disabled={busy !== null}>
                 {busy === 'evidence' ? 'Retrieving…' : evidence ? 'Refresh evidence' : 'Retrieve KB evidence'}
@@ -280,13 +294,27 @@ export default function Home() {
             </div>
             {!evidence ? (
               <p className="muted">
-                The deterministic BLOCK above is already final. This step only retrieves supporting published-source evidence.
+                The proposed BLOCK above comes from the deterministic draft graph. This separate Knowledge Base lookup retrieves the published source clause that explains the current CLEAR baseline.
               </p>
             ) : (
-              <details open>
-                <summary>Sanity Knowledge Base · {evidence.knowledgeBase}</summary>
-                <pre>{evidence.evidence}</pre>
-              </details>
+              <div className="evidenceCard">
+                <div className="evidenceMeta">
+                  <span>Sanity Knowledge Base</span>
+                  <strong>{evidence.evidence.title}</strong>
+                </div>
+                <blockquote>{evidence.evidence.sourceClause}</blockquote>
+                <div className="miniReceipt">
+                  <span>Document</span><strong>{evidence.evidence.documentId}</strong>
+                  <span>Kind</span><strong>{evidence.evidence.kind}</strong>
+                  <span>Published valid through</span><strong>{evidence.evidence.validTo}</strong>
+                  <span>Source</span><strong>{evidence.evidence.source}</strong>
+                  <span>Authority</span><strong>evidence only · never status</strong>
+                </div>
+                <details>
+                  <summary>View raw KB receipt</summary>
+                  <pre>{evidence.raw}</pre>
+                </details>
+              </div>
             )}
           </article>
 
