@@ -9,6 +9,7 @@ export const clearanceProof = defineType({
     defineField({name: 'perspective', type: 'string', options: {list: ['published', 'drafts']}, validation: (r) => r.required()}),
     defineField({name: 'status', type: 'string', options: {list: ['CLEAR', 'BLOCK', 'REVIEW', 'UNKNOWN']}, validation: (r) => r.required()}),
     defineField({name: 'isStale', type: 'boolean', initialValue: false, validation: (r) => r.required()}),
+    defineField({name: 'staleReason', type: 'string'}),
     defineField({name: 'evaluatedAt', type: 'datetime', validation: (r) => r.required()}),
     defineField({name: 'intentSignature', type: 'string', validation: (r) => r.required()}),
     defineField({
