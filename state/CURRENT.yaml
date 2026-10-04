@@ -20,7 +20,7 @@ gates:
     evidence: evidence/gates/GATE-3-KNOWLEDGE-BASE-PASS.md
   live_product_surface_4:
     status: ACTIVE
-    plan: evidence/gates/GATE-4-JUDGE-WORKFLOW-PLAN.md
+    plan: evidence/gates/GATE-4-LIVE-PRODUCT-SURFACE-PLAN.md
     hero_flow:
       - what_breaks
       - why
