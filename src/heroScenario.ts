@@ -2,7 +2,7 @@ import {compileClearance} from './compiler.js'
 import {diffProofs} from './diff.js'
 import {proofDocument} from './proof.js'
 import {USAGE_GRAPH_QUERY} from './query.js'
-import {serverSanity} from './serverSanity.js'
+import {getServerSanity} from './serverSanity.js'
 import type {UsageGraph} from './types.js'
 
 export const HERO_USAGE_ID = 'usage-winter-ca'
@@ -10,6 +10,7 @@ export const HERO_BASELINE_PROOF_ID = 'proof-usage-winter-ca-proposed'
 export const HERO_REMEDIATED_PROOF_ID = 'proof-usage-winter-ca-organic'
 
 export async function getHeroGraphs() {
+  const serverSanity = getServerSanity()
   const [published, drafts] = await Promise.all([
     serverSanity.fetch<UsageGraph>(
       USAGE_GRAPH_QUERY,
@@ -31,6 +32,7 @@ export async function getHeroGraphs() {
 }
 
 export async function analyzeHeroImpact({persist = false} = {}) {
+  const serverSanity = getServerSanity()
   const {published, drafts} = await getHeroGraphs()
   const current = compileClearance(published)
   const proposed = compileClearance(drafts)
