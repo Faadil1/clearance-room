@@ -21,6 +21,15 @@ export type ScenarioRightInput = {
   }
 }
 
+export type ProposedRightPatch = {
+  allowedTerritories?: string[] | null
+  allowedChannels?: string[] | null
+  paidAdvertisingAllowed?: boolean | null
+  validFrom?: string | null
+  validTo?: string | null
+  sourceClause?: string | null
+}
+
 export type UserScenarioInput = {
   title: string
   assetTitle: string
@@ -245,7 +254,7 @@ export async function updateUserScenario(
   raw: {
     usage?: Partial<UserScenarioInput['usage']>
     rightId?: string
-    proposed?: Partial<ScenarioRightInput['proposed']>
+    proposed?: ProposedRightPatch
   },
 ) {
   assertUserScenarioId(usageId)
@@ -274,23 +283,55 @@ export async function updateUserScenario(
 
     const proposed = raw.proposed
     const patch: Record<string, unknown> = {}
-    if (Array.isArray(proposed.allowedTerritories)) {
-      const values = cleanList(proposed.allowedTerritories)
-      if (!values.length) throw new Error('Proposed territories cannot be empty')
-      patch.allowedTerritories = values
-    }
-    if (Array.isArray(proposed.allowedChannels)) {
-      const values = cleanList(proposed.allowedChannels)
-      if (!values.length) throw new Error('Proposed channels cannot be empty')
-      patch.allowedChannels = values
-    }
-    if (typeof proposed.paidAdvertisingAllowed === 'boolean') patch.paidAdvertisingAllowed = proposed.paidAdvertisingAllowed
-    if (typeof proposed.validFrom === 'string') patch.validFrom = dateString(proposed.validFrom, 'proposed.validFrom')
-    if (typeof proposed.validTo === 'string') patch.validTo = dateString(proposed.validTo, 'proposed.validTo')
-    if (typeof proposed.sourceClause === 'string' && proposed.sourceClause.trim()) patch.sourceClause = proposed.sourceClause.trim()
+    const unset: string[] = []
 
-    if (Object.keys(patch).length > 0) {
-      tx = tx.patch(`drafts.${raw.rightId}`, (builder) => builder.set(patch))
+    if (proposed.allowedTerritories === null) {
+      unset.push('allowedTerritories')
+    } else if (Array.isArray(proposed.allowedTerritories)) {
+      const values = cleanList(proposed.allowedTerritories)
+      if (!values.length) unset.push('allowedTerritories')
+      else patch.allowedTerritories = values
+    }
+
+    if (proposed.allowedChannels === null) {
+      unset.push('allowedChannels')
+    } else if (Array.isArray(proposed.allowedChannels)) {
+      const values = cleanList(proposed.allowedChannels)
+      if (!values.length) unset.push('allowedChannels')
+      else patch.allowedChannels = values
+    }
+
+    if (proposed.paidAdvertisingAllowed === null) {
+      unset.push('paidAdvertisingAllowed')
+    } else if (typeof proposed.paidAdvertisingAllowed === 'boolean') {
+      patch.paidAdvertisingAllowed = proposed.paidAdvertisingAllowed
+    }
+
+    if (proposed.validFrom === null) {
+      unset.push('validFrom')
+    } else if (typeof proposed.validFrom === 'string') {
+      patch.validFrom = dateString(proposed.validFrom, 'proposed.validFrom')
+    }
+
+    if (proposed.validTo === null) {
+      unset.push('validTo')
+    } else if (typeof proposed.validTo === 'string') {
+      patch.validTo = dateString(proposed.validTo, 'proposed.validTo')
+    }
+
+    if (proposed.sourceClause === null) {
+      unset.push('sourceClause')
+    } else if (typeof proposed.sourceClause === 'string' && proposed.sourceClause.trim()) {
+      patch.sourceClause = proposed.sourceClause.trim()
+    }
+
+    if (Object.keys(patch).length > 0 || unset.length > 0) {
+      tx = tx.patch(`drafts.${raw.rightId}`, (builder) => {
+        let next = builder
+        if (Object.keys(patch).length > 0) next = next.set(patch)
+        if (unset.length > 0) next = next.unset(unset)
+        return next
+      })
       changed = true
     }
   }
