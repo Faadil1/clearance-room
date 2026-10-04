@@ -24,14 +24,17 @@ ACTIVE / needs runtime proof:
 - multi-impact product behavior after canonical reset
 - proof-history behavior across repeated real runs
 
-IMPLEMENTED / runtime proof pending:
+RUNTIME PROVEN — partial capability:
 - user-defined Scenario Lab
-  - creates real Sanity rights/asset/usage documents
-  - supports current vs proposed rights state
-  - supports multiple governing rights
-  - user can edit proposed rights and usage intent live
-  - user can open the scenario in the same clearance engine
-  - user-created scenarios are namespaced and independently deletable
+  - PROVEN: user creates a scenario from product UI
+  - PROVEN: real Sanity rights/asset/usage documents are created
+  - PROVEN: created scenario enters the live portfolio as a third usage
+  - PROVEN: Live Content API auto-refresh occurs after creation
+  - PROVEN: user-created scenario opens in the same deterministic clearance engine
+  - IMPLEMENTED / proof pending: multiple governing rights
+  - IMPLEMENTED / proof pending: edit proposed rights and usage intent live
+  - IMPLEMENTED / proof pending: user-created scenario deletion
+  - REQUIRED NEXT: create a material proposed change and observe live CLEAR→BLOCK/REVIEW without canonical seed dependence
 - change-centric rights-document view
   - published vs draft field-level diff
   - revision identifiers
@@ -53,8 +56,8 @@ MISSING / not yet load-bearing:
 
 ## Immediate product expansion order
 
-1. Runtime-prove a user-created Scenario Lab case end-to-end.
-2. Prove Context MCP + Live Content API in browser with a real user-created draft edit.
+1. Runtime-prove a material user-created draft edit that changes clearance status.
+2. Prove Context MCP + Live Content API recompile automatically on that user-created edit.
 3. Runtime-prove the **rights-change view** against that user-created draft edit.
 4. Add filters/search for status, territory, channel, asset, and causal right.
 5. Exercise the music-window REVIEW path end-to-end through the product.
