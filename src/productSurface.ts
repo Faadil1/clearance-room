@@ -1,10 +1,10 @@
 import {compileClearance} from './compiler'
 import {diffProofs} from './diff'
 import {proofDocument} from './proof'
-import {ALL_USAGE_GRAPHS_QUERY, USAGE_GRAPH_QUERY} from './query'
+import {ALL_RIGHTS_DOCUMENTS_QUERY, ALL_USAGE_GRAPHS_QUERY, USAGE_GRAPH_QUERY} from './query'
 import {getServerSanity} from './serverSanity'
 import {queryRightsGraph} from './contextGraph'
-import type {Finding, UsageGraph} from './types'
+import type {Finding, Right, UsageGraph} from './types'
 
 export type RepairOption =
   | {
@@ -140,7 +140,6 @@ export async function scanLiveImpacts() {
       proposedPerspective: 'drafts',
       statusAuthority: 'deterministic-evaluator',
       graphReadIntegration: 'sanity-context-mcp',
-      graphReadIntegration: 'sanity-context-mcp',
       scope: 'all-usage-requests',
     },
   }
@@ -217,6 +216,185 @@ export async function getUsageImpact(usageRequestId: string, persist = false) {
       currentPerspective: 'published',
       proposedPerspective: 'drafts',
       statusAuthority: 'deterministic-evaluator',
+    },
+  }
+}
+
+
+export type RightsFieldDiff = {
+  field:
+    | 'title'
+    | 'kind'
+    | 'allowedTerritories'
+    | 'allowedChannels'
+    | 'paidAdvertisingAllowed'
+    | 'validFrom'
+    | 'validTo'
+    | 'sourceClause'
+  from: string | boolean | string[] | null
+  to: string | boolean | string[] | null
+}
+
+function canonicalRightId(right: Right) {
+  const original = right._originalId
+  if (original?.startsWith('drafts.')) return original.slice('drafts.'.length)
+  if (right._id.startsWith('drafts.')) return right._id.slice('drafts.'.length)
+  return right._id
+}
+
+function normalizedArray(value?: string[]) {
+  return value ? [...value].sort() : []
+}
+
+function valuesEqual(a: unknown, b: unknown) {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return JSON.stringify([...a].sort()) === JSON.stringify([...b].sort())
+  }
+  return a === b
+}
+
+function rightsFieldDiff(current: Right | null, proposed: Right): RightsFieldDiff[] {
+  const pairs: Array<[RightsFieldDiff['field'], unknown, unknown]> = [
+    ['title', current?.title ?? null, proposed.title ?? null],
+    ['kind', current?.kind ?? null, proposed.kind ?? null],
+    ['allowedTerritories', normalizedArray(current?.allowedTerritories), normalizedArray(proposed.allowedTerritories)],
+    ['allowedChannels', normalizedArray(current?.allowedChannels), normalizedArray(proposed.allowedChannels)],
+    ['paidAdvertisingAllowed', current?.paidAdvertisingAllowed ?? null, proposed.paidAdvertisingAllowed ?? null],
+    ['validFrom', current?.validFrom ?? null, proposed.validFrom ?? null],
+    ['validTo', current?.validTo ?? null, proposed.validTo ?? null],
+    ['sourceClause', current?.sourceClause ?? null, proposed.sourceClause ?? null],
+  ]
+
+  return pairs.flatMap(([field, from, to]) =>
+    valuesEqual(from, to)
+      ? []
+      : [{
+          field,
+          from: from as RightsFieldDiff['from'],
+          to: to as RightsFieldDiff['to'],
+        }],
+  )
+}
+
+function summarizeUsage(graph: UsageGraph) {
+  return {
+    id: graph._id,
+    title: graph.title,
+    assetId: graph.asset._id,
+    assetTitle: graph.asset.title,
+    territory: graph.territory,
+    channel: graph.channel,
+    isPaid: graph.isPaid,
+    startDate: graph.startDate,
+    endDate: graph.endDate,
+  }
+}
+
+export async function scanRightsChanges() {
+  const [
+    publishedRights,
+    draftRights,
+    publishedGraphs,
+    draftGraphs,
+  ] = await Promise.all([
+    queryRightsGraph<Right[]>('published', ALL_RIGHTS_DOCUMENTS_QUERY),
+    queryRightsGraph<Right[]>('drafts', ALL_RIGHTS_DOCUMENTS_QUERY),
+    queryRightsGraph<UsageGraph[]>('published', ALL_USAGE_GRAPHS_QUERY),
+    queryRightsGraph<UsageGraph[]>('drafts', ALL_USAGE_GRAPHS_QUERY),
+  ])
+
+  const publishedRightsById = new Map(
+    publishedRights.map((right) => [canonicalRightId(right), right]),
+  )
+  const publishedUsageById = new Map(
+    publishedGraphs.map((graph) => [graph._id, graph]),
+  )
+
+  const changes = draftRights.flatMap((proposedRight) => {
+    const rightId = canonicalRightId(proposedRight)
+    const currentRight = publishedRightsById.get(rightId) || null
+    const fields = rightsFieldDiff(currentRight, proposedRight)
+    if (fields.length === 0) return []
+
+    const downstream = draftGraphs
+      .filter((graph) =>
+        graph.asset.rights.some((right) => canonicalRightId(right) === rightId),
+      )
+      .flatMap((proposedGraph) => {
+        const currentGraph = publishedUsageById.get(proposedGraph._id)
+        if (!currentGraph) return []
+
+        const current = compileClearance(currentGraph)
+        const proposed = compileClearance(proposedGraph)
+        const diff = diffProofs(current, proposed)
+
+        return [{
+          usage: summarizeUsage(proposedGraph),
+          currentStatus: current.status,
+          proposedStatus: proposed.status,
+          changed: diff.changed,
+          changedAxes: diff.changedAxes,
+          nonClearFindings: proposed.findings.filter((finding) => finding.status !== 'CLEAR'),
+          repairs: deriveRepairOptions(proposedGraph, proposed.findings),
+        }]
+      })
+      .sort((a, b) => {
+        if (a.changed !== b.changed) return a.changed ? -1 : 1
+        const severityDelta = severity(b.proposedStatus) - severity(a.proposedStatus)
+        if (severityDelta !== 0) return severityDelta
+        return a.usage.title.localeCompare(b.usage.title)
+      })
+
+    const affected = downstream.filter((item) => item.changed)
+    const assetIds = new Set(downstream.map((item) => item.usage.assetId))
+
+    return [{
+      right: {
+        id: rightId,
+        title: proposedRight.title,
+        kind: proposedRight.kind,
+        publishedRev: currentRight?._rev || null,
+        proposedRev: proposedRight._rev || null,
+        draftDocumentId: proposedRight._originalId || proposedRight._id,
+      },
+      fields,
+      downstream,
+      summary: {
+        linkedAssets: assetIds.size,
+        linkedUsageRequests: downstream.length,
+        affectedUsageRequests: affected.length,
+        blocked: downstream.filter((item) => item.proposedStatus === 'BLOCK').length,
+        review: downstream.filter((item) => item.proposedStatus === 'REVIEW').length,
+        unknown: downstream.filter((item) => item.proposedStatus === 'UNKNOWN').length,
+      },
+    }]
+  }).sort((a, b) => {
+    if (a.summary.affectedUsageRequests !== b.summary.affectedUsageRequests) {
+      return b.summary.affectedUsageRequests - a.summary.affectedUsageRequests
+    }
+    return a.right.title.localeCompare(b.right.title)
+  })
+
+  return {
+    summary: {
+      changedRightsDocuments: changes.length,
+      affectedUsageRequests: new Set(
+        changes.flatMap((change) =>
+          change.downstream.filter((item) => item.changed).map((item) => item.usage.id),
+        ),
+      ).size,
+      linkedUsageRequests: new Set(
+        changes.flatMap((change) => change.downstream.map((item) => item.usage.id)),
+      ).size,
+    },
+    changes,
+    observedAt: new Date().toISOString(),
+    truth: {
+      currentPerspective: 'published',
+      proposedPerspective: 'drafts',
+      graphReadIntegration: 'sanity-context-mcp',
+      statusAuthority: 'deterministic-evaluator',
+      scope: 'changed-rights-documents-to-downstream-usages',
     },
   }
 }
