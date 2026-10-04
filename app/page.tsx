@@ -1,6 +1,6 @@
 'use client'
 
-import {useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 
 type Status = 'CLEAR' | 'BLOCK' | 'REVIEW' | 'UNKNOWN'
 
@@ -59,6 +59,13 @@ type Portfolio = {
   }
   impacts: ImpactSummary[]
   observedAt: string
+  truth?: {
+    currentPerspective?: string
+    proposedPerspective?: string
+    statusAuthority?: string
+    graphReadIntegration?: string
+    scope?: string
+  }
 }
 
 type Proof = {
@@ -152,6 +159,65 @@ export default function Home() {
   const [approved, setApproved] = useState(false)
   const [busy, setBusy] = useState<'scan' | 'open' | 'evidence' | 'remediate' | 'reset' | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [liveState, setLiveState] = useState<'connecting' | 'connected' | 'reconnecting' | 'offline'>('connecting')
+  const [lastLiveSync, setLastLiveSync] = useState<string | null>(null)
+  const scannedRef = useRef(false)
+  const openUsageRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    const source = new EventSource('/api/live')
+
+    source.onopen = () => setLiveState('connected')
+    source.onerror = () => setLiveState('offline')
+
+    source.onmessage = async (event) => {
+      try {
+        const payload = JSON.parse(event.data)
+        if (payload.type === 'welcome' || payload.type === 'heartbeat') {
+          setLiveState('connected')
+          return
+        }
+
+        if (payload.type === 'reconnect' || payload.type === 'connecting') {
+          setLiveState('reconnecting')
+          return
+        }
+
+        if (payload.type !== 'message' && payload.type !== 'restart') return
+
+        setLiveState('connected')
+        setLastLiveSync(payload.observedAt || new Date().toISOString())
+
+        if (scannedRef.current) {
+          const response = await fetch('/api/impacts', {method: 'POST'})
+          const refreshed = await response.json()
+          if (response.ok) setPortfolio(refreshed)
+        }
+
+        if (openUsageRef.current) {
+          const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              usageRequestId: openUsageRef.current,
+              persist: false,
+            }),
+          })
+          const refreshed = await response.json()
+          if (response.ok) {
+            setDetail((current) => current ? {
+              ...refreshed,
+              persistedProof: current.persistedProof,
+            } : current)
+          }
+        }
+      } catch {
+        // A malformed live event should not break the operator surface.
+      }
+    }
+
+    return () => source.close()
+  }, [])
 
   async function run(path: string, body?: unknown) {
     const response = await fetch(path, {
@@ -174,7 +240,9 @@ export default function Home() {
     if (!keepReceipt) setReceipt(null)
 
     try {
-      setPortfolio(await run('/api/impacts'))
+      const result = await run('/api/impacts')
+      scannedRef.current = true
+      setPortfolio(result)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Blast-radius scan failed')
     } finally {
@@ -183,6 +251,7 @@ export default function Home() {
   }
 
   async function openImpact(usageRequestId: string) {
+    openUsageRef.current = usageRequestId
     setBusy('open')
     setError(null)
     setEvidence(null)
@@ -225,6 +294,7 @@ export default function Home() {
       })
       setReceipt(result)
       setDetail(null)
+      openUsageRef.current = null
       setEvidence(null)
       setSelectedRepair(null)
       setApproved(false)
@@ -263,8 +333,8 @@ export default function Home() {
           <span>Clearance Room</span>
         </div>
         <div className="runtimeBadge">
-          <span className="liveDot" />
-          Live Sanity product
+          <span className={`liveDot liveDot--${liveState}`} />
+          {liveState === 'connected' ? 'Live sync connected' : liveState === 'offline' ? 'Live sync offline' : 'Connecting live sync…'}
         </div>
       </header>
 
@@ -277,10 +347,11 @@ export default function Home() {
         </p>
 
         <div className="truthStrip" aria-label="System truth boundaries">
+          <span>GRAPH · Sanity Context MCP</span>
+          <span>SYNC · Live Content API</span>
           <span>STATUS · deterministic evaluator</span>
           <span>EVIDENCE · Sanity Knowledge Base</span>
           <span>WRITE · human approval required</span>
-          <span>SCOPE · all usage requests</span>
         </div>
 
         {!portfolio && (
@@ -307,7 +378,10 @@ export default function Home() {
             <div>
               <p className="cardKicker">Live blast radius</p>
               <h2>{portfolio.summary.affectedUsageRequests} of {portfolio.summary.totalUsageRequests} usages affected</h2>
-              <p className="muted">Observed {formatWhen(portfolio.observedAt)} · published → drafts</p>
+              <p className="muted">
+                Observed {formatWhen(portfolio.observedAt)} · published → drafts · graph read via Context MCP
+                {lastLiveSync ? ` · last live sync ${formatWhen(lastLiveSync)}` : ''}
+              </p>
             </div>
             <button className="secondaryButton" onClick={() => scan({keepReceipt: true})} disabled={busy !== null}>
               {busy === 'scan' ? 'Refreshing…' : 'Refresh graph'}
@@ -431,7 +505,7 @@ export default function Home() {
       {detail && (
         <section className="workspace detailWorkspace" aria-live="polite">
           <div className="detailHeader">
-            <button className="textButton" onClick={() => {setDetail(null); setEvidence(null)}}>← Back to blast radius</button>
+            <button className="textButton" onClick={() => {setDetail(null); setEvidence(null); openUsageRef.current = null}}>← Back to blast radius</button>
             <div className="transition">
               <StatusPill status={detail.current.status} />
               <span className="arrow">→</span>
