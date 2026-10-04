@@ -1,6 +1,9 @@
 'use client'
 
 import {useEffect, useRef, useState} from 'react'
+import RightsChangePortfolio, {
+  type RightsChangePortfolioData,
+} from './components/RightsChangePortfolio'
 
 type Status = 'CLEAR' | 'BLOCK' | 'REVIEW' | 'UNKNOWN'
 
@@ -152,6 +155,7 @@ function formatWhen(value?: string) {
 
 export default function Home() {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
+  const [rightsChanges, setRightsChanges] = useState<RightsChangePortfolioData | null>(null)
   const [detail, setDetail] = useState<ImpactDetail | null>(null)
   const [evidence, setEvidence] = useState<Evidence | null>(null)
   const [receipt, setReceipt] = useState<RemediationReceipt | null>(null)
@@ -204,10 +208,17 @@ export default function Home() {
         })
 
         if (scannedRef.current) {
-          const response = await fetch('/api/impacts', {method: 'POST'})
-          const refreshed = await response.json()
-          if (response.ok) {
-            setPortfolio(refreshed)
+          const [impactResponse, changeResponse] = await Promise.all([
+            fetch('/api/impacts', {method: 'POST'}),
+            fetch('/api/changes', {method: 'POST'}),
+          ])
+          const [refreshedImpacts, refreshedChanges] = await Promise.all([
+            impactResponse.json(),
+            changeResponse.json(),
+          ])
+          if (impactResponse.ok) setPortfolio(refreshedImpacts)
+          if (changeResponse.ok) setRightsChanges(refreshedChanges)
+          if (impactResponse.ok || changeResponse.ok) {
             setLiveRefreshCount((count) => count + 1)
           }
         }
@@ -259,9 +270,13 @@ export default function Home() {
     if (!keepReceipt) setReceipt(null)
 
     try {
-      const result = await run('/api/impacts')
+      const [impactResult, changeResult] = await Promise.all([
+        run('/api/impacts'),
+        run('/api/changes'),
+      ])
       scannedRef.current = true
-      setPortfolio(result)
+      setPortfolio(impactResult)
+      setRightsChanges(changeResult)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Blast-radius scan failed')
     } finally {
@@ -318,8 +333,12 @@ export default function Home() {
       setSelectedRepair(null)
       setApproved(false)
 
-      const refreshed = await run('/api/impacts')
+      const [refreshed, refreshedChanges] = await Promise.all([
+        run('/api/impacts'),
+        run('/api/changes'),
+      ])
       setPortfolio(refreshed)
+      setRightsChanges(refreshedChanges)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Remediation failed')
     } finally {
@@ -453,6 +472,14 @@ export default function Home() {
               <span>automatic graph refreshes</span>
             </div>
           </div>
+
+          {rightsChanges && (
+            <RightsChangePortfolio
+              data={rightsChanges}
+              onOpenUsage={openImpact}
+              busy={busy !== null}
+            />
+          )}
 
           {receipt && (
             <article className="panel successPanel">
