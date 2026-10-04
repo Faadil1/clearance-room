@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}))
     const usageRequestId =
       typeof body?.usageRequestId === 'string' ? body.usageRequestId : 'usage-winter-ca'
-    const persist = body?.persist !== false
+    const persist = body?.persist === true
 
     return NextResponse.json(await getUsageImpact(usageRequestId, persist))
   } catch (error) {
