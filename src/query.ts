@@ -1,6 +1,7 @@
 export const USAGE_GRAPH_QUERY = /* groq */ `
 *[_type == "usageRequest" && _id == $id][0]{
   _id,
+  _rev,
   title,
   territory,
   channel,
@@ -9,6 +10,7 @@ export const USAGE_GRAPH_QUERY = /* groq */ `
   endDate,
   asset->{
     _id,
+    _rev,
     title,
     rights[]->{
       _id,

@@ -1,0 +1,54 @@
+project: clearance-room
+source_of_truth: github
+branch: gate/proof-remediation-2
+updated: 2026-10-04
+
+concept:
+  name: Clearance Room
+  thesis: "See what breaks before a rights change goes live."
+  mechanism: pre-publish rights impact analysis over a deterministic Sanity rights graph
+
+gates:
+  technical_reality_1:
+    status: PROVEN
+    evidence: evidence/gates/GATE-1-TECHNICAL-REALITY-PASS.md
+  proof_remediation_2:
+    status: PROVEN
+    evidence: evidence/gates/GATE-2-PROOF-REMEDIATION-PASS.md
+  knowledge_base_grounding_3:
+    status: ACTIVE
+    objectives:
+      - create a Sanity Knowledge Base for rights-source evidence
+      - index published rights-document clauses
+      - expose it through a Knowledge-Base-only Context MCP endpoint
+      - prove retrieval of the music-license expiry evidence
+      - preserve deterministic evaluator authority
+
+truth_boundaries:
+  - deterministic evaluator is the only authority for CLEAR/BLOCK/REVIEW/UNKNOWN
+  - Knowledge Base is evidence/explanation only, never normative status authority
+  - Context MCP remains read-only
+  - writes use a separate Sanity mutation path
+  - changed intent or governing source revision invalidates prior proof
+
+proven_runtime:
+  gate_2_baseline:
+    proof: proof-usage-holiday-ca-baseline
+    status: REVIEW
+    allowedThrough: 2026-10-31
+    blockedFrom: 2026-11-01
+    causedBy: rights-music-c09
+  gate_2_remediation:
+    action: shorten_campaign_end_date
+    oldEndDate: 2026-11-30
+    newEndDate: 2026-10-31
+    oldProofStale: true
+    newProof: proof-usage-holiday-ca-remediated
+    newStatus: CLEAR
+
+next:
+  - create Knowledge Base
+  - bind published rightsDocument dataset source
+  - build Knowledge Base
+  - create KB-only Context MCP endpoint
+  - prove retrieval of rights-music-c09 source evidence

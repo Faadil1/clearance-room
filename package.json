@@ -11,7 +11,9 @@
     "gate:fixture": "tsx scripts/gate-fixture.ts",
     "gate:sanity": "tsx scripts/gate-sanity.ts",
     "test": "vitest run",
-    "gate:context": "tsx scripts/gate-context.ts"
+    "gate:context": "tsx scripts/gate-context.ts",
+    "gate:proof": "tsx scripts/gate-proof.ts",
+    "gate:remediate": "tsx scripts/gate-remediation.ts"
   },
   "dependencies": {
     "@sanity/client": "latest",

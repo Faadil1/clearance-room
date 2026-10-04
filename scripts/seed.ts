@@ -25,7 +25,24 @@ const docs = [
     validTo: '2026-12-31',
     sourceClause: 'Draft amendment: organic social only. Paid amplification is not permitted.',
   },
-  {_id: 'asset-a17', _type: 'mediaAsset', title: 'A17 — Maya Hero', rights: [{_type: 'reference', _ref: 'rights-maya-2026'}]},
+  {
+    _id: 'rights-music-c09',
+    _type: 'rightsDocument',
+    title: 'C09 Original Soundtrack License',
+    kind: 'music_license',
+    allowedTerritories: ['CA'],
+    allowedChannels: ['instagram_reels'],
+    paidAdvertisingAllowed: true,
+    validFrom: '2026-01-01',
+    validTo: '2026-10-31',
+    sourceClause: 'Master and sync rights are cleared for paid Instagram Reels in Canada through 2026-10-31.',
+  },
+  {
+    _id: 'asset-a17',
+    _type: 'mediaAsset',
+    title: 'A17 — Maya Hero',
+    rights: [{_type: 'reference', _ref: 'rights-maya-2026'}],
+  },
   {
     _id: 'usage-winter-ca',
     _type: 'usageRequest',
@@ -37,7 +54,32 @@ const docs = [
     startDate: '2026-10-15',
     endDate: '2026-11-30',
   },
+  {
+    _id: 'asset-c09',
+    _type: 'mediaAsset',
+    title: 'C09 — Maya with Original Soundtrack',
+    rights: [
+      {_type: 'reference', _ref: 'rights-maya-2026'},
+      {_type: 'reference', _ref: 'rights-music-c09'},
+    ],
+  },
+  {
+    _id: 'usage-holiday-ca',
+    _type: 'usageRequest',
+    title: 'Holiday Canada Paid Reels',
+    asset: {_type: 'reference', _ref: 'asset-c09'},
+    territory: 'CA',
+    channel: 'instagram_reels',
+    isPaid: true,
+    startDate: '2026-10-15',
+    endDate: '2026-11-30',
+  },
 ]
+
+await Promise.all([
+  client.delete('proof-usage-holiday-ca-baseline').catch(() => undefined),
+  client.delete('proof-usage-holiday-ca-remediated').catch(() => undefined),
+])
 
 for (const doc of docs) {
   await client.createOrReplace(doc)

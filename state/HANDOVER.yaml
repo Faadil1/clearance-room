@@ -1,0 +1,38 @@
+project: clearance-room
+handover_date: 2026-10-04
+branch: gate/proof-remediation-2
+
+completed:
+  - Gate #1 merged to main
+  - Gate #2 local tests 5/5 passed
+  - real music-right partial-window scenario seeded
+  - persistent baseline clearanceProof runtime PASS
+  - explicit human-approved remediation runtime PASS
+  - baseline proof marked stale
+  - usage request shortened to 2026-10-31
+  - deterministic recompile returned CLEAR
+  - replacement proof persisted and supersedes baseline
+
+gate_2_verdict: PROVEN
+
+gate_3:
+  name: Knowledge Base grounding
+  status: ACTIVE
+  purpose: source-clause evidence and explanation only
+  must_not:
+    - decide clearance status
+    - override deterministic evaluator
+    - write to Sanity
+
+recommended_knowledge_base_source:
+  type: dataset
+  project: 041j2som
+  dataset: production
+  query: '*[_type == "rightsDocument"]{_id,title,kind,sourceClause,allowedTerritories,allowedChannels,paidAdvertisingAllowed,validFrom,validTo}'
+  note: dataset Knowledge Base sources index published documents only
+
+next:
+  - create KB in Sanity Context
+  - build KB
+  - create separate KB-only MCP endpoint
+  - verify retrieval of music license expiry clause
