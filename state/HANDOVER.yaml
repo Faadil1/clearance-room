@@ -40,3 +40,18 @@ next:
   - test recovery paths
   - evaluate App SDK and Workflows
   - do not return to demo-polish-first work until the depth gap review is materially closed
+
+
+workstream_priority:
+  central_policy: Faadil1/faadil-agent-system@ff101a6e79c20d5b9c3ba370bc48c9b07d5fd3fa
+  product_reality_version: "1.4.0"
+  first_live_slice_proven: true
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  next_highest_value_depth_delta: CONTEXT_MCP_AND_LIVE_CONTENT_API_LOAD_BEARING_RUNTIME_PROOF
+  valid_stop_condition: null
+  demo_packaging_allowed: false
+  workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
+  rule: >-
+    While justified material product-depth gaps remain, product exploitation is primary. Judge flow,
+    seeded reset, replay, receipts, screenshots, video and submission packaging are secondary support only.
+  recheck: EVERY_MATERIAL_PRODUCT_TOUCH
