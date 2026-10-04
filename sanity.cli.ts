@@ -5,4 +5,9 @@ const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
 
 if (!projectId) throw new Error('Missing SANITY_STUDIO_PROJECT_ID')
 
-export default defineCliConfig({api: {projectId, dataset}})
+export default defineCliConfig({
+  api: {projectId, dataset},
+  deployment: {
+    appId: 'ifhmki7qncmsfjzqbcgmydyq',
+  },
+})
