@@ -99,6 +99,38 @@ function sameList(a?: string[], b?: string[]) {
   return JSON.stringify([...(a || [])].sort()) === JSON.stringify([...(b || [])].sort())
 }
 
+function evidenceOnlyChanges(original: ScenarioRecord, edited: ScenarioRecord) {
+  const changes: string[] = []
+  edited.asset.rights.forEach((right, index) => {
+    const before = original.asset.rights[index]
+    if (!before) return
+    if ((before.sourceClause || '') !== (right.sourceClause || '')) {
+      changes.push(`${right.title || right.id}: source clause changed`)
+    }
+  })
+  return changes
+}
+
+function evidenceConsistencyWarnings(edited: ScenarioRecord) {
+  const warnings: string[] = []
+
+  edited.asset.rights.forEach((right) => {
+    const clause = (right.sourceClause || '').toLowerCase()
+    if (!clause) return
+
+    const looksProhibitive =
+      /\bnot permitted\b|\bnot allowed\b|\bprohibit(?:ed|s)?\b|\borganic[- ]only\b|\bno paid\b/.test(clause)
+
+    if (right.paidAdvertisingAllowed && looksProhibitive) {
+      warnings.push(
+        `${right.title || right.id}: structured paid permission is ALLOW, but the evidence text appears restrictive.`,
+      )
+    }
+  })
+
+  return warnings
+}
+
 function structuredScenarioChanges(original: ScenarioRecord, edited: ScenarioRecord) {
   const changes: string[] = []
 
@@ -328,6 +360,20 @@ export default function ScenarioLab({
 
   async function saveEdit() {
     if (!editScenario) return
+
+    const original = scenarios.find((scenario) => scenario.id === editScenario.id)
+    if (!original) return
+
+    const structuredChanges = structuredScenarioChanges(original, editScenario)
+    const evidenceChanges = evidenceOnlyChanges(original, editScenario)
+
+    if (structuredChanges.length === 0 && evidenceChanges.length > 0) {
+      const confirmed = window.confirm(
+        'This update changes evidence text only. CLEAR/BLOCK/REVIEW/UNKNOWN will not change because no structured decision field changed. Save the evidence-only update anyway?',
+      )
+      if (!confirmed) return
+    }
+
     setBusy('save')
     setError(null)
     setNotice(null)
@@ -808,39 +854,71 @@ export default function ScenarioLab({
                       </div>
                     ))}
 
-                    <div className="structuredChangePreview">
-                      {(() => {
-                        const changes = structuredScenarioChanges(scenario, editScenario)
-                        return changes.length > 0 ? (
-                          <>
-                            <strong>{changes.length} structured decision change{changes.length === 1 ? '' : 's'} ready to save</strong>
-                            <ul>
-                              {changes.map((change) => <li key={change}>{change}</li>)}
-                            </ul>
-                          </>
-                        ) : (
-                          <>
-                            <strong>No structured decision fields changed.</strong>
-                            <span>Editing evidence text alone will not change CLEAR/BLOCK/REVIEW/UNKNOWN.</span>
-                          </>
-                        )
-                      })()}
-                    </div>
+                    {(() => {
+                      const structured = structuredScenarioChanges(scenario, editScenario)
+                      const evidenceOnly = evidenceOnlyChanges(scenario, editScenario)
+                      const warnings = evidenceConsistencyWarnings(editScenario)
 
-                    <div className="scenarioCardActions">
-                      <button className="primaryButton" onClick={saveEdit} disabled={busy !== null}>
-                        {busy === 'save' ? 'Saving…' : 'Save live changes'}
-                      </button>
-                      <button
-                        className="textButton"
-                        onClick={() => {
-                          setEditingId(null)
-                          setEditScenario(null)
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                      return (
+                        <>
+                          <div className="structuredChangePreview">
+                            {structured.length > 0 ? (
+                              <>
+                                <strong>{structured.length} structured decision change{structured.length === 1 ? '' : 's'} ready to save</strong>
+                                <ul>
+                                  {structured.map((change) => <li key={change}>{change}</li>)}
+                                </ul>
+                              </>
+                            ) : (
+                              <>
+                                <strong>No structured decision fields changed.</strong>
+                                <span>Evidence-only edits will not change CLEAR/BLOCK/REVIEW/UNKNOWN.</span>
+                              </>
+                            )}
+
+                            {evidenceOnly.length > 0 && (
+                              <div className="evidenceOnlyReceipt">
+                                <strong>{evidenceOnly.length} evidence-only change{evidenceOnly.length === 1 ? '' : 's'}</strong>
+                                <ul>
+                                  {evidenceOnly.map((change) => <li key={change}>{change}</li>)}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+
+                          {warnings.length > 0 && (
+                            <div className="consistencyWarning">
+                              <strong>Evidence / structured-data mismatch detected</strong>
+                              <span>This is a lint warning only. It does not change clearance status.</span>
+                              <ul>
+                                {warnings.map((warning) => <li key={warning}>{warning}</li>)}
+                              </ul>
+                            </div>
+                          )}
+
+                          <div className="scenarioCardActions">
+                            <button className="primaryButton" onClick={saveEdit} disabled={busy !== null}>
+                              {busy === 'save'
+                                ? 'Saving…'
+                                : structured.length > 0
+                                  ? 'Save structured changes'
+                                  : evidenceOnly.length > 0
+                                    ? 'Save evidence-only update'
+                                    : 'No changes to save'}
+                            </button>
+                            <button
+                              className="textButton"
+                              onClick={() => {
+                                setEditingId(null)
+                                setEditScenario(null)
+                              }}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </>
+                      )
+                    })()}
                   </div>
                 )}
               </article>
