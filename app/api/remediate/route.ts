@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const tx = client
+    let transaction = client
       .transaction()
       .patch(baselineId, (patch) =>
         patch.set({
@@ -68,12 +68,15 @@ export async function POST(request: Request) {
       )
 
     if (repair.id === 'switch_to_organic') {
-      tx.patch(usageRequestId, (patch) => patch.set({isPaid: false}))
+      transaction = transaction.patch(usageRequestId, (patch) => patch.set({isPaid: false}))
     } else if (repair.id === 'shorten_campaign') {
-      tx.patch(usageRequestId, (patch) => patch.set({endDate: repair.mutation.value}))
+      transaction = transaction.patch(
+        usageRequestId,
+        (patch) => patch.set({endDate: repair.mutation.value}),
+      )
     }
 
-    await tx.commit()
+    await transaction.commit()
 
     const after = await getUsageImpact(usageRequestId, false)
     const replacementId = replacementProofId(usageRequestId)
