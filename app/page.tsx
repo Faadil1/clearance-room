@@ -404,6 +404,29 @@ export default function Home() {
             <div className="metricCard"><span>Clear proposed</span><strong>{portfolio.summary.clear}</strong></div>
           </div>
 
+          <div className="integrationRail" aria-label="Load-bearing integrations">
+            <div>
+              <span>Graph read</span>
+              <strong>Sanity Context MCP</strong>
+              <small>load-bearing · published + drafts</small>
+            </div>
+            <div>
+              <span>Realtime</span>
+              <strong>Sanity Live Content API</strong>
+              <small>{liveState === 'connected' ? 'connected · drafts included' : liveState}</small>
+            </div>
+            <div>
+              <span>Evidence</span>
+              <strong>Context Knowledge Base</strong>
+              <small>source-bound · evidence only</small>
+            </div>
+            <div>
+              <span>Writes</span>
+              <strong>Content Lake transaction</strong>
+              <small>human-approved · proof staleness atomic</small>
+            </div>
+          </div>
+
           {receipt && (
             <article className="panel successPanel">
               <div className="panelHeading">
