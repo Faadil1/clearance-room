@@ -25,20 +25,32 @@ export async function POST(request: Request) {
       typeof body?.usageRequestId === 'string' ? body.usageRequestId : null
     const repairId =
       typeof body?.repairId === 'string' ? body.repairId : null
-    const baselineId =
+    const effectiveBaselineId =
       typeof body?.baselineProofId === 'string' ? body.baselineProofId : null
 
-    if (!usageRequestId || !repairId || !baselineId) {
+    if (!usageRequestId || !repairId) {
       return NextResponse.json(
-        {error: 'usageRequestId, repairId, and baselineProofId are required'},
+        {error: 'usageRequestId and repairId are required'},
         {status: 400},
       )
     }
 
-    const baseline = await client.getDocument<any>(baselineId)
+    let effectiveBaselineId = baselineId
+    let baseline = effectiveBaselineId
+      ? await client.getDocument<any>(effectiveBaselineId)
+      : null
+
     if (!baseline) {
+      const snapshot = await getUsageImpact(usageRequestId, true)
+      effectiveBaselineId = snapshot.persistedProof?.id || null
+      baseline = effectiveBaselineId
+        ? await client.getDocument<any>(effectiveBaselineId)
+        : null
+    }
+
+    if (!baseline || !effectiveBaselineId) {
       return NextResponse.json(
-        {error: 'Open this impact first so a baseline proposed proof is persisted'},
+        {error: 'Could not create the approval-time baseline proof snapshot'},
         {status: 409},
       )
     }
@@ -68,7 +80,7 @@ export async function POST(request: Request) {
 
     let transaction = client
       .transaction()
-      .patch(baselineId, (patch) =>
+      .patch(effectiveBaselineId, (patch) =>
         patch.set({
           isStale: true,
           staleReason: 'HUMAN_APPROVED_USAGE_REQUEST_MUTATION',
@@ -101,7 +113,7 @@ export async function POST(request: Request) {
     const replacement = await client.create(
       proofDocument(replacementId, proposedGraph, after.proposed, {
         perspective: 'drafts',
-        supersedes: baselineId,
+        supersedes: effectiveBaselineId,
       }),
     )
 
@@ -112,7 +124,7 @@ export async function POST(request: Request) {
       usageRequestId,
       mutation: repair.mutation,
       previousProof: {
-        id: baselineId,
+        id: effectiveBaselineId,
         status: before.proposed.status,
         stale: true,
       },
@@ -121,7 +133,7 @@ export async function POST(request: Request) {
         rev: replacement._rev,
         status: after.proposed.status,
         stale: false,
-        supersedes: baselineId,
+        supersedes: effectiveBaselineId,
       },
       recompiled: after.proposed,
       remainingRepairs: after.repairs,
