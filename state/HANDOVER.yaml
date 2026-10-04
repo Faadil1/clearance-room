@@ -1,0 +1,46 @@
+project: clearance-room
+handover_date: 2026-10-04
+branch: gate/proof-remediation-2
+
+completed:
+  - Gate #1 merged to main
+  - Sanity project 041j2som active
+  - Studio deployed at https://clearance-room-faadil.sanity.studio/
+  - Context endpoint clearance-room-graph ready
+  - published vs drafts Context MCP proof returned CLEAR -> BLOCK
+  - deterministic status authority invariant proven
+
+gate_2_build:
+  added:
+    - clearanceProof schema
+    - partial-window REVIEW semantics
+    - music license C09 scenario
+    - structured proof persistence helper
+    - explicit human-approval remediation script
+    - atomic stale-mark + usage mutation transaction
+    - remediated proof superseding baseline proof
+    - Gate #2 unit tests
+
+runtime_sequence:
+  - npm test
+  - deploy schema
+  - npm run seed
+  - npm run gate:proof
+  - npm run gate:remediate -- --approve
+
+expected:
+  baseline:
+    status: REVIEW
+    allowedThrough: 2026-10-31
+    blockedFrom: 2026-11-01
+    causedBy: rights-music-c09
+  remediation:
+    action: shorten campaign end date to 2026-10-31
+    oldProof: STALE
+    newStatus: CLEAR
+
+not_yet_proven:
+  - Gate #2 runtime persistence
+  - human-approved remediation runtime
+  - Knowledge Base evidence
+  - Path Two submission
