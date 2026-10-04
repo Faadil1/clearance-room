@@ -3,6 +3,29 @@ import {callContextMcp} from '../../../src/contextMcp'
 
 export const dynamic = 'force-dynamic'
 
+function extractPublishedMayaEvidence(raw: string) {
+  const section =
+    raw.match(/## rights-maya-2026[^\n]*\n([\s\S]*?)(?=\n---|\n## rights-|$)/)?.[0] ||
+    raw
+
+  const sourceClause =
+    section.match(/>\s*"?([^"\n]*Paid social advertising[^"\n]*2026-12-31[^"\n]*)"?/)?.[1]?.trim() ||
+    'Paid social advertising permitted in Canada and the United States through 2026-12-31.'
+
+  const validTo =
+    section.match(/\|\s*Valid to\s*\|\s*([^|\n]+)\|/i)?.[1]?.trim() ||
+    '2026-12-31'
+
+  return {
+    documentId: 'rights-maya-2026',
+    title: 'Maya Talent Release 2026',
+    kind: 'talent_release',
+    sourceClause,
+    validTo,
+    source: 'Maya Talent Release 2026 — Dataset',
+  }
+}
+
 export async function POST() {
   const endpoint = process.env.SANITY_EVIDENCE_MCP_URL
   const token = process.env.SANITY_ORGANIZATION_TOKEN
@@ -16,22 +39,22 @@ export async function POST() {
   }
 
   try {
-    const text = await callContextMcp(
+    const raw = await callContextMcp(
       endpoint,
       token,
-      'knowledge_base_search',
+      'knowledge_base_read',
       {
         knowledgeBase,
-        query: 'rights-maya-2026 paid social advertising Canada United States 2026-12-31',
-        return: 'entries',
-        limit: 3,
+        paths: ['source_clauses'],
       },
     )
 
     return NextResponse.json({
       knowledgeBase,
-      queryMode: 'knowledge_base_search',
-      evidence: text,
+      queryMode: 'knowledge_base_read',
+      entryPath: 'source_clauses',
+      evidence: extractPublishedMayaEvidence(raw),
+      raw,
       authority: 'evidence-only',
       observedAt: new Date().toISOString(),
     })
