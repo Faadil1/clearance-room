@@ -18,11 +18,16 @@ PROVEN:
 - real Sanity writes
 - build/test pipeline
 
+PROVEN — live integration runtime:
+- Context MCP is the product graph-read path for published + drafts
+- Live Content API invalidates an already-open product view
+- no manual Refresh graph action is required
+- completed AUTO receipt is distinct from a manual refresh
+- receipt records event type/id, completion time, Context MCP reread, and affected-count before→after
+- runtime video shows `AUTO #2` after a user-created Sanity write
+- rights-change view visibly updates from 2 changed fields to 1 changed field after the automatic reread
+
 ACTIVE / needs runtime proof:
-- Context MCP as primary graph-read path in the product
-- Live Content API auto-refresh with drafts included
-  - IMPLEMENTED: auditable automatic-refresh receipt distinct from manual refresh
-  - receipt records triggering event id/type, completion time, Context MCP reread, and affected-count before→after
 - multi-impact product behavior after canonical reset
 - proof-history behavior across repeated real runs
 
@@ -53,15 +58,13 @@ RUNTIME PROVEN — user-defined Scenario Lab:
   - direct drill-down into affected usage
   - Live Content API refresh path includes rights-change view
 
-IMPLEMENTED / runtime proof pending:
-- operator portfolio search + combined filters
-  - free-text usage/asset/right search
-  - proposed status
-  - territory
-  - channel
-  - asset
-  - causal right
-  - visible result count + active-filter count + clear-all
+RUNTIME PROVEN — operator filtering core:
+- asset filter: 3 visible → 1 visible
+- combined asset + causal-right filter: 1 visible → 0 visible
+- active-filter count updates to 2
+- filter intersection behavior is correct
+- IMPLEMENTED / individual runtime proof pending: free-text search, proposed status, territory, channel
+- visible result count + clear-all are present
 
 MISSING / not yet load-bearing:
 - agent orchestration in the product
@@ -75,12 +78,11 @@ MISSING / not yet load-bearing:
 
 ## Immediate product expansion order
 
-1. Prove visible no-action Live Content API auto-update on an already-open product view using the new AUTO receipt.
-2. Runtime-prove the **rights-change view** against a user-created material draft edit before remediation.
-3. Runtime-prove operator search/filters on the live portfolio.
-4. Runtime-prove multiple governing rights in one user-created scenario.
-5. Exercise the window REVIEW path end-to-end through a user-created scenario.
-6. Add explicit UNKNOWN path by removing required structured evidence from a controlled user-created record.
+1. Runtime-prove multiple governing rights in one user-created scenario.
+2. Exercise the window REVIEW path end-to-end through that user-created scenario.
+3. Add explicit UNKNOWN path by allowing required structured evidence to be absent in a controlled user-created record.
+4. Runtime-prove free-text/status/territory/channel operator filters.
+5. Runtime-prove user-created scenario deletion.
 7. Add product agent using MCP/KB + deterministic receipts.
 8. Add recovery UI for MCP unavailable, Live API offline, KB unavailable, write failure.
 9. Evaluate App SDK native surface and Workflows; mark PROVEN/N/A/BLOCKED with evidence.
@@ -146,3 +148,29 @@ PROVEN sequence:
 13. Replacement proof was persisted as `CLEAR / FRESH`.
 
 This sequence is independent of the canonical seeded scenarios and proves the core product loop on user-supplied content.
+
+
+## Runtime proof — 2026-10-04 no-action live refresh + operator filters
+
+PROVEN — Live Content API → Context MCP automatic product refresh:
+- portfolio was already open
+- user saved a structured change in Scenario Lab
+- user did not click `Refresh graph`
+- Live integration receipt advanced to `AUTO #2`
+- receipt explicitly reports `Sanity Live Content API → Context MCP reread`
+- completed automatic graph refresh count advanced
+- the change-centric rights view updated materially: the custom right moved from 2 changed fields to 1 changed field
+
+PROVEN — operator filter composition:
+- initial portfolio showed 3 of 3 usages
+- asset filter reduced visible set to 1 of 3
+- adding an incompatible causal-right filter reduced result to 0 of 3
+- UI correctly reported 2 active filters
+- this proves intersection/composition rather than independent cosmetic controls
+
+RUNTIME PROVEN — change-centric view core:
+- user-created rights document is listed as a changed right
+- published and proposed revisions are visible
+- exact field before/after values are visible
+- linked downstream usage is visible
+- after remediation, linked usage correctly remains `CLEAR → CLEAR` even while a rights field still differs, proving downstream effect is computed from the whole usage context rather than from field-change presence alone
