@@ -15,11 +15,13 @@ proven:
 
 active:
   gate_4:
-    name: Live Product Surface
+    name: Product Maximum Exploitation / Live Product Depth
     status: ACTIVE
-    plan: evidence/gates/GATE-4-LIVE-PRODUCT-SURFACE-PLAN.md
-    primary_question: "What breaks if this rights change goes live?"
-    flow: "What breaks → Why → Evidence → Repair → Approve → Recompile"
+    plan: product/PRODUCT-MAXIMUM-EXPLOITATION.md
+    gap_review: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+    rule: vertical slice is entry point, not Definition of Done
+    primary_mode: live product
+    fallback_mode: seeded reproducibility harness
 
 architecture_invariants:
   statusAuthority: deterministic evaluator only
@@ -29,7 +31,12 @@ architecture_invariants:
   mutationBoundary: explicit human approval required
 
 next:
-  - implement product surface
-  - keep live path primary
-  - add deterministic seeded fallback only for demo reliability
-  - prove operators can browse and resolve multiple live impacts without Sanity Manage or terminal
+  - continue product exploitation beyond the current vertical slice
+  - prove load-bearing live integrations
+  - implement change-centric blast radius
+  - implement filters/search and missing-evidence/UNKNOWN path
+  - exercise multiple remediation classes
+  - add constrained product agent
+  - test recovery paths
+  - evaluate App SDK and Workflows
+  - do not return to demo-polish-first work until the depth gap review is materially closed
