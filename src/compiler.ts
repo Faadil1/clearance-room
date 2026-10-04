@@ -42,26 +42,70 @@ function evaluatePaid(graph: UsageGraph): Finding {
   return {axis: 'paid', status: 'CLEAR', causedBy: rights.map(sourceId), reason: 'Every governing right explicitly allows paid advertising.'}
 }
 
+function nextDay(isoDate: string) {
+  const date = new Date(`${isoDate}T00:00:00Z`)
+  date.setUTCDate(date.getUTCDate() + 1)
+  return date.toISOString().slice(0, 10)
+}
+
 function evaluateWindow(graph: UsageGraph): Finding {
   const start = Date.parse(graph.startDate)
   const end = Date.parse(graph.endDate)
   if (!Number.isFinite(start) || !Number.isFinite(end) || start > end) {
     return {axis: 'window', status: 'UNKNOWN', causedBy: [], reason: 'The usage request has an invalid or incomplete date window.'}
   }
+
   const unknown = graph.asset.rights.filter((r) => !r.validFrom || !r.validTo)
-  if (unknown.length) return {axis: 'window', status: 'UNKNOWN', causedBy: unknown.map(sourceId), reason: 'At least one governing right is missing a validity boundary.'}
-  const blocking = graph.asset.rights.filter((r) => start < Date.parse(r.validFrom!) || end > Date.parse(r.validTo!))
-  if (blocking.length) return {axis: 'window', status: 'BLOCK', causedBy: blocking.map(sourceId), reason: 'The requested campaign window extends outside at least one governing right.'}
-  return {axis: 'window', status: 'CLEAR', causedBy: graph.asset.rights.map(sourceId), reason: 'The campaign window is contained by every governing right.'}
+  if (unknown.length) {
+    return {axis: 'window', status: 'UNKNOWN', causedBy: unknown.map(sourceId), reason: 'At least one governing right is missing a validity boundary.'}
+  }
+
+  const noOverlap = graph.asset.rights.filter((r) => end < Date.parse(r.validFrom!) || start > Date.parse(r.validTo!))
+  if (noOverlap.length) {
+    return {
+      axis: 'window',
+      status: 'BLOCK',
+      causedBy: noOverlap.map(sourceId),
+      reason: 'The requested campaign window has no valid overlap with at least one governing right.',
+    }
+  }
+
+  const partial = graph.asset.rights.filter((r) => start < Date.parse(r.validFrom!) || end > Date.parse(r.validTo!))
+  if (partial.length) {
+    const earliestExpiry = partial
+      .map((r) => r.validTo!)
+      .sort()[0]
+    return {
+      axis: 'window',
+      status: 'REVIEW',
+      causedBy: partial.map(sourceId),
+      reason: `The usage is cleared only through ${earliestExpiry}; the requested campaign continues beyond that boundary.`,
+      allowedThrough: earliestExpiry,
+      blockedFrom: nextDay(earliestExpiry),
+    }
+  }
+
+  return {
+    axis: 'window',
+    status: 'CLEAR',
+    causedBy: graph.asset.rights.map(sourceId),
+    reason: 'The campaign window is contained by every governing right.',
+  }
 }
 
 export function compileClearance(graph: UsageGraph): ClearanceProof {
   const findings = [evaluateTerritory(graph), evaluateChannel(graph), evaluatePaid(graph), evaluateWindow(graph)]
+  const sourceRevisions = [
+    {id: graph._id, rev: graph._rev},
+    {id: graph.asset._id, rev: graph.asset._rev},
+    ...graph.asset.rights.map((r) => ({id: r._id, originalId: r._originalId, rev: r._rev})),
+  ]
+
   return {
     usageRequestId: graph._id,
     assetId: graph.asset._id,
     status: overall(findings),
     findings,
-    sourceRevisions: graph.asset.rights.map((r) => ({id: r._id, originalId: r._originalId, rev: r._rev})),
+    sourceRevisions,
   }
 }
