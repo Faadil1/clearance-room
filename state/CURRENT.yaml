@@ -18,40 +18,13 @@ gates:
   knowledge_base_grounding_3:
     status: PROVEN
     evidence: evidence/gates/GATE-3-KNOWLEDGE-BASE-PASS.md
-  live_product_surface_4:
+  product_depth_expansion_4:
     status: ACTIVE
-    plan: evidence/gates/GATE-4-LIVE-PRODUCT-SURFACE-PLAN.md
-    hero_flow:
-      - what_breaks
-      - why
-      - source_evidence
-      - proposed_repair
-      - human_approval
-      - recompile
-
-integrations:
-  context_mcp_graph_read:
-    status: ACTIVE
-    role: load-bearing published/drafts rights-graph read path
-  live_content_api:
-    status: ACTIVE
-    role: realtime invalidation stream with draft changes included
-  context_knowledge_base:
-    status: PROVEN
-    role: source-bound evidence retrieval
-  content_lake_mutations:
-    status: PROVEN
-    role: human-approved writes and proof persistence
-  ai_agent_orchestration:
-    status: ACTIVE
-    role: explanation/planning layer constrained by deterministic receipts
-  app_sdk:
-    status: ACTIVE
-    role: evaluate native Sanity app surface for challenge depth
-  workflows:
-    status: BLOCKED
-    role: approval lifecycle integration
-    blocker: availability/plan and API fit not yet verified
+    plan: product/PRODUCT-MAXIMUM-EXPLOITATION.md
+    gap_review: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+    rule: vertical_slice_is_not_definition_of_done
+    primary_mode: live_product
+    secondary_mode: seeded_reproducibility_harness
 
 truth_boundaries:
   - deterministic evaluator is the only authority for CLEAR/BLOCK/REVIEW/UNKNOWN
@@ -79,15 +52,12 @@ proven_runtime:
     validTo: 2026-10-31
 
 next:
-  - prove Context MCP is load-bearing in the product runtime
-  - prove Live Content API auto-refreshes on published and draft changes
-  - add constrained AI agent orchestration over deterministic + MCP receipts
-  - evaluate App SDK as native Sanity surface
-  - verify Workflows availability and fit
-  - scan all live usage requests for published vs drafts impact
-  - rank and browse affected usages
-  - open any impact with proof history and source evidence
-  - offer only remediation actions justified by the observed finding
-  - require explicit human approval before any mutation
-  - recompile and persist replacement proof after write
-  - keep seeded reset only as reproducibility harness
+  - prove Context MCP plus Live Content API as load-bearing runtime integrations
+  - add change-centric rights-document blast-radius view
+  - add product filters and search
+  - exercise window REVIEW remediation end-to-end
+  - add UNKNOWN and missing-evidence path
+  - add constrained agent orchestration using MCP/KB plus deterministic receipts
+  - add degraded-integration and write-failure recovery
+  - evaluate App SDK and Workflows with explicit PROVEN/N/A/BLOCKED verdicts
+  - rerun Product Depth Gap Review before any submission/demo-polish phase
