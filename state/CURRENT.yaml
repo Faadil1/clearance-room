@@ -1,0 +1,40 @@
+project: clearance-room
+source_of_truth: github
+branch: gate/proof-remediation-2
+updated: 2026-10-04
+
+concept:
+  name: Clearance Room
+  thesis: "See what breaks before a rights change goes live."
+  mechanism: pre-publish rights impact analysis over a deterministic Sanity rights graph
+
+gates:
+  technical_reality_1:
+    status: PROVEN
+    evidence: evidence/gates/GATE-1-TECHNICAL-REALITY-PASS.md
+  proof_remediation_2:
+    status: ACTIVE
+    objectives:
+      - persist clearanceProof as first-class structured content
+      - add music-right partial-window scenario
+      - prove REVIEW with allowedThrough/blockedFrom
+      - require explicit human approval before consequential mutation
+      - mark prior proof STALE in the same transaction as the usage mutation
+      - recompile to a new CLEAR proof
+      - add Knowledge Base evidence after deterministic write/recompute loop is proven
+
+truth_boundaries:
+  - deterministic evaluator is the only authority for CLEAR/BLOCK/REVIEW/UNKNOWN
+  - agent may explain or propose but may not override status
+  - Context MCP remains read-only
+  - writes use a separate Sanity mutation path
+  - any changed intent or governing source revision invalidates prior proof
+
+next:
+  - pull gate/proof-remediation-2
+  - run npm install
+  - run npm test
+  - deploy updated schema
+  - run npm run seed
+  - run npm run gate:proof
+  - run npm run gate:remediate -- --approve
