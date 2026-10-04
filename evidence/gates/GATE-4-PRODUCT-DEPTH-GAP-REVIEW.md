@@ -66,9 +66,17 @@ RUNTIME PROVEN — operator filtering core:
 - IMPLEMENTED / individual runtime proof pending: free-text search, proposed status, territory, channel
 - visible result count + clear-all are present
 
+IMPLEMENTED / runtime proof pending:
+- UNKNOWN / missing-evidence product path
+  - proposed paid permission supports explicit NOT DOCUMENTED
+  - proposed validity end supports explicit NOT DOCUMENTED
+  - Sanity draft fields are genuinely unset rather than replaced with sentinel values
+  - deterministic compiler already maps missing paid permission / validity / territory / channel grants to UNKNOWN
+  - UNKNOWN exposes no consequential remediation and explicitly asks for evidence completion
+  - 3 tests cover missing validity, missing paid permission, and missing territory grant
+
 MISSING / not yet load-bearing:
 - agent orchestration in the product
-- UNKNOWN / missing-evidence product path
 - live integration degraded/offline recovery
 - write-failure recovery
 - UNKNOWN / missing-evidence product path
@@ -78,7 +86,7 @@ MISSING / not yet load-bearing:
 
 ## Immediate product expansion order
 
-1. Add explicit UNKNOWN path by allowing required structured evidence to be absent in a controlled user-created record.
+1. Runtime-prove UNKNOWN by marking a proposed validity end NOT DOCUMENTED on the user-created multi-right scenario.
 4. Runtime-prove free-text/status/territory/channel operator filters.
 5. Runtime-prove user-created scenario deletion.
 7. Add product agent using MCP/KB + deterministic receipts.
