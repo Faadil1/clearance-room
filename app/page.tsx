@@ -110,23 +110,39 @@ type ImpactDetail = {
   observedAt: string
 }
 
+type EvidenceRecord = {
+  documentId: string
+  title: string
+  kind: string | null
+  channels: string | null
+  territories: string | null
+  paidAdvertising: string | null
+  validFrom: string | null
+  validTo: string | null
+  sourceClause: string
+  source: string
+  revision?: string | null
+}
+
 type Evidence = {
   knowledgeBase: string
   entryPath: string
-  evidence: {
-    documentId: string
-    title: string
-    kind: string | null
-    channels: string | null
-    territories: string | null
-    paidAdvertising: string | null
-    validFrom: string | null
-    validTo: string | null
-    sourceClause: string
-    source: string
+  requestedDocumentId: string
+  canonicalDocumentId: string
+  kb: {
+    status: 'indexed' | 'not_indexed'
+    evidence: EvidenceRecord | null
+    reason?: string
   }
-  raw: string
-  authority: string
+  structured: {
+    status: 'available' | 'missing'
+    evidence: EvidenceRecord | null
+  }
+  authority: {
+    knowledgeBase: string
+    structuredGraph: string
+    clearanceStatus: string
+  }
   observedAt: string
 }
 
@@ -661,7 +677,7 @@ export default function Home() {
                       <code>{right.id}</code>
                       <p>{right.sourceClause || 'No structured source clause.'}</p>
                       <button className="secondaryButton" onClick={() => loadEvidence(right.id)} disabled={busy !== null}>
-                        {busy === 'evidence' ? 'Retrieving…' : 'Open published evidence'}
+                        {busy === 'evidence' ? 'Retrieving…' : 'Open source evidence'}
                       </button>
                     </div>
                   ))}
@@ -670,32 +686,50 @@ export default function Home() {
             </article>
           </div>
 
-          {evidence && (
-            <article className="panel evidencePanel">
-              <div className="panelHeading">
-                <span className="stepIndex">03</span>
-                <div>
-                  <p className="cardKicker">Source-bound evidence</p>
-                  <h3>{evidence.evidence.title}</h3>
+          {evidence && (() => {
+            const sourceEvidence = evidence.kb.evidence || evidence.structured.evidence
+            return (
+              <article className="panel evidencePanel">
+                <div className="panelHeading">
+                  <span className="stepIndex">03</span>
+                  <div>
+                    <p className="cardKicker">Source-bound evidence</p>
+                    <h3>{sourceEvidence?.title || evidence.canonicalDocumentId}</h3>
+                  </div>
+                  <span className="authorityBadge">
+                    {evidence.kb.status === 'indexed' ? 'KB INDEXED' : 'STRUCTURED SOURCE'}
+                  </span>
                 </div>
-                <span className="authorityBadge">EVIDENCE ONLY</span>
-              </div>
-              <blockquote>{evidence.evidence.sourceClause}</blockquote>
-              <div className="miniReceipt">
-                <span>Document</span><strong>{evidence.evidence.documentId}</strong>
-                <span>Kind</span><strong>{evidence.evidence.kind || '—'}</strong>
-                <span>Territories</span><strong>{evidence.evidence.territories || '—'}</strong>
-                <span>Channels</span><strong>{evidence.evidence.channels || '—'}</strong>
-                <span>Paid advertising</span><strong>{evidence.evidence.paidAdvertising || '—'}</strong>
-                <span>Valid through</span><strong>{evidence.evidence.validTo || '—'}</strong>
-                <span>Source</span><strong>{evidence.evidence.source}</strong>
-              </div>
-              <details>
-                <summary>Raw Knowledge Base receipt</summary>
-                <pre>{evidence.raw}</pre>
-              </details>
-            </article>
-          )}
+
+                {evidence.kb.status === 'not_indexed' && (
+                  <div className="proposalNote">
+                    Knowledge Base evidence is not indexed for this document yet. Clearance Room will not substitute an unrelated entry. The source shown below comes from the live published rights graph and remains non-normative.
+                  </div>
+                )}
+
+                {sourceEvidence ? (
+                  <>
+                    <blockquote>{sourceEvidence.sourceClause}</blockquote>
+                    <div className="miniReceipt">
+                      <span>Document</span><strong>{sourceEvidence.documentId}</strong>
+                      <span>Kind</span><strong>{sourceEvidence.kind || '—'}</strong>
+                      <span>Territories</span><strong>{sourceEvidence.territories || '—'}</strong>
+                      <span>Channels</span><strong>{sourceEvidence.channels || '—'}</strong>
+                      <span>Paid advertising</span><strong>{sourceEvidence.paidAdvertising || '—'}</strong>
+                      <span>Valid through</span><strong>{sourceEvidence.validTo || '—'}</strong>
+                      <span>Source</span><strong>{sourceEvidence.source}</strong>
+                      <span>KB state</span><strong>{evidence.kb.status}</strong>
+                      <span>Status authority</span><strong>deterministic evaluator only</strong>
+                    </div>
+                  </>
+                ) : (
+                  <div className="errorBanner">
+                    No source-bound evidence is currently available for this rights document.
+                  </div>
+                )}
+              </article>
+            )
+          })()}
 
           <div className="splitGrid">
             <article className="panel">
