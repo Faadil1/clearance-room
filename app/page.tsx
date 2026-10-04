@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from 'react'
 import RightsChangePortfolio, {
   type RightsChangePortfolioData,
 } from './components/RightsChangePortfolio'
+import ScenarioLab from './components/ScenarioLab'
 
 type Status = 'CLEAR' | 'BLOCK' | 'REVIEW' | 'UNKNOWN'
 
@@ -206,6 +207,7 @@ export default function Home() {
           id: typeof payload.id === 'string' ? payload.id : null,
           observedAt,
         })
+        setLiveRefreshCount((count) => count + 1)
 
         if (scannedRef.current) {
           const [impactResponse, changeResponse] = await Promise.all([
@@ -218,9 +220,6 @@ export default function Home() {
           ])
           if (impactResponse.ok) setPortfolio(refreshedImpacts)
           if (changeResponse.ok) setRightsChanges(refreshedChanges)
-          if (impactResponse.ok || changeResponse.ok) {
-            setLiveRefreshCount((count) => count + 1)
-          }
         }
 
         if (openUsageRef.current) {
@@ -408,6 +407,13 @@ export default function Home() {
         )}
 
         {error && <div className="errorBanner" role="alert">{error}</div>}
+      </section>
+
+      <section className="workspace scenarioWorkspace">
+        <ScenarioLab
+          onOpenUsage={openImpact}
+          liveRefreshCount={liveRefreshCount}
+        />
       </section>
 
       {portfolio && (
