@@ -1,20 +1,19 @@
 import {NextResponse} from 'next/server'
-import {compileClearance} from '../../../src/compiler'
-import {
-  getHeroGraphs,
-  HERO_BASELINE_PROOF_ID,
-  HERO_REMEDIATED_PROOF_ID,
-  HERO_USAGE_ID,
-} from '../../../src/heroScenario'
 import {proofDocument} from '../../../src/proof'
+import {
+  getUsageImpact,
+  impactProofId,
+  replacementProofId,
+} from '../../../src/productSurface'
 import {getServerSanity} from '../../../src/serverSanity'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
   try {
-    const serverSanity = getServerSanity()
+    const client = getServerSanity()
     const body = await request.json().catch(() => ({}))
+
     if (body?.approved !== true) {
       return NextResponse.json(
         {error: 'Explicit human approval is required before mutation'},
@@ -22,80 +21,99 @@ export async function POST(request: Request) {
       )
     }
 
-    const baseline = await serverSanity.getDocument<any>(HERO_BASELINE_PROOF_ID)
+    const usageRequestId =
+      typeof body?.usageRequestId === 'string' ? body.usageRequestId : null
+    const repairId =
+      typeof body?.repairId === 'string' ? body.repairId : null
+
+    if (!usageRequestId || !repairId) {
+      return NextResponse.json(
+        {error: 'usageRequestId and repairId are required'},
+        {status: 400},
+      )
+    }
+
+    const baselineId = impactProofId(usageRequestId)
+    const baseline = await client.getDocument<any>(baselineId)
     if (!baseline) {
       return NextResponse.json(
-        {error: 'Run impact analysis before approving remediation'},
+        {error: 'Open this impact first so a baseline proposed proof is persisted'},
         {status: 409},
       )
     }
 
     if (baseline.isStale) {
       return NextResponse.json(
-        {error: 'The baseline proof is already stale. Reset the demo before replaying.'},
+        {error: 'The baseline proof is already stale. Re-open the impact before another repair.'},
         {status: 409},
       )
     }
 
-    const {drafts: beforeGraph} = await getHeroGraphs()
-    const before = compileClearance(beforeGraph)
-
-    if (before.status !== 'BLOCK') {
+    const before = await getUsageImpact(usageRequestId, false)
+    const repair = before.repairs.find((option) => option.id === repairId)
+    if (!repair) {
       return NextResponse.json(
-        {
-          error: `Expected BLOCK before remediation, observed ${before.status}. Reset the hero scenario first.`,
-        },
+        {error: 'That remediation is not justified by the currently observed findings'},
         {status: 409},
       )
     }
 
-    await serverSanity
+    const tx = client
       .transaction()
-      .patch(HERO_BASELINE_PROOF_ID, (patch) =>
+      .patch(baselineId, (patch) =>
         patch.set({
           isStale: true,
           staleReason: 'HUMAN_APPROVED_USAGE_REQUEST_MUTATION',
         }),
       )
-      .patch(HERO_USAGE_ID, (patch) => patch.set({isPaid: false}))
-      .commit()
 
-    const {drafts: afterGraph} = await getHeroGraphs()
-    const after = compileClearance(afterGraph)
-
-    if (after.status !== 'CLEAR') {
-      throw new Error(`Post-mutation recompile expected CLEAR, observed ${after.status}`)
+    if (repair.id === 'switch_to_organic') {
+      tx.patch(usageRequestId, (patch) => patch.set({isPaid: false}))
+    } else if (repair.id === 'shorten_campaign') {
+      tx.patch(usageRequestId, (patch) => patch.set({endDate: repair.mutation.value}))
     }
 
-    const replacement = await serverSanity.createOrReplace(
-      proofDocument(HERO_REMEDIATED_PROOF_ID, afterGraph, after, {
+    await tx.commit()
+
+    const after = await getUsageImpact(usageRequestId, false)
+    const replacementId = replacementProofId(usageRequestId)
+    const graphClient = getServerSanity()
+    const proposedGraph = await graphClient.fetch<any>(
+      `*[_type == "usageRequest" && _id == $id][0]{
+        _id,_rev,title,territory,channel,isPaid,startDate,endDate,
+        asset->{_id,_rev,title,rights[]->{_id,_rev,_originalId,title,kind,allowedTerritories,allowedChannels,paidAdvertisingAllowed,validFrom,validTo,sourceClause}}
+      }`,
+      {id: usageRequestId},
+      {perspective: 'drafts'},
+    )
+
+    const replacement = await client.createOrReplace(
+      proofDocument(replacementId, proposedGraph, after.proposed, {
         perspective: 'drafts',
-        supersedes: HERO_BASELINE_PROOF_ID,
+        supersedes: baselineId,
       }),
     )
 
     return NextResponse.json({
-      action: 'switch_campaign_to_organic',
+      action: repair.id,
+      label: repair.label,
       approved: true,
-      mutation: {
-        usageRequestId: HERO_USAGE_ID,
-        field: 'isPaid',
-        from: true,
-        to: false,
-      },
+      usageRequestId,
+      mutation: repair.mutation,
       previousProof: {
-        id: HERO_BASELINE_PROOF_ID,
-        status: before.status,
+        id: baselineId,
+        status: before.proposed.status,
         stale: true,
       },
       newProof: {
         id: replacement._id,
         rev: replacement._rev,
-        status: after.status,
+        status: after.proposed.status,
         stale: false,
-        supersedes: HERO_BASELINE_PROOF_ID,
+        supersedes: baselineId,
       },
-      recompiled: after,
+      recompiled: after.proposed,
+      remainingRepairs: after.repairs,
       observedAt: new Date().toISOString(),
       truth: {
         mutationBoundary: 'explicit-human-approval',
