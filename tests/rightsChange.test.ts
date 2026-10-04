@@ -57,8 +57,10 @@ describe('rights change field diff', () => {
 
     const fields = rightsFieldDiff(null, proposed).map((item) => item.field)
 
-    expect(fields).toContain('title')
-    expect(fields).toContain('kind')
+    expect(fields).toContain('allowedTerritories')
+    expect(fields).toContain('allowedChannels')
     expect(fields).toContain('paidAdvertisingAllowed')
+    expect(fields).not.toContain('title')
+    expect(fields).not.toContain('kind')
   })
 })
