@@ -161,6 +161,8 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [liveState, setLiveState] = useState<'connecting' | 'connected' | 'reconnecting' | 'offline'>('connecting')
   const [lastLiveSync, setLastLiveSync] = useState<string | null>(null)
+  const [lastLiveEvent, setLastLiveEvent] = useState<{type: string; id: string | null; observedAt: string} | null>(null)
+  const [liveRefreshCount, setLiveRefreshCount] = useState(0)
   const scannedRef = useRef(false)
   const openUsageRef = useRef<string | null>(null)
 
@@ -193,12 +195,21 @@ export default function Home() {
         if (payload.type !== 'message' && payload.type !== 'restart') return
 
         setLiveState('connected')
-        setLastLiveSync(payload.observedAt || new Date().toISOString())
+        const observedAt = payload.observedAt || new Date().toISOString()
+        setLastLiveSync(observedAt)
+        setLastLiveEvent({
+          type: payload.type,
+          id: typeof payload.id === 'string' ? payload.id : null,
+          observedAt,
+        })
 
         if (scannedRef.current) {
           const response = await fetch('/api/impacts', {method: 'POST'})
           const refreshed = await response.json()
-          if (response.ok) setPortfolio(refreshed)
+          if (response.ok) {
+            setPortfolio(refreshed)
+            setLiveRefreshCount((count) => count + 1)
+          }
         }
 
         if (openUsageRef.current) {
@@ -317,7 +328,7 @@ export default function Home() {
   }
 
   async function resetSeededHarness() {
-    if (!window.confirm('Reset the seeded Winter Canada scenario to paid media and remove its product proof records?')) return
+    if (!window.confirm('Restore the canonical seeded scenario? This resets both usage requests, the draft Maya paid restriction, and their proof records.')) return
     setBusy('reset')
     setError(null)
     try {
@@ -413,7 +424,7 @@ export default function Home() {
             <div>
               <span>Realtime</span>
               <strong>Sanity Live Content API</strong>
-              <small>{liveState === 'connected' ? 'connected · drafts included' : liveState}</small>
+              <small>{liveState === 'connected' ? `connected · drafts included · ${liveRefreshCount} auto-refresh${liveRefreshCount === 1 ? '' : 'es'}` : liveState}</small>
             </div>
             <div>
               <span>Evidence</span>
@@ -424,6 +435,22 @@ export default function Home() {
               <span>Writes</span>
               <strong>Content Lake transaction</strong>
               <small>human-approved · proof staleness atomic</small>
+            </div>
+          </div>
+
+          <div className="liveReceipt">
+            <span className={`liveDot liveDot--${liveState}`} />
+            <div>
+              <strong>Live integration receipt</strong>
+              <span>
+                {lastLiveEvent
+                  ? `${lastLiveEvent.type} event${lastLiveEvent.id ? ` · ${lastLiveEvent.id}` : ''} · ${formatWhen(lastLiveEvent.observedAt)}`
+                  : 'Waiting for the next Sanity content event…'}
+              </span>
+            </div>
+            <div>
+              <strong>{liveRefreshCount}</strong>
+              <span>automatic graph refreshes</span>
             </div>
           </div>
 
@@ -730,7 +757,7 @@ export default function Home() {
           <span>Live product · deterministic decisions · source-bound evidence · human-approved writes.</span>
         </div>
         <button className="textButton" onClick={resetSeededHarness} disabled={busy !== null}>
-          {busy === 'reset' ? 'Resetting…' : 'Reset seeded reproducibility harness'}
+          {busy === 'reset' ? 'Restoring…' : 'Restore canonical test scenario'}
         </button>
       </footer>
     </main>
