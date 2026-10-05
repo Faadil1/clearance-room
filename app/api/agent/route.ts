@@ -1,4 +1,5 @@
 import {NextResponse} from 'next/server'
+import {normalizePerspective} from '../../../src/contextGraph'
 import {investigateUsageWithAgent} from '../../../src/clearanceAgent'
 
 export const dynamic = 'force-dynamic'
@@ -8,6 +9,9 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}))
     const usageRequestId =
       typeof body?.usageRequestId === 'string' ? body.usageRequestId : null
+    const proposedPerspective = normalizePerspective(
+      typeof body?.proposedPerspective === 'string' ? body.proposedPerspective : 'drafts',
+    )
 
     if (!usageRequestId) {
       return NextResponse.json(
@@ -16,7 +20,9 @@ export async function POST(request: Request) {
       )
     }
 
-    return NextResponse.json(await investigateUsageWithAgent(usageRequestId))
+    return NextResponse.json(
+      await investigateUsageWithAgent(usageRequestId, proposedPerspective),
+    )
   } catch (error) {
     return NextResponse.json(
       {
