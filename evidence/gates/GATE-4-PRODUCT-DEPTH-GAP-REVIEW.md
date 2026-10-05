@@ -127,12 +127,17 @@ Observed on runtime commit `17463ebed6b4e2e3038119fde2625c5bae1d760d`:
 - Proof Integrity = PASS_WITH_HISTORICAL_WARNINGS
 - package-lock.json committed
 
-Still open:
-- Engineering Quality receipt must be rerun after generated-file dirt handling correction and committed against the new head
-- 11 high-severity dependency vulnerabilities remain disclosed; 0 critical were observed by the critical gate; do not force a breaking dependency downgrade under deadline
-- current TRACE design assurance receipt is not recorded locally
-- clean-room zero-state re-execution is not yet externally observed
+Still open / protected:
+- 11 high-severity dependency vulnerabilities remain disclosed accepted debt; 0 critical were observed; do not force a breaking dependency downgrade under deadline
+- genuine write-outcome-unknown recovery requires an explicitly authorized controlled consequential failure
+- stable public runtime/commit binding is not yet frozen
+- user-created scenario deletion runtime proof requires explicit disposable-scenario approval if still desired
 - final Project Finisher / Final Canonical Assurance activates only after BUILD_CANDIDATE_READY
+
+Now PROVEN:
+- external clean-room npm ci re-execution on GitHub-hosted runner
+- clean Engineering Quality PASS_WITH_ACCEPTED_DEBT with no dirty-tree finding
+- TRACE design assurance PASS_WITH_ACCEPTED_DEBT on the evaluator-facing desktop runtime
 
 ## Immediate product expansion / assurance order
 
@@ -344,3 +349,27 @@ Still BLOCKED / not observed:
 - real Content Release id runtime or explicit no-release classification
 - external zero-state clean-room replay
 - current TRACE assurance
+
+
+## TRACE runtime design assurance — 2026-10-05
+
+Verdict: **PASS_WITH_ACCEPTED_DEBT**
+
+Observed:
+- core thesis and live integration roles are legible above the fold
+- deterministic status transition and causal rights are visually primary
+- proof history and bounded Content Agent are clearly separated
+- `WRITE AUTHORITY · NONE` is explicit
+- UNKNOWN remediation abstention is visible and understandable
+- status labels use text, not color alone
+- product reads as domain-native rights operations software rather than a generic AI dashboard
+- responsive collapse and reduced-motion handling exist in CSS
+
+Accepted non-blocking debt:
+- long proof histories create vertical density
+- custom focus-visible styling is not explicit
+- mobile/reduced-motion behavior is implemented but not runtime-recorded in this receipt
+- long raw identifiers remain visible in expert surfaces
+
+Evidence:
+- `evidence/assurance/TRACE-DESIGN-ASSURANCE-2026-10-05.md`
