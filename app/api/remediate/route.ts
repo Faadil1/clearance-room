@@ -10,6 +10,16 @@ import {getServerSanity} from '../../../src/serverSanity'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
+  let phase:
+    | 'validation'
+    | 'baseline'
+    | 'transaction'
+    | 'post_commit_recompile'
+    | 'replacement_proof' = 'validation'
+  let usageRequestId: string | null = null
+  let effectiveBaselineId: string | null = null
+  let recoveryKey: string | null = null
+
   try {
     const client = getServerSanity()
     const body = await request.json().catch(() => ({}))
@@ -21,7 +31,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const usageRequestId =
+    usageRequestId =
       typeof body?.usageRequestId === 'string' ? body.usageRequestId : null
     const repairId =
       typeof body?.repairId === 'string' ? body.repairId : null
@@ -35,13 +45,14 @@ export async function POST(request: Request) {
       )
     }
 
-    let effectiveBaselineId = baselineId
+    phase = 'baseline'
+    effectiveBaselineId = baselineId
     let baseline = effectiveBaselineId
       ? await client.getDocument<any>(effectiveBaselineId)
       : null
 
     if (!baseline) {
-      const snapshot = await getUsageImpact(usageRequestId, true)
+      const snapshot = await getUsageImpact(usageRequestId, true, 'drafts')
       effectiveBaselineId = snapshot.persistedProof?.id || null
       baseline = effectiveBaselineId
         ? await client.getDocument<any>(effectiveBaselineId)
@@ -64,12 +75,12 @@ export async function POST(request: Request) {
 
     if (baseline.isStale) {
       return NextResponse.json(
-        {error: 'The baseline proof is already stale. Re-open the impact before another repair.'},
+        {error: 'The baseline proof is already stale. Reconcile or reopen the impact before another repair.'},
         {status: 409},
       )
     }
 
-    const before = await getUsageImpact(usageRequestId, false)
+    const before = await getUsageImpact(usageRequestId, false, 'drafts')
     const repair = before.repairs.find((option) => option.id === repairId)
     if (!repair) {
       return NextResponse.json(
@@ -78,12 +89,21 @@ export async function POST(request: Request) {
       )
     }
 
+    recoveryKey = crypto.randomUUID()
+    const approvedMutationValue = String(repair.mutation.value)
+
+    phase = 'transaction'
     let transaction = client
       .transaction()
       .patch(effectiveBaselineId, (patch) =>
         patch.set({
           isStale: true,
           staleReason: 'HUMAN_APPROVED_USAGE_REQUEST_MUTATION',
+          approvedAction: repair.id,
+          approvedMutationField: repair.mutation.field,
+          approvedMutationValue,
+          approvedAt: new Date().toISOString(),
+          recoveryKey,
         }),
       )
 
@@ -96,9 +116,10 @@ export async function POST(request: Request) {
       )
     }
 
-    await transaction.commit()
+    await transaction.commit({visibility: 'sync'})
 
-    const after = await getUsageImpact(usageRequestId, false)
+    phase = 'post_commit_recompile'
+    const after = await getUsageImpact(usageRequestId, false, 'drafts')
     const replacementId = replacementProofId(usageRequestId)
     const graphClient = getServerSanity()
     const proposedGraph = await graphClient.fetch<any>(
@@ -110,6 +131,7 @@ export async function POST(request: Request) {
       {perspective: 'drafts'},
     )
 
+    phase = 'replacement_proof'
     const replacement = await client.create(
       proofDocument(replacementId, proposedGraph, after.proposed, {
         perspective: 'drafts',
@@ -121,6 +143,7 @@ export async function POST(request: Request) {
       action: repair.id,
       label: repair.label,
       approved: true,
+      recoveryKey,
       usageRequestId,
       mutation: repair.mutation,
       previousProof: {
@@ -141,14 +164,31 @@ export async function POST(request: Request) {
       truth: {
         mutationBoundary: 'explicit-human-approval',
         statusAuthority: 'deterministic-evaluator',
+        writeProtocol: 'atomic-business-mutation_then_recompile_then_superseding-proof',
       },
     })
   } catch (error) {
+    const postCommit = phase === 'post_commit_recompile' || phase === 'replacement_proof'
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Remediation failed',
+        code: postCommit
+          ? 'WRITE_COMMITTED_RECONCILIATION_REQUIRED'
+          : phase === 'transaction'
+            ? 'WRITE_OUTCOME_UNKNOWN'
+            : 'REMEDIATION_FAILED',
+        phase,
+        usageRequestId,
+        baselineProofId: effectiveBaselineId,
+        recoveryKey,
+        retrySafe: false,
+        recovery: postCommit
+          ? 'The business transaction completed before this failure. Reconcile the write outcome; do not repeat the mutation.'
+          : phase === 'transaction'
+            ? 'Do not retry blindly. Reconcile the baseline proof and usage state first.'
+            : 'No consequential write was attempted.',
       },
-      {status: 500},
+      {status: 503},
     )
   }
 }
