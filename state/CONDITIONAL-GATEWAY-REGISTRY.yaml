@@ -69,11 +69,15 @@ gates:
     status: PROVEN
     evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
   UNKNOWN_MISSING_EVIDENCE:
-    status: ACTIVE
-    blocker: implementation exists but runtime UNKNOWN consequence is not yet observed
+    status: PROVEN
+    evidence:
+      - evidence/assurance/UNKNOWN-AGENT-RUNTIME-2026-10-05.md
+    note: user-created proposed validTo was set to NOT DOCUMENTED; live product and read-only assurance independently observed CLEAR to UNKNOWN with window UNKNOWN and no invented remediation
   AGENT_ORCHESTRATION:
-    status: ACTIVE
-    blocker: bounded Context MCP + deterministic receipt + Sanity Content Agent implementation exists; real Content Agent narration runtime proof remains pending
+    status: PROVEN
+    evidence:
+      - evidence/assurance/UNKNOWN-AGENT-RUNTIME-2026-10-05.md
+    note: live operator run observed GENERATED Sanity Content Agent narration over deterministic CLEAR to UNKNOWN receipt; Context MCP, evaluator, remediation registry and Content Agent tool trace were active; write authority remained NONE
   EXTERNAL_DEPENDENCY_FAILURE:
     status: ACTIVE
     blocker: fail-closed/degraded recovery implementation and deterministic policy tests exist; real controlled dependency-failure runtime observation remains pending
@@ -142,8 +146,6 @@ terminal_fail_closed:
   BUILD_CANDIDATE_READY:
     allowed: false
     blocking_gates:
-      - UNKNOWN_MISSING_EVIDENCE
-      - AGENT_ORCHESTRATION
       - EXTERNAL_DEPENDENCY_FAILURE
       - WRITE_FAILURE_RECOVERY
       - ENGINEERING_QUALITY_ASSURANCE
