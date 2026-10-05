@@ -364,7 +364,7 @@ export async function scanRightsChanges(proposedPerspective: ContentPerspective 
         kind: proposedRight.kind,
         publishedRev: currentRight?._rev || null,
         proposedRev: proposedRight._rev || null,
-        draftDocumentId: proposedRight._originalId || proposedRight._id,
+        proposedDocumentId: proposedRight._originalId || proposedRight._id,
       },
       fields,
       downstream,
