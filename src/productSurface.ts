@@ -223,8 +223,12 @@ export async function getUsageImpact(
     observedAt: new Date().toISOString(),
     truth: {
       currentPerspective: 'published',
-      proposedPerspective: 'drafts',
+      proposedPerspective: proposedPerspectiveId,
       statusAuthority: 'deterministic-evaluator',
+      graphReadIntegration: 'sanity-context-mcp',
+      mutationMode: proposedPerspectiveId === 'drafts'
+        ? 'human-approved-drafts-path'
+        : 'analysis-only-release-perspective',
     },
   }
 }
