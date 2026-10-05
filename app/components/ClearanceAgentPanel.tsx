@@ -85,9 +85,9 @@ export default function ClearanceAgentPanel({
   }
 
   return (
-    <article className="agentLayer" aria-label="Agent explanation">
+    <article className="agentLayer" aria-label={brief ? 'Agent explanation' : 'Agent boundary'}>
       <div className="agentLayerHead">
-        <span className="agentLayerLabel">Sanity Content Agent</span>
+        <span className="agentLayerLabel">{brief ? 'Sanity Content Agent · run result' : 'Sanity Content Agent · on demand'}</span>
         <span className="authorityBadges">
           <span className="authorityBadge">Decision authority · none</span>
           <span className="authorityBadge">Write authority · {brief?.writeAuthority ?? 'NONE'}</span>

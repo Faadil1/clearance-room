@@ -263,7 +263,7 @@ const CaseFile = forwardRef<HTMLElement, Props>(function CaseFile(
           )}
         </div>
         <aside className="caseMargin" aria-label="Margin notes">
-          <MarginNote tag="Proposed state">Compared with published. Nothing here is live yet.</MarginNote>
+          <MarginNote tag="Proposed state">Compared with published. This view does not execute a write.</MarginNote>
         </aside>
       </div>
 
@@ -395,7 +395,7 @@ const CaseFile = forwardRef<HTMLElement, Props>(function CaseFile(
       <div className="caseSection caseSection--agent">
         <span className="caseNum" aria-hidden="true">04</span>
         <div className="caseBody">
-          <h3><span className="visuallyHidden">04 </span>Agent explanation</h3>
+          <h3><span className="visuallyHidden">04 </span>Agent boundary</h3>
           {isUnknown && (
             <div className="abstention" role="note">
               <span className="abstentionTag">Insufficient evidence</span>
@@ -421,7 +421,7 @@ const CaseFile = forwardRef<HTMLElement, Props>(function CaseFile(
       </div>
 
       {/* 05 Supported action */}
-      <div className="caseSection">
+      <div className={`caseSection ${detail.repairs.length === 0 ? 'caseSection--compact' : ''}`}>
         <span className="caseNum" aria-hidden="true">05</span>
         <div className="caseBody">
           <h3><span className="visuallyHidden">05 </span>Supported action</h3>
@@ -472,7 +472,7 @@ const CaseFile = forwardRef<HTMLElement, Props>(function CaseFile(
       </div>
 
       {/* 06 Human approval */}
-      <div className="caseSection">
+      <div className={`caseSection ${!caseReceipt && (!writable || detail.repairs.length === 0) ? 'caseSection--compact' : ''}`}>
         <span className="caseNum" aria-hidden="true">06</span>
         <div className="caseBody">
           <h3><span className="visuallyHidden">06 </span>Human approval</h3>
@@ -515,7 +515,7 @@ const CaseFile = forwardRef<HTMLElement, Props>(function CaseFile(
       </div>
 
       {/* 07 Proof chain */}
-      <div className="caseSection">
+      <div className={`caseSection ${!caseReceipt && detail.proofHistory.length === 0 ? 'caseSection--compact' : ''}`}>
         <span className="caseNum" aria-hidden="true">07</span>
         <div className="caseBody">
           <h3><span className="visuallyHidden">07 </span>Proof chain</h3>
