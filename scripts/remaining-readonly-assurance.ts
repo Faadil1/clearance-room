@@ -76,29 +76,44 @@ async function main() {
   }
 
   const client = getServerSanity()
+  type ReleaseRecord = {
+    _id: string
+    state?: string
+    metadata?: {title?: string}
+  }
+
   let releaseAvailability: {
     state: CheckState
-    classification: 'RELEASES_PRESENT' | 'NO_RELEASE_PRESENT' | 'QUERY_FAILED'
+    classification:
+      | 'RELEASES_PRESENT'
+      | 'NO_RELEASE_PRESENT'
+      | 'QUERY_FAILED'
     releaseCount: number | null
     releases?: Array<{id: string; name: string; state: string | null; title: string | null}>
+    primaryQueryReturnedNull?: boolean
     blocker?: string
   }
 
   try {
-    const releases = await client.fetch<Array<{
-      _id: string
-      state?: string
-      metadata?: {title?: string}
-    }>>(
+    const primary = await client.fetch<ReleaseRecord[] | null>(
       'releases::all(){_id,state,metadata}',
       {},
       {perspective: 'raw'},
     )
 
+    const releases = Array.isArray(primary)
+      ? primary
+      : await client.fetch<ReleaseRecord[]>(
+          '*[_type == "system.release"]{_id,state,metadata}',
+          {},
+          {perspective: 'raw'},
+        )
+
     releaseAvailability = {
       state: 'PROVEN_RUNTIME',
       classification: releases.length ? 'RELEASES_PRESENT' : 'NO_RELEASE_PRESENT',
       releaseCount: releases.length,
+      primaryQueryReturnedNull: primary === null,
       releases: releases.map((release) => ({
         id: release._id,
         name: release._id.split('.').at(-1) || release._id,
