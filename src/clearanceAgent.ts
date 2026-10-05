@@ -257,8 +257,22 @@ export async function investigateUsageWithAgent(
   )
 
   const brief = composeAgentBrief(impact, evidence)
+  const aiNarrative = await generateSanityNarrative(brief)
   return {
     ...brief,
-    aiNarrative: await generateSanityNarrative(brief),
+    aiNarrative,
+    toolTrace: [
+      ...brief.toolTrace,
+      {
+        tool: 'Sanity Content Agent',
+        purpose: 'operator-facing AI explanation of deterministic receipts',
+        authority: 'explanation only; no status or write authority',
+        result: aiNarrative.status === 'generated'
+          ? 'ok'
+          : aiNarrative.status === 'rejected'
+            ? 'partial'
+            : 'unavailable',
+      },
+    ],
   }
 }
