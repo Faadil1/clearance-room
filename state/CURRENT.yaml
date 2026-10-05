@@ -426,3 +426,29 @@ trace_design_assurance_2026_10_05:
     - protected_controlled_write_failure
   blocked_transition: BUILD_CANDIDATE_READY
   exact_next_owner: HUMAN_OR_EXISTING_AUTHORITY
+
+
+public_runtime_binding_2026_10_05:
+  provider: Vercel
+  project_id: prj_IzIaWRsgFqosTRmdeQ123iEliaLF
+  project_name: clearance-room
+  team_id: team_twDc66jGM0sPvNM4I5Huc0x7
+  git_repository: Faadil1/clearance-room
+  configured_branch: product/judge-workflow-4
+  framework: nextjs
+  build_command: npm run app:build
+  install_command: npm ci
+  node_version: 22.x
+  deployment_protection:
+    sso: disabled
+    password: disabled
+  environment:
+    public_configuration: CONFIGURED
+    secret_configuration: BLOCKED_HUMAN_INPUT_REQUIRED
+    missing_secret_names:
+      - SANITY_API_TOKEN
+      - SANITY_ORGANIZATION_TOKEN
+  runtime_state: CONFIGURED_PENDING_SECRET_ENV_AND_REDEPLOY
+  production_promotion: NOT_PERFORMED
+  exact_commit_binding: PENDING
+  protected_submission: NOT_PERFORMED
