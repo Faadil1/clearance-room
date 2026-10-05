@@ -58,6 +58,10 @@ export default function ShockwaveMap({
         {dots.map((dot) => {
           const selected = dot.id === selectedId
           const labelled = showAllLabels || dot.changed || selected
+          // On narrow screens only the selected point keeps its label: with several
+          // regressions near the centre, more labels collide. Every dot keeps its
+          // full accessible name, and the selected-usage card names the point.
+          const priority = selected
           return (
             <div
               key={dot.id}
@@ -67,13 +71,17 @@ export default function ShockwaveMap({
               <button
                 type="button"
                 className="shockDotButton"
-                aria-label={`${dot.title}, ${dot.status}${selected ? ', selected' : ''}`}
+                aria-label={`${dot.title}, ${dot.status}${dot.status === 'UNKNOWN' ? ' (insufficient evidence)' : ''}${selected ? ', selected' : ''}`}
                 aria-pressed={selected}
+                data-usage-id={dot.id}
                 onClick={() => onSelect(dot.id)}
                 disabled={busy}
               />
               {labelled && (
-                <span className={`shockDotLabel shockDotLabel--${dot.labelSide}`} aria-hidden="true">
+                <span
+                  className={`shockDotLabel shockDotLabel--${dot.labelSide} shockDotLabel--in-${dot.x < 50 ? 'right' : 'left'} ${priority ? 'shockDotLabel--priority' : ''}`}
+                  aria-hidden="true"
+                >
                   {dot.title}
                 </span>
               )}

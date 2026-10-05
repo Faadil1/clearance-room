@@ -5,7 +5,7 @@ import RightsChangePortfolio, {
   type RightsChangePortfolioData,
 } from './components/RightsChangePortfolio'
 import ScenarioLab from './components/ScenarioLab'
-import ClearanceAgentPanel from './components/ClearanceAgentPanel'
+import CaseFile, {type EvidenceState} from './components/CaseFile'
 import ProofIntegrityPanel from './components/ProofIntegrityPanel'
 import ShockwaveMap from './components/ShockwaveMap'
 import SystemStatus from './components/SystemStatus'
@@ -132,42 +132,6 @@ type ImpactDetail = {
   }
 }
 
-type EvidenceRecord = {
-  documentId: string
-  title: string
-  kind: string | null
-  channels: string | null
-  territories: string | null
-  paidAdvertising: string | null
-  validFrom: string | null
-  validTo: string | null
-  sourceClause: string
-  source: string
-  revision?: string | null
-}
-
-type Evidence = {
-  knowledgeBase: string
-  entryPath: string
-  requestedDocumentId: string
-  canonicalDocumentId: string
-  kb: {
-    status: 'indexed' | 'not_indexed' | 'unavailable'
-    evidence: EvidenceRecord | null
-    reason?: string
-  }
-  structured: {
-    status: 'available' | 'missing'
-    evidence: EvidenceRecord | null
-  }
-  authority: {
-    knowledgeBase: string
-    structuredGraph: string
-    clearanceStatus: string
-  }
-  observedAt: string
-}
-
 type AutoRefreshReceipt = {
   sequence: number
   triggerType: string
@@ -208,7 +172,7 @@ export default function Home() {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
   const [rightsChanges, setRightsChanges] = useState<RightsChangePortfolioData | null>(null)
   const [detail, setDetail] = useState<ImpactDetail | null>(null)
-  const [evidence, setEvidence] = useState<Evidence | null>(null)
+  const [evidence, setEvidence] = useState<Record<string, EvidenceState>>({})
   const [receipt, setReceipt] = useState<RemediationReceipt | null>(null)
   const [selectedRepair, setSelectedRepair] = useState<string | null>(null)
   const [approved, setApproved] = useState(false)
@@ -363,7 +327,7 @@ export default function Home() {
     setBusy('scan')
     setError(null)
     setDetail(null)
-    setEvidence(null)
+    setEvidence({})
     setSelectedRepair(null)
     setApproved(false)
     if (!keepReceipt) setReceipt(null)
@@ -387,9 +351,11 @@ export default function Home() {
 
   async function openImpact(usageRequestId: string) {
     openUsageRef.current = usageRequestId
+    // Keep the map point and the case file pointing at the same usage.
+    setSelectedUsageId(usageRequestId)
     setBusy('open')
     setError(null)
-    setEvidence(null)
+    setEvidence({})
     setReceipt(null)
     setSelectedRepair(null)
     setApproved(false)
@@ -397,7 +363,16 @@ export default function Home() {
     setRecoveryResult(null)
 
     try {
-      setDetail(await run('/api/analyze', {usageRequestId, proposedPerspective}))
+      const [analysis, changeResult] = await Promise.all([
+        run('/api/analyze', {usageRequestId, proposedPerspective}),
+        // Field-level diffs for "What changed": read-only, only when not already scanned.
+        rightsChanges ? Promise.resolve(null) : run('/api/changes', {proposedPerspective}).catch(() => null),
+      ])
+      setDetail(analysis)
+      if (changeResult) setRightsChanges(changeResult)
+      for (const right of (analysis as ImpactDetail).causalRights.slice(0, 3)) {
+        void loadEvidence(right.id)
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Impact analysis failed')
     } finally {
@@ -406,15 +381,32 @@ export default function Home() {
   }
 
   async function loadEvidence(documentId: string) {
-    setBusy('evidence')
-    setError(null)
+    setEvidence((current) => ({...current, [documentId]: {status: 'loading'}}))
     try {
-      setEvidence(await run('/api/evidence', {documentId}))
+      const data = await run('/api/evidence', {documentId})
+      setEvidence((current) => ({...current, [documentId]: {status: 'ready', data}}))
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Evidence retrieval failed')
-    } finally {
-      setBusy(null)
+      setEvidence((current) => ({
+        ...current,
+        [documentId]: {status: 'error', message: err instanceof Error ? err.message : 'Evidence retrieval failed'},
+      }))
     }
+  }
+
+  function backToMap() {
+    const usageId = detail?.usage.id ?? selectedUsageId
+    setDetail(null)
+    setEvidence({})
+    openUsageRef.current = null
+    if (usageId) setSelectedUsageId(usageId)
+    requestAnimationFrame(() => {
+      const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+      document.getElementById('impact')?.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'})
+      const dot = usageId
+        ? document.querySelector<HTMLButtonElement>(`[data-usage-id="${CSS.escape(usageId)}"]`)
+        : null
+      dot?.focus({preventScroll: true})
+    })
   }
 
   async function applyRepair() {
@@ -431,19 +423,25 @@ export default function Home() {
         proposedPerspective,
       })
       setReceipt(result)
-      setDetail(null)
-      openUsageRef.current = null
-      setEvidence(null)
       setSelectedRepair(null)
       setApproved(false)
 
-      const [refreshed, refreshedChanges] = await Promise.all([
+      // The write succeeded. Refresh read-only views; a refresh failure must not
+      // be reported as a failed write.
+      const usageId = detail.usage.id
+      const [refreshed, refreshedChanges, refreshedDetail] = await Promise.allSettled([
         run('/api/impacts', {proposedPerspective}),
         run('/api/changes', {proposedPerspective}),
+        run('/api/analyze', {usageRequestId: usageId, proposedPerspective}),
       ])
-      portfolioRef.current = refreshed
-      setPortfolio(refreshed)
-      setRightsChanges(refreshedChanges)
+      if (refreshed.status === 'fulfilled') {
+        portfolioRef.current = refreshed.value
+        setPortfolio(refreshed.value)
+      }
+      if (refreshedChanges.status === 'fulfilled') setRightsChanges(refreshedChanges.value)
+      if (refreshedDetail.status === 'fulfilled' && openUsageRef.current === usageId) {
+        setDetail(refreshedDetail.value)
+      }
     } catch (err) {
       const failure = err as Error & {payload?: any}
       const payload = failure.payload
@@ -509,7 +507,6 @@ export default function Home() {
     }
   }
 
-  const selectedRepairOption = detail?.repairs.find((repair) => repair.id === selectedRepair)
 
   const filterOptions = useMemo(
     () => impactFilterOptions(portfolio?.impacts || []),
@@ -738,7 +735,7 @@ export default function Home() {
             </div>
           </div>
 
-          {receipt && (
+          {receipt && (!detail || detail.usage.id !== receipt.usageRequestId) && (
             <article className="panel successPanel">
               <div className="panelHeading">
                 <span className="stepIndex">✓</span>
@@ -948,233 +945,24 @@ export default function Home() {
       )}
 
       {detail && (
-        <section className="workspace detailWorkspace" aria-live="polite" aria-label="Case file" ref={detailRef} tabIndex={-1}>
-          <div className="detailHeader">
-            <button className="textButton" onClick={() => {setDetail(null); setEvidence(null); openUsageRef.current = null}}>← Back to blast radius</button>
-            <div className="transition">
-              <StatusPill status={detail.current.status} />
-              <span className="arrow">→</span>
-              <StatusPill status={detail.proposed.status} />
-            </div>
-          </div>
-
-          <div className="impactHeader">
-            <div>
-              <p className="cardKicker">Usage impact</p>
-              <h2>{detail.usage.title}</h2>
-              <p className="muted">
-                {detail.usage.assetTitle} · {detail.usage.territory} · {formatChannel(detail.usage.channel)} · {detail.usage.isPaid ? 'paid media' : 'organic'}
-              </p>
-            </div>
-            <div className="proofBadge">
-              <span>Proposed proof</span>
-              <code>{detail.persistedProof?.id || 'not persisted'}</code>
-            </div>
-          </div>
-
-          <div className="splitGrid">
-            <article className="panel">
-              <div className="panelHeading">
-                <span className="stepIndex">01</span>
-                <div>
-                  <p className="cardKicker">Deterministic findings</p>
-                  <h3>{detail.diff.changed ? 'Perspective change detected' : 'No perspective regression'}</h3>
-                </div>
-              </div>
-              <div className="findingStack">
-                {detail.proposed.findings.map((finding) => (
-                  <div className="findingCard" key={finding.axis}>
-                    <div>
-                      <strong>{finding.axis}</strong>
-                      <StatusPill status={finding.status} />
-                    </div>
-                    <p>{finding.reason}</p>
-                    {finding.causedBy.length > 0 && <code>{finding.causedBy.join(', ')}</code>}
-                    {finding.allowedThrough && <span className="findingMeta">allowed through {finding.allowedThrough}</span>}
-                  </div>
-                ))}
-              </div>
-            </article>
-
-            <article className="panel panel--accent">
-              <div className="panelHeading">
-                <span className="stepIndex">02</span>
-                <div>
-                  <p className="cardKicker">Causal rights</p>
-                  <h3>Open the exact source behind the impact</h3>
-                </div>
-              </div>
-
-              {detail.causalRights.length === 0 ? (
-                <p className="muted">No causal rights document was identified for this state.</p>
-              ) : (
-                <div className="rightsList">
-                  {detail.causalRights.map((right) => (
-                    <div className="rightCard" key={right.id}>
-                      <strong>{right.title}</strong>
-                      <code>{right.id}</code>
-                      <p>{right.sourceClause || 'No structured source clause.'}</p>
-                      <button className="secondaryButton" onClick={() => loadEvidence(right.id)} disabled={busy !== null}>
-                        {busy === 'evidence' ? 'Retrieving…' : 'Open source evidence'}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </article>
-          </div>
-
-          {evidence && (() => {
-            const sourceEvidence = evidence.kb.evidence || evidence.structured.evidence
-            return (
-              <article className="panel evidencePanel">
-                <div className="panelHeading">
-                  <span className="stepIndex">03</span>
-                  <div>
-                    <p className="cardKicker">Source-bound evidence</p>
-                    <h3>{sourceEvidence?.title || evidence.canonicalDocumentId}</h3>
-                  </div>
-                  <span className="authorityBadge">
-                    {evidence.kb.status === 'indexed' ? 'KB INDEXED' : 'STRUCTURED SOURCE'}
-                  </span>
-                </div>
-
-                {evidence.kb.status === 'not_indexed' && (
-                  <div className="proposalNote">
-                    Knowledge Base evidence is not indexed for this document yet. Clearance Room will not substitute an unrelated entry. The source shown below comes from the live published rights graph and remains non-normative.
-                  </div>
-                )}
-
-                {evidence.kb.status === 'unavailable' && (
-                  <div className="proposalNote">
-                    Knowledge Base is temporarily unavailable. Deterministic clearance remains independent of this outage; the structured source is shown when available and no KB claim is fabricated.
-                  </div>
-                )}
-
-                {sourceEvidence ? (
-                  <>
-                    <blockquote>{sourceEvidence.sourceClause}</blockquote>
-                    <div className="miniReceipt">
-                      <span>Document</span><strong>{sourceEvidence.documentId}</strong>
-                      <span>Kind</span><strong>{sourceEvidence.kind || '—'}</strong>
-                      <span>Territories</span><strong>{sourceEvidence.territories || '—'}</strong>
-                      <span>Channels</span><strong>{sourceEvidence.channels || '—'}</strong>
-                      <span>Paid advertising</span><strong>{sourceEvidence.paidAdvertising || '—'}</strong>
-                      <span>Valid through</span><strong>{sourceEvidence.validTo || '—'}</strong>
-                      <span>Source</span><strong>{sourceEvidence.source}</strong>
-                      <span>KB state</span><strong>{evidence.kb.status}</strong>
-                      <span>Status authority</span><strong>deterministic evaluator only</strong>
-                    </div>
-                  </>
-                ) : (
-                  <div className="errorBanner">
-                    No source-bound evidence is currently available for this rights document.
-                  </div>
-                )}
-              </article>
-            )
-          })()}
-
-          <div className="splitGrid">
-            <article className="panel">
-              <div className="panelHeading">
-                <span className="stepIndex">04</span>
-                <div>
-                  <p className="cardKicker">Proof history</p>
-                  <h3>Freshness and supersession</h3>
-                </div>
-              </div>
-              {detail.proofHistory.length === 0 ? (
-                <p className="muted">No persisted proof history yet.</p>
-              ) : (
-                <div className="historyList">
-                  {detail.proofHistory.map((proof) => (
-                    <div className="historyRow" key={proof._id}>
-                      <div>
-                        <strong>{proof._id}</strong>
-                        <span>{formatWhen(proof.evaluatedAt)}</span>
-                      </div>
-                      <StatusPill status={proof.status} />
-                      <span className={proof.isStale ? 'staleFlag' : 'freshFlag'}>{proof.isStale ? 'STALE' : 'FRESH'}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </article>
-
-            <ClearanceAgentPanel
-              usageRequestId={detail.usage.id}
-              proposedPerspective={proposedPerspective}
-            />
-
-            <article className="panel repairPanel">
-              <div className="panelHeading">
-                <span className="stepIndex">05</span>
-                <div>
-                  <p className="cardKicker">Available remediations</p>
-                  <h3>Only actions justified by current findings</h3>
-                </div>
-              </div>
-
-              {proposedPerspective !== 'drafts' ? (
-                <div className="proposalNote">
-                  This perspective is analysis-only. Switch back to <code>drafts</code> before any consequential remediation.
-                </div>
-              ) : detail.repairs.length === 0 ? (
-                detail.proposed.status === 'UNKNOWN' ? (
-                  <div className="proposalNote">
-                    Clearance is UNKNOWN because required structured evidence is missing. Clearance Room will not convert missing evidence into permission or prohibition. Complete the missing rights data, then recompile.
-                  </div>
-                ) : (
-                  <div className="proposalNote">
-                    No safe structured remediation is registered for the observed findings. The product will not invent one.
-                  </div>
-                )
-              ) : (
-                <>
-                  <div className="repairOptions">
-                    {detail.repairs.map((repair) => (
-                      <label className={`repairOption ${selectedRepair === repair.id ? 'repairOption--selected' : ''}`} key={repair.id}>
-                        <input
-                          type="radio"
-                          name="repair"
-                          value={repair.id}
-                          checked={selectedRepair === repair.id}
-                          onChange={() => {setSelectedRepair(repair.id); setApproved(false)}}
-                        />
-                        <span>
-                          <strong>{repair.label}</strong>
-                          <small>{repair.description}</small>
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-
-                  {selectedRepairOption && (
-                    <>
-                      <p className="proposalNote">
-                        Proposal only. Clearance will be recomputed after the approved write; no future status is claimed here.
-                      </p>
-                      <label className="approval">
-                        <input
-                          type="checkbox"
-                          checked={approved}
-                          onChange={(event) => setApproved(event.target.checked)}
-                        />
-                        <span>
-                          I approve this mutation on <code>{detail.usage.id}</code>: <strong>{selectedRepairOption.mutation.field} → {String(selectedRepairOption.mutation.value)}</strong>.
-                        </span>
-                      </label>
-                      <button className="dangerButton" onClick={applyRepair} disabled={!approved || busy !== null}>
-                        {busy === 'remediate' ? 'Writing + recompiling…' : 'Approve repair and recompile'}
-                      </button>
-                    </>
-                  )}
-                </>
-              )}
-            </article>
-          </div>
-        </section>
+        <div className="caseFileWrap">
+          <CaseFile
+            ref={detailRef}
+            detail={detail}
+            rightsChanges={rightsChanges?.changes ?? null}
+            evidence={evidence}
+            onLoadEvidence={loadEvidence}
+            proposedPerspective={proposedPerspective}
+            selectedRepair={selectedRepair}
+            onSelectRepair={(repairId) => {setSelectedRepair(repairId); setApproved(false)}}
+            approved={approved}
+            onApprove={setApproved}
+            onApply={applyRepair}
+            busy={busy}
+            receipt={receipt}
+            onBack={backToMap}
+          />
+        </div>
       )}
 
       <section className="workspace scenarioWorkspace" id="scenario-lab">
