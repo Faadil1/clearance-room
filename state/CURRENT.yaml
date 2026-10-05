@@ -507,3 +507,89 @@ submission_packaging_2026_10_05:
   remaining_terminal_material_blocker:
     - WRITE_FAILURE_RECOVERY
   final_submission: HUMAN_ONLY
+
+
+design_delta_shockwave_marginalia_2026_10_05:
+  branch: design/shockwave-impact-5
+  current_head_before_continuity_commit: 89168ebec476a1b0108063205090c4a471d8cf55
+  base_submission_branch: product/judge-workflow-4
+  production_runtime_unchanged:
+    commit: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+    deployment_id: dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB
+    alias: https://clearance-room.vercel.app
+  design_preview:
+    deployment_id: dpl_2hUSoADQALrA3kRxbU9vBf6Ajsp7
+    state: READY
+    url: https://clearance-room-g2ywcaiec-faadil1s-projects.vercel.app
+    target: PREVIEW_ONLY
+  product_delta:
+    - Shockwave blast-radius map becomes the primary judge-facing decision surface
+    - Published / Proposed view uses evaluator-provided currentStatus and proposedStatus only
+    - Marginalia Case File exposes change -> deterministic verdict -> source evidence -> agent boundary -> supported action -> human approval -> proof chain
+    - runtime health and engine assurance are demoted from primary storytelling
+    - no API contract, evaluator, write authority or remediation-registry change
+  trace:
+    status: ACTIVE
+    provisional_evidence: evidence/assurance/TRACE-DESIGN-ASSURANCE-SHOCKWAVE-MARGINALIA-2026-10-05.md
+    prior_production_trace_receipt: evidence/assurance/TRACE-DESIGN-ASSURANCE-2026-10-05.md
+    reason_reopened: evaluator_facing_navigation_materially_changed
+    remaining_runtime_checks:
+      - live_preview_real_data_interaction
+      - desktop_visual_pass
+      - mobile_visual_pass
+      - reduced_motion_runtime_pass
+      - keyboard_focus_runtime_pass
+      - real_content_agent_run_in_new_case_file
+  demo_video:
+    plan: evidence/demo/SUBMISSION-DEMO-VIDEO-PLAN-2026-10-05.md
+    target_duration_seconds: 72
+    language: en
+    film_project_id: 8a3b6606-5fd8-4963-8944-48b9f2d31cd1
+    script_gate: APPROVED
+    narration: GENERATED_EXTERNALLY_READY
+    footage_policy: REAL_PREVIEW_CAPTURE_ONLY
+    footage_status: PENDING_REAL_PREVIEW_CAPTURE
+  runtime_candidate_status: NOT_PROMOTED
+  runtime_binding_for_design_delta: NOT_STARTED
+  next:
+    - run Product quality through design PR
+    - capture the real preview on live Sanity data for the eight-shot demo path
+    - complete TRACE runtime verification on the same preview
+    - only after acceptance create a new runtime candidate and new runtime binding
+
+design_preview_live_data_assurance_2026_10_05:
+  runtime_ui_commit: be3faf115b415ef590f9b24c162abee5e889c7bd
+  preview_deployment_id: dpl_BaJbigASmbpjNXkibkF1W6rAtwMS
+  preview_url: https://clearance-room-pv8oh8cwu-faadil1s-projects.vercel.app
+  deployment_state: READY
+  product_quality:
+    workflow_run_id: 37270832274
+    run_number: 171
+    conclusion: success
+  runtime_read_evidence:
+    root_http_status: 200
+    health_http_status: 200
+    health_overall: healthy
+    context_graph: available
+    knowledge_base: available
+    content_lake_read: available
+    content_lake_write: available_dry_run
+    live_content_route: 200
+    scenarios_read: 200
+  preview_secret_scope:
+    temporary_preview_enablement_performed: true
+    project_level_targets_reverted_to_production_only: true
+    existing_preview_deployment_remains_healthy: true
+  trace_design_assurance:
+    status: ACTIVE
+    live_data_runtime_available: PROVEN
+    direct_interactive_visual_capture: BLOCKED_BY_CURRENT_CHAT_BROWSER_CAPABILITY
+    no_project_defect_claimed: true
+  demo_video:
+    script: APPROVED
+    narration: READY
+    real_case_file_storyboard: ATTACHED
+    live_preview_footage: PENDING_BROWSER_CAPTURE
+    fabrication_allowed: false
+  production_promotion: NOT_PERFORMED
+  production_runtime_unchanged: true

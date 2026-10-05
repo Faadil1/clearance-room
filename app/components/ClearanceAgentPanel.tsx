@@ -85,23 +85,23 @@ export default function ClearanceAgentPanel({
   }
 
   return (
-    <article className="panel agentPanel">
-      <div className="panelHeading">
-        <span className="stepIndex">AI</span>
-        <div>
-          <p className="cardKicker">Bounded clearance agent</p>
-          <h3>Investigate with Context MCP + deterministic receipts</h3>
-        </div>
-        <span className="authorityBadge">WRITE AUTHORITY · NONE</span>
+    <article className="agentLayer" aria-label={brief ? 'Agent explanation' : 'Agent boundary'}>
+      <div className="agentLayerHead">
+        <span className="agentLayerLabel">{brief ? 'Sanity Content Agent · run result' : 'Sanity Content Agent · on demand'}</span>
+        <span className="authorityBadges">
+          <span className="authorityBadge">Decision authority · none</span>
+          <span className="authorityBadge">Write authority · {brief?.writeAuthority ?? 'NONE'}</span>
+        </span>
       </div>
 
-      <p className="muted">
-        The agent may gather, explain, and propose. It cannot create a clearance status and it cannot execute a mutation. The Sanity Content Agent narrative runs only when you click investigate and may consume Sanity AI credits.
+      <p className="agentLayerIntro">
+        The agent explains the verdict above. It cannot create a clearance status and cannot execute a mutation.
+        It runs only when you ask, and may consume Sanity AI credits.
       </p>
 
       {!brief && (
         <button className="secondaryButton" onClick={investigate} disabled={busy}>
-          {busy ? 'Investigating…' : 'Run bounded investigation'}
+          {busy ? 'Investigating…' : 'Ask the agent to explain'}
         </button>
       )}
 
@@ -113,90 +113,62 @@ export default function ClearanceAgentPanel({
 
       {brief && (
         <div className="agentResult">
-          <div className="transition">
-            <Status value={brief.statusReceipt.current} />
-            <span className="arrow">→</span>
-            <Status value={brief.statusReceipt.proposed} />
-            <span className="authorityBadge">DETERMINISTIC RECEIPT</span>
-          </div>
+          <p className="agentReceiptLine">
+            Checked against the deterministic receipt:{' '}
+            <Status value={brief.statusReceipt.current} /> <span aria-hidden="true">→</span> <Status value={brief.statusReceipt.proposed} />
+          </p>
 
-          <p>{brief.summary}</p>
-
-          <div className="agentNarrative">
-            <div>
-              <strong>Sanity Content Agent narrative</strong>
-              <span>{brief.aiNarrative.status}</span>
+          {brief.aiNarrative.status === 'generated' && brief.aiNarrative.text ? (
+            <blockquote className="agentNarrativeText">{brief.aiNarrative.text}</blockquote>
+          ) : brief.aiNarrative.status === 'rejected' ? (
+            <div className="errorBanner">
+              AI narrative was rejected because it contradicted the deterministic status receipt.
             </div>
-            {brief.aiNarrative.status === 'generated' && brief.aiNarrative.text ? (
-              <p>{brief.aiNarrative.text}</p>
-            ) : brief.aiNarrative.status === 'rejected' ? (
-              <div className="errorBanner">
-                AI narrative was rejected because it violated the deterministic status receipt.
-              </div>
-            ) : brief.aiNarrative.status === 'unavailable' ? (
-              <div className="proposalNote">
-                AI explanation is temporarily unavailable. The deterministic receipt and tool evidence remain authoritative.
-              </div>
-            ) : (
-              <div className="proposalNote">
-                Sanity Content Agent is not configured for this runtime. The bounded tool investigation remains available without AI narration.
-              </div>
-            )}
-          </div>
+          ) : brief.aiNarrative.status === 'unavailable' ? (
+            <p className="agentQuiet">AI explanation is temporarily unavailable. The deterministic receipt and tool evidence remain authoritative.</p>
+          ) : (
+            <p className="agentQuiet">Sanity Content Agent is not configured for this runtime. The bounded tool summary below remains available without AI narration.</p>
+          )}
+
+          <p className="agentSummary">{brief.summary}</p>
 
           {brief.abstention.active && (
-            <div className="proposalNote">
-              <strong>Agent abstention</strong>
-              <span>{brief.abstention.reason}</span>
-            </div>
+            <p className="agentAbstention"><strong>Agent abstention.</strong> {brief.abstention.reason}</p>
           )}
 
-          <div className="agentToolGrid">
-            {brief.toolTrace.map((tool) => (
-              <div className="agentTool" key={tool.tool}>
-                <strong>{tool.tool}</strong>
-                <span>{tool.purpose}</span>
-                <small>{tool.authority}</small>
-                <em>{tool.result}</em>
-              </div>
-            ))}
-          </div>
+          <p className="agentNext"><strong>Bounded next action.</strong> {brief.nextAction}</p>
 
-          <div className="agentEvidence">
-            <strong>Evidence gathered</strong>
-            {brief.evidence.length === 0 ? (
-              <span>No causal evidence record was available for this state.</span>
-            ) : (
-              brief.evidence.map((item) => (
-                <div key={item.requestedDocumentId}>
-                  <code>{item.requestedDocumentId}</code>
-                  <span>KB: {item.kbStatus} · structured source: {item.sourceStatus}</span>
-                  {item.sourceClause && <blockquote>{item.sourceClause}</blockquote>}
-                </div>
-              ))
-            )}
-          </div>
-
-          <div className="agentNextAction">
-            <strong>Bounded next action</strong>
-            <span>{brief.nextAction}</span>
-          </div>
-
-          {brief.repairOptions.length > 0 && (
-            <div className="agentRepairs">
-              <strong>Registry-backed proposals only</strong>
-              {brief.repairOptions.map((repair) => (
-                <div key={repair.id}>
-                  <span>{repair.label}</span>
-                  <small>{repair.description}</small>
+          <details className="caseDisclosure">
+            <summary>Tool trace and evidence gathered ({brief.toolTrace.length} tools)</summary>
+            <div className="agentToolGrid">
+              {brief.toolTrace.map((tool) => (
+                <div className="agentTool" key={tool.tool}>
+                  <strong>{tool.tool}</strong>
+                  <span>{tool.purpose}</span>
+                  <small>{tool.authority}</small>
+                  <em>{tool.result}</em>
                 </div>
               ))}
-              <small>Execution remains in the separate human-approved remediation control.</small>
             </div>
-          )}
+            <div className="agentEvidence">
+              {brief.evidence.length === 0 ? (
+                <span>No causal evidence record was available for this state.</span>
+              ) : (
+                brief.evidence.map((item) => (
+                  <div key={item.requestedDocumentId}>
+                    <code>{item.requestedDocumentId}</code>
+                    <span>KB: {item.kbStatus} · structured source: {item.sourceStatus}</span>
+                  </div>
+                ))
+              )}
+            </div>
+            {brief.repairOptions.length > 0 && (
+              <p className="agentQuiet">Registry-backed proposals only: {brief.repairOptions.map((repair) => repair.label).join(' · ')}. Execution stays in the human-approved control.</p>
+            )}
+          </details>
 
           <button className="textButton" onClick={investigate} disabled={busy}>
-            {busy ? 'Refreshing…' : 'Re-run investigation'}
+            {busy ? 'Refreshing…' : 'Re-run explanation'}
           </button>
         </div>
       )}

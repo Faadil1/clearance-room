@@ -55,7 +55,13 @@ export default function RuntimeHealthPanel({
       <div className="runtimeHealthHeader">
         <div>
           <p className="cardKicker">Runtime health</p>
-          <h3>{health?.overall === 'healthy' && liveState === 'connected' ? 'Dependencies healthy' : 'Degraded-mode controls active'}</h3>
+          <h3>
+            {!health && !error
+              ? 'Checking dependencies…'
+              : health?.overall === 'healthy' && (liveState === 'connected' || liveState === 'connecting')
+                ? 'Dependencies healthy'
+                : 'Degraded-mode controls active'}
+          </h3>
         </div>
         <button className="textButton" onClick={check} disabled={busy}>
           {busy ? 'Checking…' : 'Re-check dependencies'}
@@ -84,7 +90,7 @@ export default function RuntimeHealthPanel({
         </div>
         <div>
           <span>Live stream</span>
-          <StateBadge state={liveState === 'connected' ? 'available' : 'unavailable'} />
+          <StateBadge state={liveState === 'connected' ? 'available' : liveState === 'offline' ? 'unavailable' : 'unverified'} />
         </div>
       </div>
 
