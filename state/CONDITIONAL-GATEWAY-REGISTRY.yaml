@@ -122,7 +122,7 @@ gates:
       - proof supersession receipts
   JUDGE_OPERATOR_SELF_SERVE:
     status: ACTIVE
-    blocker: setup and failure recovery still require assurance
+    blocker: setup and failure recovery are now assured; a stable public runtime/commit binding is still required before judge self-serve can be promoted
   CLEAN_ROOM_REPRODUCIBILITY:
     status: PROVEN
     evidence:
@@ -134,8 +134,10 @@ gates:
       - evidence/assurance/ENGINEERING-QUALITY-CLEAN-CI-2026-10-05.md
     note: fresh GitHub-hosted npm ci runner produced PASS_WITH_ACCEPTED_DEBT with working_tree_dirty=false; only EQ-AUDIT-HIGH-001 remains as disclosed accepted debt
   TRACE_DESIGN_ASSURANCE:
-    status: ACTIVE
-    blocker: evaluator-facing surface exists but no current TRACE assurance receipt is recorded locally
+    status: PROVEN
+    evidence:
+      - evidence/assurance/TRACE-DESIGN-ASSURANCE-2026-10-05.md
+    note: evaluator-facing desktop runtime passed TRACE with accepted non-blocking density/focus/mobile-runtime debt; truth boundaries, write authority and UNKNOWN abstention remain visibly legible
   APP_SDK:
     status: N/A
     reason: evaluated as duplicate surface for current Path One core; current Sanity integrations are already load-bearing
@@ -158,6 +160,5 @@ terminal_fail_closed:
   BUILD_CANDIDATE_READY:
     allowed: false
     blocking_gates:
+      - RUNTIME_COMMIT_BINDING
       - WRITE_FAILURE_RECOVERY
-      - TRACE_DESIGN_ASSURANCE
-      - RELEASE_AWARE_PERSPECTIVE
