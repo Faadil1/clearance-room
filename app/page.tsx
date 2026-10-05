@@ -6,6 +6,7 @@ import RightsChangePortfolio, {
 } from './components/RightsChangePortfolio'
 import ScenarioLab from './components/ScenarioLab'
 import ClearanceAgentPanel from './components/ClearanceAgentPanel'
+import RuntimeHealthPanel from './components/RuntimeHealthPanel'
 import {
   EMPTY_IMPACT_FILTERS,
   filterImpacts,
@@ -144,7 +145,7 @@ type Evidence = {
   requestedDocumentId: string
   canonicalDocumentId: string
   kb: {
-    status: 'indexed' | 'not_indexed'
+    status: 'indexed' | 'not_indexed' | 'unavailable'
     evidence: EvidenceRecord | null
     reason?: string
   }
@@ -204,8 +205,14 @@ export default function Home() {
   const [receipt, setReceipt] = useState<RemediationReceipt | null>(null)
   const [selectedRepair, setSelectedRepair] = useState<string | null>(null)
   const [approved, setApproved] = useState(false)
-  const [busy, setBusy] = useState<'scan' | 'open' | 'evidence' | 'remediate' | 'reset' | null>(null)
+  const [busy, setBusy] = useState<'scan' | 'open' | 'evidence' | 'remediate' | 'recover' | 'reset' | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [writeRecovery, setWriteRecovery] = useState<{
+    usageRequestId: string
+    baselineProofId: string
+    code: string
+  } | null>(null)
+  const [recoveryResult, setRecoveryResult] = useState<any | null>(null)
   const [liveState, setLiveState] = useState<'connecting' | 'connected' | 'reconnecting' | 'offline'>('connecting')
   const [lastLiveSync, setLastLiveSync] = useState<string | null>(null)
   const [lastLiveEvent, setLastLiveEvent] = useState<{type: string; id: string | null; observedAt: string} | null>(null)
@@ -331,7 +338,11 @@ export default function Home() {
       body: body === undefined ? undefined : JSON.stringify(body),
     })
     const payload = await response.json()
-    if (!response.ok) throw new Error(payload.error || 'Request failed')
+    if (!response.ok) {
+      const failure = new Error(payload.error || 'Request failed') as Error & {payload?: any}
+      failure.payload = payload
+      throw failure
+    }
     return payload
   }
 
@@ -369,6 +380,8 @@ export default function Home() {
     setReceipt(null)
     setSelectedRepair(null)
     setApproved(false)
+    setWriteRecovery(null)
+    setRecoveryResult(null)
 
     try {
       setDetail(await run('/api/analyze', {usageRequestId, proposedPerspective}))
@@ -418,7 +431,52 @@ export default function Home() {
       setPortfolio(refreshed)
       setRightsChanges(refreshedChanges)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Remediation failed')
+      const failure = err as Error & {payload?: any}
+      const payload = failure.payload
+      if (
+        payload?.baselineProofId &&
+        payload?.usageRequestId &&
+        (payload?.code === 'WRITE_OUTCOME_UNKNOWN' ||
+          payload?.code === 'WRITE_COMMITTED_RECONCILIATION_REQUIRED')
+      ) {
+        setWriteRecovery({
+          usageRequestId: payload.usageRequestId,
+          baselineProofId: payload.baselineProofId,
+          code: payload.code,
+        })
+      }
+      setError(failure instanceof Error ? failure.message : 'Remediation failed')
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  async function reconcileWriteOutcome() {
+    if (!writeRecovery) return
+    setBusy('recover')
+    setError(null)
+
+    try {
+      const result = await run('/api/recover', {
+        approved: true,
+        usageRequestId: writeRecovery.usageRequestId,
+        baselineProofId: writeRecovery.baselineProofId,
+      })
+      setRecoveryResult(result)
+
+      const [refreshed, refreshedChanges] = await Promise.all([
+        run('/api/impacts', {proposedPerspective}),
+        run('/api/changes', {proposedPerspective}),
+      ])
+      portfolioRef.current = refreshed
+      setPortfolio(refreshed)
+      setRightsChanges(refreshedChanges)
+
+      if (result.state === 'RECOVERED' || result.state === 'ALREADY_COMPLETE') {
+        setWriteRecovery(null)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Write reconciliation failed')
     } finally {
       setBusy(null)
     }
@@ -534,6 +592,37 @@ export default function Home() {
         )}
 
         {error && <div className="errorBanner" role="alert">{error}</div>}
+
+        <RuntimeHealthPanel
+          liveState={liveState}
+          onManualScan={() => scan({keepReceipt: true})}
+        />
+
+        {writeRecovery && (
+          <div className="writeRecoveryPanel">
+            <div>
+              <strong>Write outcome requires reconciliation</strong>
+              <span>
+                {writeRecovery.code}. Do not repeat the business mutation until the current proof and usage state are reread.
+              </span>
+              <code>{writeRecovery.baselineProofId}</code>
+            </div>
+            <button
+              className="dangerButton"
+              onClick={reconcileWriteOutcome}
+              disabled={busy !== null}
+            >
+              {busy === 'recover' ? 'Reconciling…' : 'Reconcile write outcome'}
+            </button>
+          </div>
+        )}
+
+        {recoveryResult && (
+          <div className="proposalNote">
+            Recovery state: <strong>{recoveryResult.state}</strong>
+            {recoveryResult.action ? <span> · {recoveryResult.action}</span> : null}
+          </div>
+        )}
       </section>
 
       <section className="workspace scenarioWorkspace">
@@ -912,6 +1001,12 @@ export default function Home() {
                 {evidence.kb.status === 'not_indexed' && (
                   <div className="proposalNote">
                     Knowledge Base evidence is not indexed for this document yet. Clearance Room will not substitute an unrelated entry. The source shown below comes from the live published rights graph and remains non-normative.
+                  </div>
+                )}
+
+                {evidence.kb.status === 'unavailable' && (
+                  <div className="proposalNote">
+                    Knowledge Base is temporarily unavailable. Deterministic clearance remains independent of this outage; the structured source is shown when available and no KB claim is fabricated.
                   </div>
                 )}
 
