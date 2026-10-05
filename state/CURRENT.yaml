@@ -91,12 +91,11 @@ product_workstream_priority:
   remaining_material_depth_gaps:
     - write_outcome_unknown_reconciliation_runtime_observation
     - user_created_scenario_deletion_runtime_proof
-    - release_id_runtime_availability_or_explicit_unavailable_classification
     - external_clean_room_reexecution
     - current_Engineering_Quality_receipt
     - TRACE_design_assurance_receipt
   current_primary_workstream: PRODUCT_EXPLOITATION
-  next_highest_value_depth_delta: CLASSIFY_RELEASE_AVAILABILITY_AND_CLOSE_ENGINEERING_QUALITY
+  next_highest_value_depth_delta: EXTERNAL_CLEAN_ROOM_AND_ENGINEERING_QUALITY
   valid_stop_condition: null
   demo_packaging_allowed: false
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
@@ -148,12 +147,11 @@ completion_block_reconciliation:
   demo_packaging_permission: false
   workstream_drift_status: NO_NEW_DRIFT__PRIOR_DRIFT_CORRECTED
   blocked_transition: BUILD_CANDIDATE_READY
-  exact_next_gate: RELEASE_AVAILABILITY_PLUS_ENGINEERING_QUALITY_RERUN
+  exact_next_gate: EXTERNAL_CLEAN_ROOM_AND_ENGINEERING_QUALITY
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Pull the corrected harness and rerun npm run verify:remaining-readonly. Promote Engineering Quality only if the
-    generated-file dirty false positive is gone, and classify release availability only from the corrected releases::all()
-    plus system.release fallback. Keep write-outcome-unknown and scenario deletion protected/unobserved.
+    Run the dependency-locked test/build/Engineering Quality suite on a fresh GitHub Actions runner using npm ci,
+    preserve high dependency findings as accepted debt, and promote clean-room/quality only from that external clean receipt.
 
 
 runtime_assurance_2026_10_05:
@@ -338,3 +336,34 @@ remaining_readonly_runtime_2026_10_05:
   current_primary_workstream: PRODUCT_EXPLOITATION
   workstream_drift_status: NO_NEW_DRIFT
   exact_next_gate: RELEASE_AVAILABILITY_PLUS_ENGINEERING_QUALITY_RERUN
+
+
+remaining_readonly_final_2026_10_05:
+  evidence: evidence/assurance/REMAINING-READONLY-FINAL-2026-10-05.md
+  regression:
+    tests: 42_of_42_PASS
+    production_build: PASS
+  operator_filters:
+    status: PROVEN
+    free_text: PROVEN_RUNTIME
+    proposed_status: PROVEN_RUNTIME
+    territory: PROVEN_RUNTIME
+    channel: PROVEN_RUNTIME
+  release_availability:
+    status: PROVEN_ABSENT
+    classification: NO_RELEASE_PRESENT
+    release_count: 0
+    primary_query_returned_null: true
+    fallback_query: system_release
+    release_aware_gate: N_A_CURRENT_RUNTIME_WITH_REASON
+  safe_readonly_gaps:
+    satisfied: true
+    blockers: []
+  engineering_quality:
+    status: ACTIVE
+    local_receipt: PASS_WITH_ACCEPTED_DEBT
+    local_dirty_signal: UNRESOLVED_NEEDS_CLEAN_ENV
+    high_dependency_findings: 11
+    critical_dependency_findings: 0
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  exact_next_gate: EXTERNAL_CLEAN_ROOM_AND_ENGINEERING_QUALITY
