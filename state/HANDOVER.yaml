@@ -1,5 +1,5 @@
 project: clearance-room
-handover_date: 2026-10-04
+handover_date: 2026-10-05
 branch: product/judge-workflow-4
 
 proven:
@@ -52,13 +52,11 @@ architecture_invariants:
   mutationBoundary: explicit human approval required
 
 next:
-  - runtime-run remaining individual operator controls
-  - classify Content Release availability read-only
-  - delete only a disposable user-created scenario with explicit operator confirmation for deletion proof
-  - test an actual release id if available; otherwise preserve release availability as BLOCKED/UNKNOWN
-  - obtain TRACE assurance before BUILD_CANDIDATE_READY
-  - rerun Product Depth Gap Review
-  - do not return to demo-polish-first work while material depth gaps remain
+  - human-authorize stable public runtime / exact commit binding, or explicitly waive/defer it under existing authority
+  - if runtime proof is required, human-authorize a disposable controlled consequential mutation for write-outcome-unknown recovery
+  - optionally human-authorize deletion of a disposable scenario for deletion runtime proof
+  - then rerun Product Depth Gap Review and activate Final Canonical Assurance
+  - final submission remains human-only
 
 
 workstream_priority:
@@ -66,13 +64,13 @@ workstream_priority:
   product_reality_version: "1.5.0"
   first_live_slice_proven: true
   current_primary_workstream: STOPPED_BY_VALID_CONDITION
-  next_highest_value_depth_delta: RUNTIME_PROVE_UNKNOWN_AND_MISSING_EVIDENCE_PATH
+  next_highest_value_depth_delta: PROTECTED_RUNTIME_BINDING_OR_WRITE_FAILURE_PROOF
   valid_stop_condition:
     status: ACTIVE
     reasons:
       - stable_public_runtime_commit_binding_requires_authorized_action
       - write_outcome_unknown_runtime_requires_explicit_controlled_consequential_mutation
-  demo_packaging_allowed: false
+  demo_packaging_allowed: true_after_valid_stop_condition__no_terminal_claims
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
   material_user_capability_delta_since_previous_milestone: MATERIAL_AND_OBSERVED__NOT_DOCUMENTED_LIVE_STATE_PLUS_INTEGRATED_READ_ONLY_ASSURANCE
   rule: >-
@@ -82,7 +80,7 @@ workstream_priority:
 
 
 completion_block:
-  status: IMPLEMENTATION_COMPLETE__RUNTIME_ASSURANCE_PENDING
+  status: ASSURANCE_COMPLETE_TO_PROTECTED_BOUNDARY
   code_head_before_state_update: 3811e02b9b4635d529c7f4dcf952e256dee8a83f
   pull_request: 4
   pull_request_state: DRAFT_OPEN_MERGEABLE
@@ -94,12 +92,18 @@ completion_block:
   first_live_slice_status: PROVEN
   current_lifecycle: EXPAND
   current_gate: PRODUCT_MAXIMUM_EXPLOITATION__GATE_4
-  current_primary_workstream: PRODUCT_EXPLOITATION
+  current_primary_workstream: STOPPED_BY_VALID_CONDITION
   remaining_material_product_depth_gaps:
+    - runtime_commit_binding
     - write_outcome_unknown_runtime
     - scenario_deletion_runtime
 
-  valid_stop_condition: null
+  valid_stop_condition:
+    status: ACTIVE
+    reasons:
+      - stable_public_runtime_commit_binding_requires_authorized_action
+      - write_outcome_unknown_runtime_requires_explicit_controlled_consequential_mutation
+      - scenario_deletion_runtime_proof_requires_explicit_disposable_scenario_approval
   demo_packaging_permission: true_after_valid_stop_condition__no_terminal_claims
   workstream_drift_status: NO_NEW_DRIFT
   material_user_capability_delta_since_previous_milestone:
