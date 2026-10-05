@@ -448,7 +448,7 @@ public_runtime_binding_2026_10_05:
     missing_secret_names:
       - SANITY_API_TOKEN
       - SANITY_ORGANIZATION_TOKEN
-  runtime_state: CONFIGURED_PENDING_SECRET_ENV_AND_REDEPLOY
-  production_promotion: NOT_PERFORMED
-  exact_commit_binding: PENDING
+  runtime_state: PRODUCTION_DEPLOY_AUTHORIZED__GIT_DEPLOY_PENDING
+  production_promotion: HUMAN_AUTHORIZED_2026_10_05
+  exact_commit_binding: PENDING_DEPLOYMENT
   protected_submission: NOT_PERFORMED
