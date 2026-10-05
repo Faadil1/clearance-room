@@ -57,6 +57,12 @@ Evidence:
 ## Implemented — runtime proof still required
 
 ### Dependency failure and recovery
+- non-mutating controlled runtime assurance command: `npm run verify:dependency-recovery`
+- process-local endpoint override only; never presented as a production outage
+- verifies Context MCP fail-closed scan behavior
+- verifies Knowledge Base evidence-only degradation while structured source remains available
+- restores real endpoints and verifies healthy recovery
+- verifies completed write-recovery idempotence when a stale baseline already has a replacement proof
 - Runtime Health checks Context MCP, Knowledge Base, Content Lake read, and Content Lake write with dry-run
 - live-stream offline state exposes manual Context MCP scan fallback
 - Knowledge Base outage degrades evidence explanation without changing deterministic status
