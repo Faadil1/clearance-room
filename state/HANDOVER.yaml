@@ -72,7 +72,7 @@ workstream_priority:
       - write_outcome_unknown_runtime_requires_explicit_controlled_consequential_mutation
   demo_packaging_allowed: true_after_valid_stop_condition__no_terminal_claims
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
-  material_user_capability_delta_since_previous_milestone: MATERIAL_AND_OBSERVED__NOT_DOCUMENTED_LIVE_STATE_PLUS_INTEGRATED_READ_ONLY_ASSURANCE
+  material_user_capability_delta_since_previous_milestone: MATERIAL_AND_OBSERVED__UNKNOWN_AGENT_FAILURE_RECOVERY_FILTERS
   rule: >-
     While justified material product-depth gaps remain, product exploitation is primary. Judge flow,
     seeded reset, replay, receipts, screenshots, video and submission packaging are secondary support only.
