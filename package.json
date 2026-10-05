@@ -16,7 +16,9 @@
     "gate:remediate": "tsx scripts/gate-remediation.ts",
     "app:dev": "next dev",
     "app:build": "next build",
-    "app:start": "next start"
+    "app:start": "next start",
+    "verify:runtime-env": "tsx scripts/verify-runtime-env.ts",
+    "verify:product": "npm test && npm run app:build"
   },
   "dependencies": {
     "@sanity/client": "latest",
