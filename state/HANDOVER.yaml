@@ -52,8 +52,8 @@ architecture_invariants:
   mutationBoundary: explicit human approval required
 
 next:
-  - runtime-exercise degraded dependency and write reconciliation only through truthful controlled conditions
-  - runtime-run Proof Integrity Audit plus remaining individual operator controls
+  - runtime-run remaining individual operator controls
+  - classify Content Release availability read-only
   - delete only a disposable user-created scenario with explicit operator confirmation for deletion proof
   - test an actual release id if available; otherwise preserve release availability as BLOCKED/UNKNOWN
   - obtain TRACE assurance before BUILD_CANDIDATE_READY
@@ -92,8 +92,7 @@ completion_block:
   current_gate: PRODUCT_MAXIMUM_EXPLOITATION__GATE_4
   current_primary_workstream: PRODUCT_EXPLOITATION
   remaining_material_product_depth_gaps:
-    - dependency_failure_runtime
-    - write_reconciliation_runtime
+    - write_outcome_unknown_runtime
     - remaining_individual_operator_controls
     - scenario_deletion_runtime
     - release_availability_runtime_or_explicit_block
@@ -108,11 +107,11 @@ completion_block:
     capability: >-
       Operators can persist explicit NOT DOCUMENTED structured rights state and run a non-mutating integrated
       assurance pass over the live product dependencies and proof chain.
-  exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
+  exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Pull the branch and run npm run verify:dependency-recovery. Preserve its truth class as LOCAL_CONTROLLED_INTEGRATION_FAILURE,
-    not a production outage, and promote only the failure/recovery behaviors actually observed.
+    Run the read-only remainder block for operator filters, release availability and Engineering Quality. Preserve
+    write-outcome-unknown and scenario deletion as protected/unobserved until a safe explicit test is authorized.
   protected_actions:
     final_submission: HUMAN_ONLY
     consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
@@ -170,4 +169,20 @@ unknown_agent_runtime_proof:
   current_primary_workstream: PRODUCT_EXPLOITATION
   next_highest_value_depth_delta: DEPENDENCY_FAILURE_AND_RECOVERY
   exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
+  exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
+
+
+dependency_recovery_runtime_proof:
+  date: 2026-10-05
+  evidence: evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md
+  external_dependency_failure_gate: PROVEN
+  context_mcp_fail_closed: PROVEN
+  knowledge_base_evidence_only_degradation: PROVEN
+  dependency_recovery_after_restore: PROVEN
+  write_recovery_idempotence: PROVEN
+  business_mutation_repeated: false
+  write_outcome_unknown_recovery: BLOCKED_UNOBSERVED
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  next_highest_value_depth_delta: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
+  exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
