@@ -23,7 +23,7 @@ export type RightsChangePortfolioData = {
       kind: string
       publishedRev: string | null
       proposedRev: string | null
-      draftDocumentId: string
+      proposedDocumentId: string
     }
     fields: RightsFieldDiff[]
     downstream: Array<{
@@ -182,8 +182,8 @@ export default function RightsChangePortfolio({
                     <code>{selected.right.proposedRev || 'unknown'}</code>
                   </div>
                   <div>
-                    <span>Draft document</span>
-                    <code>{selected.right.draftDocumentId}</code>
+                    <span>Proposed document</span>
+                    <code>{selected.right.proposedDocumentId}</code>
                   </div>
                 </div>
 
