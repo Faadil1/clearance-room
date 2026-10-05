@@ -18,7 +18,9 @@
     "app:build": "next build",
     "app:start": "next start",
     "verify:runtime-env": "tsx scripts/verify-runtime-env.ts",
-    "verify:product": "npm test && npm run app:build"
+    "verify:product": "npm test && npm run app:build",
+    "verify:runtime-assurance": "tsx scripts/runtime-assurance.ts",
+    "verify:completion": "npm run verify:runtime-env && npm test && npm run app:build && npm run verify:runtime-assurance"
   },
   "dependencies": {
     "@sanity/client": "latest",
