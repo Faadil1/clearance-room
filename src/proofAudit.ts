@@ -1,6 +1,6 @@
 import {getServerSanity} from './serverSanity'
 
-type StoredProof = {
+export type StoredProof = {
   _id: string
   status: string
   isStale: boolean
@@ -20,21 +20,10 @@ export type ProofAuditIssue = {
   explanation: string
 }
 
-export async function auditProofIntegrity() {
-  const client = getServerSanity()
-  const proofs = await client.fetch<StoredProof[]>(
-    `*[_type == "clearanceProof"] | order(evaluatedAt asc){
-      _id,
-      status,
-      isStale,
-      evaluatedAt,
-      "usageRequestId": usageRequest._ref,
-      "supersedes": supersedes._ref
-    }`,
-  )
-
+export function analyzeProofIntegrity(proofs: StoredProof[]) {
   const ids = new Set(proofs.map((proof) => proof._id))
   const replacementsByBaseline = new Map<string, StoredProof[]>()
+
   for (const proof of proofs) {
     if (!proof.supersedes) continue
     const list = replacementsByBaseline.get(proof.supersedes) || []
@@ -92,10 +81,10 @@ export async function auditProofIntegrity() {
 
   return {
     result: issues.some((issue) => issue.severity === 'error')
-      ? 'HOLD'
+      ? 'HOLD' as const
       : issues.length
-        ? 'PASS_WITH_HISTORICAL_WARNINGS'
-        : 'PASS',
+        ? 'PASS_WITH_HISTORICAL_WARNINGS' as const
+        : 'PASS' as const,
     summary: {
       proofs: proofs.length,
       usagesWithProofs: byUsage.size,
@@ -105,10 +94,28 @@ export async function auditProofIntegrity() {
     },
     issues,
     truth: {
-      action: 'read-only-audit',
+      action: 'read-only-audit' as const,
       automaticDeletion: false,
       historicalEvidencePreserved: true,
     },
+  }
+}
+
+export async function auditProofIntegrity() {
+  const client = getServerSanity()
+  const proofs = await client.fetch<StoredProof[]>(
+    `*[_type == "clearanceProof"] | order(evaluatedAt asc){
+      _id,
+      status,
+      isStale,
+      evaluatedAt,
+      "usageRequestId": usageRequest._ref,
+      "supersedes": supersedes._ref
+    }`,
+  )
+
+  return {
+    ...analyzeProofIntegrity(proofs),
     observedAt: new Date().toISOString(),
   }
 }
