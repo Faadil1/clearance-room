@@ -17,12 +17,12 @@ This ledger separates what is observed from what is implemented, inferred, or st
 | KB evidence does not override deterministic status | OBSERVED | LIVE | KB not-indexed structured-source fallback review |
 | read-only inspection does not persist a proof | OBSERVED | LIVE | Proposed proof: not persisted |
 | operator can explicitly set proposed paid permission to NOT DOCUMENTED | OBSERVED | LIVE | uploaded runtime recording, ALLOW → NOT DOCUMENTED save |
-| NOT DOCUMENTED produces UNKNOWN in a material runtime case | UNKNOWN | PARTIAL | unit tests + UI exist; recorded usage was organic so paid axis stayed CLEAR |
+| NOT DOCUMENTED produces UNKNOWN in a material runtime case | OBSERVED | LIVE | user-created proposed validTo removed; UI and runtime assurance independently observed CLEAR → UNKNOWN / window UNKNOWN |
 | integrated runtime assurance can inspect live graph/health/TTFV/proof chain without business mutation | OBSERVED | LIVE | verify:completion executed on 17463eb; Runtime Health healthy, live scans completed, TTFV 442 ms, proof audit observed |
 | Engineering Quality receipt can be generated from tests/build/runtime dependency audit | OBSERVED | LOCAL | receipt executed on 17463eb as PASS_WITH_ACCEPTED_DEBT; generated-file dirt handling was corrected afterward and rerun is required |
 | free-text/status/territory/channel filters each work in runtime | UNKNOWN | PARTIAL | filter engine + composition observed; individual controls not all exercised |
 | user-created scenario deletion works in runtime | UNKNOWN | PARTIAL | implementation exists; runtime proof pending |
-| bounded product agent is load-bearing | UNKNOWN | PARTIAL | Context MCP → deterministic receipt → evidence → registry-backed repairs → bounded Sanity Content Agent implementation exists; real AI narration runtime proof pending |
+| bounded product agent is load-bearing | OBSERVED | LIVE | in-product investigation generated Sanity Content Agent narrative over deterministic CLEAR → UNKNOWN receipt; Context MCP/evaluator/registry active; write authority NONE; agent abstained |
 | Context MCP outage recovers safely | UNKNOWN | PARTIAL | fail-closed Runtime Health policy + UI + unit tests exist; real outage not observed |
 | KB outage degrades without status corruption | INFERRED | PARTIAL | route architecture supports separation; outage not exercised |
 | write failure preserves truthful mutation state | UNKNOWN | PARTIAL | write-outcome reconciliation exists and never repeats business mutation automatically; runtime failure observation pending |
