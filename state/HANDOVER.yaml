@@ -93,7 +93,6 @@ completion_block:
   current_primary_workstream: PRODUCT_EXPLOITATION
   remaining_material_product_depth_gaps:
     - write_outcome_unknown_runtime
-    - remaining_individual_operator_controls
     - scenario_deletion_runtime
     - release_availability_runtime_or_explicit_block
     - external_clean_room
@@ -107,11 +106,11 @@ completion_block:
     capability: >-
       Operators can persist explicit NOT DOCUMENTED structured rights state and run a non-mutating integrated
       assurance pass over the live product dependencies and proof chain.
-  exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
+  exact_next_gate: RELEASE_AVAILABILITY_PLUS_ENGINEERING_QUALITY_RERUN
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Pull the branch and run npm run verify:remaining-readonly. Promote only live filter/release/quality observations,
-    and preserve write-outcome-unknown and scenario deletion as protected/unobserved until a safe explicit test is authorized.
+    Pull the corrected branch and rerun npm run verify:remaining-readonly. Confirm EQ-DIRTY is gone and classify
+    Content Release availability through the null-safe releases::all() plus system.release fallback.
   protected_actions:
     final_submission: HUMAN_ONLY
     consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
@@ -183,6 +182,6 @@ dependency_recovery_runtime_proof:
   business_mutation_repeated: false
   write_outcome_unknown_recovery: BLOCKED_UNOBSERVED
   current_primary_workstream: PRODUCT_EXPLOITATION
-  next_highest_value_depth_delta: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
+  next_highest_value_depth_delta: RELEASE_AVAILABILITY_PLUS_ENGINEERING_QUALITY_RERUN
   exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
