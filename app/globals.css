@@ -2156,3 +2156,30 @@ footer strong {
     grid-template-columns: 1fr;
   }
 }
+
+
+.agentNarrative {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: #f8f4ec;
+}
+
+.agentNarrative > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.agentNarrative > div:first-child span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.agentNarrative p {
+  margin: 0;
+  line-height: 1.55;
+}
