@@ -65,9 +65,13 @@ workstream_priority:
   central_policy: Faadil1/faadil-agent-system@8a7e8a4ff5461641c595e2cf052a95fdc32a6340
   product_reality_version: "1.5.0"
   first_live_slice_proven: true
-  current_primary_workstream: PRODUCT_EXPLOITATION
+  current_primary_workstream: STOPPED_BY_VALID_CONDITION
   next_highest_value_depth_delta: RUNTIME_PROVE_UNKNOWN_AND_MISSING_EVIDENCE_PATH
-  valid_stop_condition: null
+  valid_stop_condition:
+    status: ACTIVE
+    reasons:
+      - stable_public_runtime_commit_binding_requires_authorized_action
+      - write_outcome_unknown_runtime_requires_explicit_controlled_consequential_mutation
   demo_packaging_allowed: false
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
   material_user_capability_delta_since_previous_milestone: MATERIAL_AND_OBSERVED__NOT_DOCUMENTED_LIVE_STATE_PLUS_INTEGRATED_READ_ONLY_ASSURANCE
@@ -94,20 +98,21 @@ completion_block:
   remaining_material_product_depth_gaps:
     - write_outcome_unknown_runtime
     - scenario_deletion_runtime
-    - TRACE_assurance
+
   valid_stop_condition: null
-  demo_packaging_permission: false
+  demo_packaging_permission: true_after_valid_stop_condition__no_terminal_claims
   workstream_drift_status: NO_NEW_DRIFT
   material_user_capability_delta_since_previous_milestone:
     truth: OBSERVED
     capability: >-
       Operators can persist explicit NOT DOCUMENTED structured rights state and run a non-mutating integrated
       assurance pass over the live product dependencies and proof chain.
-  exact_next_gate: TRACE_DESIGN_ASSURANCE
-  exact_next_owner: TRACE
+  exact_next_gate: PROTECTED_RUNTIME_BINDING_OR_WRITE_FAILURE_PROOF
+  exact_next_owner: HUMAN_OR_EXISTING_AUTHORITY
   exact_next_action: >-
-    Review the current live operator surface using the observed runtime recording plus responsive/reduced-motion implementation;
-    record PASS, PASS_WITH_ACCEPTED_DEBT or HOLD without changing product scope for presentation polish.
+    Explicitly authorize either stable public runtime/commit binding or a disposable controlled consequential mutation
+    for write-outcome-unknown recovery. Do not promote BUILD_CANDIDATE_READY before one of these protected gaps is resolved
+    or formally waived by the existing human authority.
   protected_actions:
     final_submission: HUMAN_ONLY
     consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
@@ -179,6 +184,6 @@ dependency_recovery_runtime_proof:
   business_mutation_repeated: false
   write_outcome_unknown_recovery: BLOCKED_UNOBSERVED
   current_primary_workstream: PRODUCT_EXPLOITATION
-  next_highest_value_depth_delta: TRACE_DESIGN_ASSURANCE
+  next_highest_value_depth_delta: PROTECTED_RUNTIME_BINDING_OR_WRITE_FAILURE_PROOF
   exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
