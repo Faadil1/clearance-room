@@ -76,8 +76,6 @@ proven_runtime:
     validTo: 2026-10-31
 
 next:
-  - runtime-prove a material UNKNOWN case on user-created content
-  - runtime-prove bounded Sanity Content Agent narration if provider/credits are available
   - runtime-exercise dependency degradation and write reconciliation only through truthful controlled conditions
   - runtime-run Proof Integrity Audit and remaining individual filters
   - runtime-prove deletion only on a disposable user-created scenario with explicit operator confirmation
@@ -91,8 +89,6 @@ product_workstream_priority:
   product_reality_version: "1.5.0"
   first_live_slice_proven: true
   remaining_material_depth_gaps:
-    - UNKNOWN_and_missing_evidence_material_runtime_proof
-    - bounded_Content_Agent_runtime_execution
     - degraded_live_integration_runtime_observation
     - write_outcome_unknown_reconciliation_runtime_observation
     - free_text_status_territory_channel_filter_runtime_proof
@@ -102,7 +98,7 @@ product_workstream_priority:
     - current_Engineering_Quality_receipt
     - TRACE_design_assurance_receipt
   current_primary_workstream: PRODUCT_EXPLOITATION
-  next_highest_value_depth_delta: RUNTIME_PROVE_UNKNOWN_AND_MISSING_EVIDENCE_PATH
+  next_highest_value_depth_delta: RUNTIME_EXERCISE_DEPENDENCY_DEGRADATION_AND_RECOVERY
   valid_stop_condition: null
   demo_packaging_allowed: false
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
@@ -154,11 +150,12 @@ completion_block_reconciliation:
   demo_packaging_permission: false
   workstream_drift_status: NO_NEW_DRIFT__PRIOR_DRIFT_CORRECTED
   blocked_transition: BUILD_CANDIDATE_READY
-  exact_next_gate: MATERIAL_UNKNOWN_RUNTIME_PROOF
+  exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Create one material missing-evidence state on user-created content (preferred: proposed validTo NOT DOCUMENTED),
-    observe UNKNOWN in the live product, then rerun runtime assurance and continue only with the remaining truthful blockers.
+    Exercise a truthful controlled Context MCP or Knowledge Base dependency failure without mutating business data,
+    verify fail-closed/degraded behavior and recovery, then continue to write-outcome reconciliation or classify it
+    STOPPED_BY_VALID_CONDITION if a safe consequential failure cannot be induced.
 
 
 runtime_assurance_2026_10_05:
@@ -228,3 +225,44 @@ runtime_assurance_2026_10_05:
   valid_stop_condition: null
   workstream_drift_status: NO_NEW_DRIFT
   blocked_transition: BUILD_CANDIDATE_READY
+
+
+runtime_unknown_agent_2026_10_05:
+  evidence: evidence/assurance/UNKNOWN-AGENT-RUNTIME-2026-10-05.md
+  user_usage: usage-user-3dd4ef777a29
+  structured_change:
+    field: validTo
+    proposed_state: NOT_DOCUMENTED
+  deterministic_result:
+    current: CLEAR
+    proposed: UNKNOWN
+    unknown_axis: window
+    reason: at_least_one_governing_right_is_missing_a_validity_boundary
+  read_only_assurance:
+    status: PROVEN_RUNTIME
+    user_unknown_count: 1
+    all_unknown_count: 1
+    affected_usage_requests: 1
+    time_to_first_value_ms: 380
+  bounded_agent:
+    status: PROVEN_RUNTIME
+    sanity_content_agent_narrative: GENERATED
+    context_mcp: OK
+    deterministic_evaluator: OK
+    knowledge_base: PARTIAL
+    remediation_registry: OK
+    sanity_content_agent: OK
+    abstention: true
+    invented_repair: false
+    write_authority: NONE
+  material_user_capability_delta_since_previous_milestone:
+    truth: OBSERVED
+    capability: >-
+      Operator can now create a materially incomplete rights state that deterministically fails closed to UNKNOWN,
+      receive a bounded Sanity Content Agent explanation grounded in Context MCP and deterministic receipts, and
+      obtain explicit abstention with no invented repair or write authority.
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  valid_stop_condition: null
+  workstream_drift_status: NO_NEW_DRIFT
+  blocked_transition: BUILD_CANDIDATE_READY
+  exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
