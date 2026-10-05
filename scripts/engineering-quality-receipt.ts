@@ -48,8 +48,7 @@ const commit = git(['rev-parse', 'HEAD'])
 const branch = git(['branch', '--show-current'])
 const dirtyLines = git(['status', '--porcelain'])
   .split('\n')
-  .map((line) => line.trim())
-  .filter(Boolean)
+  .filter((line) => line.length > 0)
 const generatedSafeDirtyPaths = new Set([
   'next-env.d.ts',
   'evidence/assurance/ENGINEERING-QUALITY-RECEIPT.json',
