@@ -23,6 +23,18 @@ export async function POST(request: Request) {
   try {
     const client = getServerSanity()
     const body = await request.json().catch(() => ({}))
+    const proposedPerspective =
+      typeof body?.proposedPerspective === 'string' ? body.proposedPerspective : 'drafts'
+
+    if (proposedPerspective !== 'drafts') {
+      return NextResponse.json(
+        {
+          error: 'Consequential remediation is only available for the drafts perspective',
+          code: 'ANALYSIS_ONLY_PERSPECTIVE',
+        },
+        {status: 409},
+      )
+    }
 
     if (body?.approved !== true) {
       return NextResponse.json(
