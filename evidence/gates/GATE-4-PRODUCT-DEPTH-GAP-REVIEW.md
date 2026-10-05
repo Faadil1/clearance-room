@@ -104,14 +104,14 @@ Detailed evidence:
 
 ## Immediate product expansion / assurance order
 
-1. complete current test + production-build CI on the completion-block head
-2. commit the generated dependency lockfile from a verified install
-3. runtime-prove a material UNKNOWN case on user-created content
-4. runtime-prove bounded Sanity Content Agent narration over Context MCP receipts
-5. runtime-prove dependency degradation/write reconciliation behavior
-6. runtime-run Proof Integrity Audit and remaining operator filters/scenario deletion
-7. runtime-test a release id if this Sanity project has a usable Content Release
-8. emit current Engineering Quality receipt
+1. pull the completion-block head and run `npm install`
+2. commit `package-lock.json` from that verified install
+3. run `npm run verify:completion`
+4. runtime-prove a material UNKNOWN case on user-created content
+5. opt-in runtime-prove bounded Sanity Content Agent narration if AI credits/provider are available
+6. runtime-exercise dependency degradation/write reconciliation only through a truthful controlled condition
+7. runtime-prove remaining individual operator filters and disposable-scenario deletion
+8. runtime-test a release id if this Sanity project actually has one; otherwise keep availability BLOCKED/UNKNOWN
 9. obtain TRACE assurance at the next safe terminal boundary
 10. rerun this Product Depth Gap Review before BUILD_CANDIDATE_READY
 
@@ -233,3 +233,47 @@ Verdict:
 The product now has two materially different proven remediation classes on user-supplied content:
 - paid `BLOCK` → organic-only
 - window `REVIEW` → shorten campaign
+
+
+## Completion block — integrated assurance harness
+
+Implemented in the current product branch:
+
+### Read-only runtime assurance command
+- `npm run verify:runtime-assurance`
+- checks Runtime Health
+- executes live Context MCP usage + rights-change scans
+- measures server-side Time to First Value
+- runs Proof Integrity Audit on the current dataset
+- reports whether a material user-created UNKNOWN case actually exists
+- can test a real release perspective when `SANITY_RELEASE_ID` is supplied
+- can opt into bounded Sanity Content Agent narration with `CLEARANCE_ASSURANCE_RUN_AGENT=1`
+- never seeds or mutates business state
+- never performs scenario deletion or protected submission
+
+### One-command completion verifier
+- `npm run verify:completion`
+- validates runtime env names without printing secret values
+- runs Engineering Quality regression verification
+- emits the project-local Engineering Quality receipt
+- runs the read-only runtime assurance command
+
+### Engineering Quality backfill
+- proof-integrity detection extracted into a deterministic pure function
+- 5 regression tests cover PASS, historical warning, stale-without-replacement, valid supersession, and orphan supersession
+- runtime dependency health policy extracted into a deterministic pure function
+- 5 regression tests cover healthy, Context MCP fail-closed, KB degradation, write disablement, and unverified empty-dataset writes
+- canonical receipt generator follows the central Engineering Quality receipt schema
+- no quality score is treated as terminal authority
+
+### Truth-preserving blockers retained
+The assurance command intentionally reports BLOCKED rather than faking proof when:
+- no user-created UNKNOWN case exists;
+- a destructive deletion proof would be required;
+- a real dependency outage has not occurred;
+- a write-outcome-unknown case has not been observed;
+- a clean-room external replay has not been run;
+- no real release id is available.
+
+Runbook:
+- `evidence/assurance/COMPLETION-BLOCK-RUNBOOK.md`
