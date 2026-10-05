@@ -32,11 +32,13 @@ canonical_baseline_reconciliation:
   canonical_baseline_commit: 8a7e8a4ff5461641c595e2cf052a95fdc32a6340
   project_state_commit_at_reconciliation_start: 37399c51fc7e3680d22a03df1f37b5b40c9d1bda
   last_canonical_reconciliation_at: 2026-10-04
-  baseline_delta_status: NON_MATERIAL_DELTA
+  baseline_delta_status: ALIGNED
+  project_local_delta_status: NON_MATERIAL_DELTA
   delta_reason: >-
-    Product Reality v1.5 formalizes baseline pinning and drift tripwires that match the already-corrected
-    PRODUCT_EXPLOITATION direction. No product redesign or gate reopening is required. The material reconciliation
-    needed here is stale project-state correction: multiple depth items previously listed as gaps are now runtime proven.
+    Central canonical version and exact baseline SHA still match the project pin. Central main has advanced with
+    continuity/projection updates under the same promoted baseline, but no new material canonical obligation has
+    displaced Product Reality v1.5 for this project. Local product depth has advanced materially and is reconciled
+    in project state without reopening Concept Lock.
   first_live_slice_proven: true
   affected_transition_blocked: false
   terminal_transition_blocked_by_remaining_product_depth: true
@@ -74,14 +76,16 @@ proven_runtime:
     validTo: 2026-10-31
 
 next:
-  - runtime-prove UNKNOWN and missing-evidence behavior on user-created multi-right content
-  - runtime-prove free-text, proposed-status, territory and channel operator filters
-  - runtime-prove user-created scenario deletion
-  - verify multi-impact behavior after canonical reset and repeated proof-history behavior
-  - add constrained agent orchestration using MCP/KB plus deterministic receipts
-  - add degraded-integration and write-failure recovery
-  - evaluate App SDK, Workflows and release-aware perspective availability with explicit PROVEN/N/A/BLOCKED verdicts
-  - rerun Product Depth Gap Review before any submission/demo-polish phase
+  - commit package-lock.json from a verified install
+  - run npm run verify:completion on the committed completion-block head
+  - runtime-prove a material UNKNOWN case on user-created content
+  - runtime-prove bounded Sanity Content Agent narration if provider/credits are available
+  - runtime-exercise dependency degradation and write reconciliation only through truthful controlled conditions
+  - runtime-run Proof Integrity Audit and remaining individual filters
+  - runtime-prove deletion only on a disposable user-created scenario with explicit operator confirmation
+  - runtime-test a real release id if one exists; otherwise preserve availability as BLOCKED/UNKNOWN
+  - obtain TRACE assurance at the next safe terminal boundary
+  - rerun Product Depth Gap Review before BUILD_CANDIDATE_READY
 
 
 product_workstream_priority:
@@ -89,16 +93,18 @@ product_workstream_priority:
   product_reality_version: "1.5.0"
   first_live_slice_proven: true
   remaining_material_depth_gaps:
-    - UNKNOWN_and_missing_evidence_runtime_proof
+    - UNKNOWN_and_missing_evidence_material_runtime_proof
+    - bounded_Content_Agent_runtime_execution
+    - degraded_live_integration_runtime_observation
+    - write_outcome_unknown_reconciliation_runtime_observation
+    - proof_integrity_audit_on_current_live_dataset
     - free_text_status_territory_channel_filter_runtime_proof
     - user_created_scenario_deletion_runtime_proof
-    - multi_impact_after_canonical_reset_and_repeated_proof_history
-    - constrained_agent_orchestration
-    - degraded_live_integration_recovery
-    - write_failure_recovery
-    - App_SDK_evaluation
-    - Workflows_fit_and_availability_evaluation
-    - release_aware_perspective_evaluation_if_available
+    - measured_Time_to_First_Value_receipt
+    - release_id_runtime_availability_or_explicit_unavailable_classification
+    - committed_dependency_lock_and_external_clean_room_reexecution
+    - current_Engineering_Quality_receipt
+    - TRACE_design_assurance_receipt
   current_primary_workstream: PRODUCT_EXPLOITATION
   next_highest_value_depth_delta: RUNTIME_PROVE_UNKNOWN_AND_MISSING_EVIDENCE_PATH
   valid_stop_condition: null
@@ -106,7 +112,50 @@ product_workstream_priority:
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
   last_priority_reconciliation_at: 2026-10-04
   material_user_capability_delta_since_previous_milestone:
-    - Scenario_Lab_real_user_defined_content
-    - load_bearing_Context_MCP_plus_Live_Content_auto_refresh
-    - second_remediation_class_proven
+    - operator_can_persist_explicit_NOT_DOCUMENTED_state_on_live_user_created_right
+    - operator_can_run_read_only_integrated_runtime_assurance_without_seeding_or_business_mutation
+    - proof_integrity_and_runtime_dependency_fail_closed_policies_are_now_directly_auditable
   invariant: PRODUCT_ARCHITECTURE_GENERATES_DEMO_PATH__DEMO_PATH_MUST_NOT_DEFINE_PRODUCT_ARCHITECTURE
+
+
+completion_block_reconciliation:
+  date: 2026-10-04
+  current_lifecycle: EXPAND
+  current_gate: PRODUCT_MAXIMUM_EXPLOITATION__GATE_4
+  judged_build_stage: LIVE_DEPTH__EVIDENCE
+  first_live_slice_status: PROVEN
+  central_baseline:
+    version: 0.1.56-canonical-baseline-drift-tripwire-promoted
+    exact_sha: 8a7e8a4ff5461641c595e2cf052a95fdc32a6340
+    active_project_reconciliation_wave_merge: fb062d6cd792cab8e27c342120824f285120bc2f
+    product_reality: 1.5.0
+  baseline_delta_status: ALIGNED
+  project_code_head_before_state_update: 3811e02b9b4635d529c7f4dcf952e256dee8a83f
+  branch: product/judge-workflow-4
+  pull_request: 4
+  pull_request_state: DRAFT_OPEN_MERGEABLE
+  runtime_binding:
+    class: LIVE_CODESPACES_DEV__NOT_PRODUCTION_FROZEN
+    production_deployment_commit: null
+    public_runtime_binding: NOT_FROZEN
+  completion_harness:
+    one_command: npm run verify:completion
+    runtime_assurance: npm run verify:runtime-assurance
+    engineering_quality: npm run verify:engineering-quality
+    runbook: evidence/assurance/COMPLETION-BLOCK-RUNBOOK.md
+  material_user_capability_delta_since_previous_milestone:
+    truth: OBSERVED
+    capability: >-
+      Operator can persist explicit NOT DOCUMENTED structured rights state on user-owned live content and can now
+      execute a read-only integrated assurance pass covering live Context MCP scans, Runtime Health, TTFV measurement,
+      Proof Integrity and optional bounded-agent/release checks without seeding or business mutation.
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  valid_stop_condition: null
+  demo_packaging_permission: false
+  workstream_drift_status: NO_NEW_DRIFT__PRIOR_DRIFT_CORRECTED
+  blocked_transition: BUILD_CANDIDATE_READY
+  exact_next_gate: COMPLETION_BLOCK_RUNTIME_ASSURANCE
+  exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
+  exact_next_action: >-
+    Commit the verified dependency lock, execute npm run verify:completion, then close only runtime gaps actually
+    observed by that receipt and preserve UNKNOWN/BLOCKED states for protected or unavailable conditions.
