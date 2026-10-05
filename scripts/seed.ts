@@ -82,7 +82,7 @@ await Promise.all([
 ])
 
 for (const doc of docs) {
-  await client.createOrReplace(doc)
+  await client.createOrReplace(doc as any)
   console.log(`seeded ${doc._id}`)
 }
 console.log('Seed complete.')

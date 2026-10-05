@@ -1,0 +1,32 @@
+name: Product quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - product/judge-workflow-4
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12'
+
+      - name: Install
+        run: npm ci
+
+      - name: Engineering quality + regression receipt
+        run: npm run verify:engineering-quality
+
+      - name: Show engineering quality receipt
+        if: always()
+        run: cat evidence/assurance/ENGINEERING-QUALITY-RECEIPT.json || true

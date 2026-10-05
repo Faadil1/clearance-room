@@ -1,36 +1,234 @@
 project: clearance-room
-handover_date: 2026-10-04
-branch: gate/proof-remediation-2
+handover_date: 2026-10-05
+branch: product/judge-workflow-4
 
-completed:
-  - Gate #1 merged to main
-  - Gate #2 local tests 5/5 passed
-  - real music-right partial-window scenario seeded
-  - persistent baseline clearanceProof runtime PASS
-  - explicit human-approved remediation runtime PASS
-  - baseline proof marked stale
-  - usage request shortened to 2026-10-31
-  - deterministic recompile returned CLEAR
-  - replacement proof persisted and supersedes baseline
+proven:
+  gate_1:
+    status: PROVEN
+    capability: published vs drafts blast-radius computation through real Context MCP
+  gate_2:
+    status: PROVEN
+    capability: persisted proof, explicit human-approved mutation, stale proof, deterministic recompile
+  gate_3:
+    status: PROVEN
+    capability: source-bound Knowledge Base evidence through separate KB-only MCP endpoint
 
-gate_2_verdict: PROVEN
+canonical_baseline:
+  status: ALIGNED
+  version: 0.1.56-canonical-baseline-drift-tripwire-promoted
+  commit: 8a7e8a4ff5461641c595e2cf052a95fdc32a6340
+  project_state_commit_at_reconciliation_start: 37399c51fc7e3680d22a03df1f37b5b40c9d1bda
+  delta_status: ALIGNED
+  project_local_delta_status: NON_MATERIAL_DELTA
+  first_live_slice_proven: true
+  affected_transition_blocked: false
+  terminal_transition_blocked_by_remaining_product_depth: true
+  material_user_capability_delta_since_previous_milestone:
+    - user_defined_Scenario_Lab_real_content
+    - automatic_Live_Content_to_Context_MCP_refresh
+    - change_centric_blast_radius
+    - operator_filter_composition
+    - second_window_REVIEW_remediation_class
+  rule: >-
+    Re-resolve the central version and exact commit at every material product touch. Remaining depth gaps keep
+    PRODUCT_EXPLOITATION primary. Demo, reset, replay, receipts, screenshots, video, story and submission packaging
+    cannot be treated as product progress without a real material user-capability delta.
 
-gate_3:
-  name: Knowledge Base grounding
-  status: PROVEN
+active:
+  gate_4:
+    name: Product Maximum Exploitation / Live Product Depth
+    status: ACTIVE
+    plan: product/PRODUCT-MAXIMUM-EXPLOITATION.md
+    gap_review: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+    rule: vertical slice is entry point, not Definition of Done
+    primary_mode: live product
+    fallback_mode: seeded reproducibility harness
+
+architecture_invariants:
+  statusAuthority: deterministic evaluator only
+  graphEndpoint: clearance-room-graph
+  evidenceEndpoint: clearance-room-evidence
   knowledgeBaseId: kbjKMGM1H2uf
-  endpoint: clearance-room-evidence
-  canonicalEntry: music_licensing
-  provenEvidence:
-    documentId: rights-music-c09
-    kind: music_license
-    channel: instagram_reels
-    territory: CA
-    paidAdvertisingAllowed: true
-    validTo: 2026-10-31
-    source: C09 Original Soundtrack License — Dataset
+  mutationBoundary: explicit human approval required
 
 next:
-  - move from infrastructure gates into productization
-  - build judge/operator-facing workflow around blast radius, proof, remediation, and evidence
-  - preserve all truth boundaries
+  - resolve WRITE_FAILURE_RECOVERY with an explicitly authorized controlled consequential failure, or formally waive/defer it
+  - then rerun Product Depth Gap Review and activate Final Canonical Assurance
+  - keep scenario deletion runtime proof non-terminal unless the submission claims it
+  - final submission remains human-only
+
+
+workstream_priority:
+  central_policy: Faadil1/faadil-agent-system@8a7e8a4ff5461641c595e2cf052a95fdc32a6340
+  product_reality_version: "1.5.0"
+  first_live_slice_proven: true
+  current_primary_workstream: STOPPED_BY_VALID_CONDITION
+  next_highest_value_depth_delta: WRITE_FAILURE_RECOVERY_PROOF_OR_EXPLICIT_WAIVER
+  valid_stop_condition:
+    status: ACTIVE
+    reasons:
+      - write_outcome_unknown_runtime_requires_explicit_controlled_consequential_mutation
+  demo_packaging_allowed: true_after_valid_stop_condition__no_terminal_claims
+  workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
+  material_user_capability_delta_since_previous_milestone: MATERIAL_AND_OBSERVED__UNKNOWN_AGENT_FAILURE_RECOVERY_FILTERS
+  rule: >-
+    While justified material product-depth gaps remain, product exploitation is primary. Judge flow,
+    seeded reset, replay, receipts, screenshots, video and submission packaging are secondary support only.
+  recheck: EVERY_MATERIAL_PRODUCT_TOUCH
+
+
+completion_block:
+  status: ASSURANCE_COMPLETE_TO_PROTECTED_BOUNDARY
+  code_head_before_state_update: 3811e02b9b4635d529c7f4dcf952e256dee8a83f
+  pull_request: 4
+  pull_request_state: DRAFT_OPEN_MERGEABLE
+  canonical_baseline:
+    version: 0.1.56-canonical-baseline-drift-tripwire-promoted
+    exact_sha: 8a7e8a4ff5461641c595e2cf052a95fdc32a6340
+    baseline_delta_status: ALIGNED
+  product_reality: 1.5.0
+  first_live_slice_status: PROVEN
+  current_lifecycle: EXPAND
+  current_gate: PRODUCT_MAXIMUM_EXPLOITATION__GATE_4
+  current_primary_workstream: STOPPED_BY_VALID_CONDITION
+  runtime_commit_binding:
+    status: PROVEN
+    commit: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+    deployment_id: dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB
+    stable_alias: https://clearance-room.vercel.app
+    evidence: evidence/assurance/PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
+  remaining_material_product_depth_gaps:
+    - write_outcome_unknown_runtime
+
+  valid_stop_condition:
+    status: ACTIVE
+    reasons:
+      - write_outcome_unknown_runtime_requires_explicit_controlled_consequential_mutation
+  demo_packaging_permission: true_after_valid_stop_condition__no_terminal_claims
+  workstream_drift_status: NO_NEW_DRIFT
+  material_user_capability_delta_since_previous_milestone:
+    truth: OBSERVED
+    capability: >-
+      Operators can persist explicit NOT DOCUMENTED structured rights state and run a non-mutating integrated
+      assurance pass over the live product dependencies and proof chain.
+  exact_next_gate: WRITE_FAILURE_RECOVERY
+  exact_next_owner: HUMAN_OR_EXISTING_AUTHORITY
+  exact_next_action: >-
+    Authorize a disposable controlled consequential failure to observe write-outcome-unknown reconciliation,
+    or formally waive/defer that terminal material gate. Final submission remains human-only.
+  protected_actions:
+    final_submission: HUMAN_ONLY
+    consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
+    production_deploy_when_protected: HUMAN_OR_EXISTING_AUTHORITY
+
+
+latest_runtime_assurance:
+  date: 2026-10-05
+  commit: 17463ebed6b4e2e3038119fde2625c5bae1d760d
+  evidence: evidence/assurance/RUNTIME-ASSURANCE-2026-10-05.md
+  result:
+    runtime_env: PASS
+    tests: 42_of_42_PASS
+    production_build: PASS
+    runtime_health: PROVEN_HEALTHY
+    time_to_first_value_ms: 442
+    proof_integrity: PASS_WITH_HISTORICAL_WARNINGS
+    material_unknown: BLOCKED_NOT_OBSERVED
+    bounded_agent: SKIPPED
+    release_perspective: SKIPPED
+    scenario_deletion: BLOCKED_PROTECTED_ACTION
+    dependency_failure: BLOCKED_NOT_OBSERVED
+    write_failure_recovery: BLOCKED_NOT_OBSERVED
+    external_clean_room: BLOCKED_NOT_RUN
+  engineering_quality:
+    observed: PASS_WITH_ACCEPTED_DEBT
+    rerun_required: true
+    reason: generated-file dirt handling was corrected after the observed run
+    high_dependency_vulnerabilities_disclosed: 11
+    critical_dependency_vulnerabilities_observed: 0
+  dependency_lock:
+    status: COMMITTED
+    commit: 17463ebed6b4e2e3038119fde2625c5bae1d760d
+  exact_next_gate: MATERIAL_UNKNOWN_RUNTIME_PROOF
+  exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
+  exact_next_action: >-
+    Set proposed validTo to NOT DOCUMENTED on user-created content, observe UNKNOWN and abstention, rerun runtime assurance,
+    then proceed to bounded Content Agent runtime if credits/provider permit.
+
+
+unknown_agent_runtime_proof:
+  date: 2026-10-05
+  evidence: evidence/assurance/UNKNOWN-AGENT-RUNTIME-2026-10-05.md
+  material_unknown: PROVEN
+  bounded_content_agent: PROVEN
+  usage: usage-user-3dd4ef777a29
+  current_to_proposed: CLEAR_TO_UNKNOWN
+  unknown_axis: window
+  agent_narrative: GENERATED
+  agent_abstention: true
+  agent_write_authority: NONE
+  no_invented_remediation: PROVEN
+  runtime_assurance_unknown_count: 1
+  latest_ttfv_ms: 380
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  next_highest_value_depth_delta: DEPENDENCY_FAILURE_AND_RECOVERY
+  exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
+  exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
+
+
+dependency_recovery_runtime_proof:
+  date: 2026-10-05
+  evidence: evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md
+  external_dependency_failure_gate: PROVEN
+  context_mcp_fail_closed: PROVEN
+  knowledge_base_evidence_only_degradation: PROVEN
+  dependency_recovery_after_restore: PROVEN
+  write_recovery_idempotence: PROVEN
+  business_mutation_repeated: false
+  write_outcome_unknown_recovery: BLOCKED_UNOBSERVED
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  next_highest_value_depth_delta: PROTECTED_RUNTIME_BINDING_OR_WRITE_FAILURE_PROOF
+  exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
+  exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
+
+
+final_public_runtime_binding:
+  date: 2026-10-05
+  status: PROVEN
+  evidence: evidence/assurance/PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
+  runtime_candidate: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+  deployment_id: dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB
+  deployment_state: READY
+  stable_alias: https://clearance-room.vercel.app
+  root_http_status: 200
+  health: healthy
+  product_quality_run: 37264248408
+  product_quality_conclusion: success
+  continuity_rule: POST_DEPLOY_DOCS_STATE_EVIDENCE_COMMITS_DO_NOT_REDEFINE_RUNTIME_CANDIDATE
+
+submission_packaging:
+  date: 2026-10-05
+  evidence: evidence/assurance/SUBMISSION-READINESS-2026-10-05.md
+  readme: JUDGE_FACING_UPDATED
+  package_status: READY_FOR_REVIEW
+  terminal_canonical_ready: false
+  remaining_terminal_material_blocker: WRITE_FAILURE_RECOVERY
+  final_submission: HUMAN_ONLY
+
+final_project_outcome:
+  date: 2026-10-05
+  submission_status: NOT_SUBMITTED
+  submission_receipt: NONE
+  project_status: PAUSED_PORTFOLIO_READY
+  product_runtime_status: RETAINED
+  production_runtime_commit: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+  design_delta_pr: 6
+  design_delta_status: NOT_PROMOTED
+  remaining_terminal_blocker: WRITE_FAILURE_RECOVERY
+  final_canonical_assurance: NOT_RUN
+  protected_submission: NOT_EXECUTED
+  post_mortem: evidence/learning/NON-SUBMISSION-POSTMORTEM-2026-10-05.md
+  exact_next_gate: NONE_PROJECT_PAUSED
+  exact_next_action: >-
+    Preserve the project as portfolio evidence and route the non-submission learning into the central system.
+    Do not resume build, design, submission packaging, or terminal assurance unless the human explicitly reopens the project.

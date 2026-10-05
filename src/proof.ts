@@ -1,4 +1,4 @@
-import type {ClearanceProof, UsageGraph} from './types.js'
+import type {ClearanceProof, UsageGraph} from './types'
 
 export const BASELINE_PROOF_ID = 'proof-usage-holiday-ca-baseline'
 export const REMEDIATED_PROOF_ID = 'proof-usage-holiday-ca-remediated'

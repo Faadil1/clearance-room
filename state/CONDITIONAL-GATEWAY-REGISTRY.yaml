@@ -1,0 +1,169 @@
+version: 1
+project: clearance-room
+policy: Conditional Gateway Registry
+allowed_states: [ACTIVE, N/A, BLOCKED, PROVEN]
+updated: 2026-10-05
+
+gates:
+  CANONICAL_BASELINE_RECONCILIATION:
+    status: PROVEN
+    evidence: state/CURRENT.yaml
+  PROJECT_AUTHORIZATION:
+    status: PROVEN
+    note: carried forward from active authorized project state
+  CONCEPT_LOCK:
+    status: PROVEN
+    evidence: state/CURRENT.yaml
+  PRE_BUILD_REALITY:
+    status: PROVEN
+    note: carried forward; product has since accumulated live runtime evidence
+  COMPETITIVE_NOVELTY_KILL:
+    status: PROVEN
+    note: carried forward from locked concept; no new collision evidence currently reopening concept
+  WINNING_INTELLIGENCE_V2:
+    status: PROVEN
+    note: concept predates current reconciliation; central wave does not require reopening Concept Lock
+  TECHNICAL_REALITY:
+    status: PROVEN
+    evidence: evidence/gates/GATE-1-TECHNICAL-REALITY-PASS.md
+  TRUTH_BOUNDARY:
+    status: PROVEN
+    evidence:
+      - product/LIVING-PRD.md
+      - evidence/REALITY-LEDGER.md
+  NEGATIVE_PATH:
+    status: PROVEN
+    evidence:
+      - BLOCK path
+      - REVIEW path
+      - explicit abstention design for UNKNOWN
+  EVIDENCE_INTEGRITY:
+    status: PROVEN
+    evidence:
+      - evidence/gates/GATE-3-KNOWLEDGE-BASE-PASS.md
+      - evidence/REALITY-LEDGER.md
+  RUNTIME_COMMIT_BINDING:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
+    note: Vercel production deployment dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB is READY, aliases clearance-room.vercel.app, and records exact Git SHA d2dcd7046643b60d84b508121dc75a8f7f4d3776
+  DETERMINISTIC_DEMO:
+    status: PROVEN
+    note: retained only as reproducibility fallback
+  LIVE_CORE_LOOP:
+    status: PROVEN
+    evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  LOAD_BEARING_CONTEXT_MCP:
+    status: PROVEN
+    evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  LIVE_CONTENT_AUTO_INVALIDATION:
+    status: PROVEN
+    evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  REAL_CONSEQUENCE:
+    status: PROVEN
+    evidence:
+      - paid BLOCK to organic-only real mutation
+      - window REVIEW to shortened campaign real mutation
+  USER_DEFINED_LIVE_CONTENT:
+    status: PROVEN
+    evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  MULTI_RIGHT_INTERSECTION:
+    status: PROVEN
+    evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  UNKNOWN_MISSING_EVIDENCE:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/UNKNOWN-AGENT-RUNTIME-2026-10-05.md
+    note: user-created proposed validTo was set to NOT DOCUMENTED; live product and read-only assurance independently observed CLEAR to UNKNOWN with window UNKNOWN and no invented remediation
+  AGENT_ORCHESTRATION:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/UNKNOWN-AGENT-RUNTIME-2026-10-05.md
+    note: live operator run observed GENERATED Sanity Content Agent narration over deterministic CLEAR to UNKNOWN receipt; Context MCP, evaluator, remediation registry and Content Agent tool trace were active; write authority remained NONE
+  EXTERNAL_DEPENDENCY_FAILURE:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md
+    note: process-local controlled Context MCP and Knowledge Base failures proved fail-closed/degraded behavior and healthy recovery without business mutation
+  WRITE_FAILURE_RECOVERY:
+    status: BLOCKED
+    evidence:
+      - evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md
+    blocker: write-recovery idempotence is runtime proven as ALREADY_COMPLETE with no repeated business mutation; genuine write-outcome-unknown recovery remains unobserved and requires an explicitly authorized controlled consequential failure
+    valid_stop_condition: HUMAN_AUTHORITY_REQUIRED_FOR_CONTROLLED_CONSEQUENTIAL_FAILURE
+  PROOF_HISTORY_REPEATED_RUNS:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/RUNTIME-ASSURANCE-2026-10-05.md
+    note: current live dataset audit passed with historical MULTIPLE_FRESH_PROOFS warnings only; no stale-without-replacement or orphan-supersession error was observed
+  OPERATOR_FILTERS:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/REMAINING-READONLY-RUNTIME-2026-10-05.md
+    note: free-text, proposed-status, territory and channel filters were individually exercised against the live Context MCP portfolio; prior multi-filter composition proof remains preserved
+  SCENARIO_DELETION:
+    status: N/A
+    reason: implementation exists but runtime deletion proof is not material to the current submission claim; reactivate if deletion is claimed as a proven capability
+  TIME_TO_FIRST_VALUE:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/RUNTIME-ASSURANCE-2026-10-05.md
+    note: server-side concurrent live Context MCP portfolio + rights-change scan measured 442 ms
+  OPERATIONAL_ECONOMICS:
+    status: N/A
+    reason: no paid transactional core loop
+  SHARED_PRODUCT_CORE:
+    status: PROVEN
+    evidence: Next API surfaces route through shared Context MCP + deterministic compiler + mutation services
+  REALITY_LEDGER:
+    status: PROVEN
+    evidence: evidence/REALITY-LEDGER.md
+  OBSERVABILITY_RECEIPTS:
+    status: PROVEN
+    evidence:
+      - live auto-refresh receipts
+      - proof supersession receipts
+  JUDGE_OPERATOR_SELF_SERVE:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
+      - README.md
+    note: stable public alias is healthy and bound to the frozen production candidate; judge-facing runbook is current
+  CLEAN_ROOM_REPRODUCIBILITY:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/EXTERNAL-CLEAN-ROOM-CI-2026-10-05.md
+    note: GitHub-hosted fresh runner completed dependency-locked npm ci, 42/42 tests and Next production build successfully
+  ENGINEERING_QUALITY_ASSURANCE:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/ENGINEERING-QUALITY-CLEAN-CI-2026-10-05.md
+    note: fresh GitHub-hosted npm ci runner produced PASS_WITH_ACCEPTED_DEBT with working_tree_dirty=false; only EQ-AUDIT-HIGH-001 remains as disclosed accepted debt
+  TRACE_DESIGN_ASSURANCE:
+    status: PROVEN
+    evidence:
+      - evidence/assurance/TRACE-DESIGN-ASSURANCE-2026-10-05.md
+    note: evaluator-facing desktop runtime passed TRACE with accepted non-blocking density/focus/mobile-runtime debt; truth boundaries, write authority and UNKNOWN abstention remain visibly legible
+  APP_SDK:
+    status: N/A
+    reason: evaluated as duplicate surface for current Path One core; current Sanity integrations are already load-bearing
+  WORKFLOWS:
+    status: N/A
+    reason: team-process coordination is additive, not required for single-operator core correctness; feature enablement is account-dependent
+  RELEASE_AWARE_PERSPECTIVE:
+    status: N/A
+    evidence:
+      - evidence/assurance/REMAINING-READONLY-FINAL-2026-10-05.md
+    reason: corrected read-only availability probe observed NO_RELEASE_PRESENT with releaseCount 0; release-id execution cannot be truthfully runtime-proven without an actual Content Release and this gate must reactivate if one is created
+  FINAL_CANONICAL_ASSURANCE:
+    status: N/A
+    reason: project ended NOT_SUBMITTED before terminal assurance; reactivate only after explicit human reopen and resolution/reclassification of remaining material gates
+  PROTECTED_FINAL_SUBMISSION:
+    status: N/A
+    reason: explicitly NOT_SUBMITTED by human outcome; no verified submission receipt exists and no submission action was executed
+
+terminal_fail_closed:
+  BUILD_CANDIDATE_READY:
+    allowed: false
+    blocking_gates:
+      - WRITE_FAILURE_RECOVERY

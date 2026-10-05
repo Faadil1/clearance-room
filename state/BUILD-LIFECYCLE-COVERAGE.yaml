@@ -1,0 +1,87 @@
+version: 1
+project: clearance-room
+project_type: HACKATHON
+profile: Faadil1/faadil-agent-system/project-profiles/hackathon.yaml
+source_of_truth:
+  current: state/CURRENT.yaml
+  handover: state/HANDOVER.yaml
+  living_prd: product/LIVING-PRD.md
+  gateway_registry: state/CONDITIONAL-GATEWAY-REGISTRY.yaml
+canonical_baseline:
+  version: 0.1.56-canonical-baseline-drift-tripwire-promoted
+  commit: 8a7e8a4ff5461641c595e2cf052a95fdc32a6340
+  central_reconciliation_wave: fb062d6cd792cab8e27c342120824f285120bc2f
+  delta_status: NON_MATERIAL_DELTA
+macro_lifecycle:
+  QUALIFY:
+    status: PROVEN
+    note: carried forward from authorized active hackathon state; not re-proven by this reconstruction
+  DECIDE:
+    status: PROVEN
+    note: concept is locked in CURRENT; reconstruction does not recreate missing historical research packet
+  DESIGN:
+    status: PROVEN
+    note: product architecture and invariants are implemented and runtime exercised
+  DELIVER:
+    status: ACTIVE
+    note: material product-depth implementation continues
+  AUDIT:
+    status: ACTIVE
+    note: evidence, truth boundaries and runtime receipts are continuously reconciled
+  EXPAND:
+    status: ACTIVE
+    note: post-vertical-slice Product Reality v1.5 exploitation loop is primary
+judged_build_cycle:
+  RUBRIC:
+    status: PROVEN
+    evidence_boundary: carried_forward_prior_project_decision
+  PAIN:
+    status: PROVEN
+    evidence_boundary: carried_forward_prior_project_decision
+  PROBLEM:
+    status: PROVEN
+    evidence_boundary: carried_forward_prior_project_decision
+  NEGATIVE_EVENT:
+    status: PROVEN
+    evidence:
+      - Faadil1/clearance-room#1 Context MCP not-ready failure before Studio deployment
+      - Faadil1/clearance-room#4 evidence-substitution and proof-noise incidents preserved in review comments
+  DIFFERENTIATOR:
+    status: PROVEN
+    evidence:
+      - state/CURRENT.yaml concept.mechanism
+      - evidence/gates/GATE-1-TECHNICAL-REALITY-PASS.md
+  EXECUTION:
+    status: PROVEN
+    evidence:
+      - evidence/gates/GATE-2-PROOF-REMEDIATION-PASS.md
+      - evidence/gates/GATE-3-KNOWLEDGE-BASE-PASS.md
+  LIVE_DEPTH:
+    status: ACTIVE
+    evidence:
+      - evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  EVIDENCE:
+    status: ACTIVE
+    evidence:
+      - evidence/REALITY-LEDGER.md
+      - evidence/CLAIM-RUNTIME-EVIDENCE-GRAPH.yaml
+  STORY:
+    status: ACTIVE
+    constraint: secondary_to_product_exploitation
+  DEMO:
+    status: ACTIVE
+    constraint: product_generated_view_only
+  Q_AND_A:
+    status: BLOCKED
+    blocker: terminal product truth packet not yet complete
+product_reality:
+  first_live_slice_proven: true
+  post_vertical_slice_depth_gap_review: ACTIVE
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  demo_packaging_allowed_as_primary: false
+  workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT__NO_NEW_DRIFT_OBSERVED
+terminal:
+  BUILD_CANDIDATE_READY: BLOCKED
+  SUBMISSION_READY: BLOCKED
+  COMPLETE: BLOCKED
+  reason: remaining material product-depth and assurance gaps

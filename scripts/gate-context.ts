@@ -4,11 +4,14 @@ import {diffProofs} from '../src/diff.js'
 import {usageGraphQueryFor} from '../src/query.js'
 import type {UsageGraph} from '../src/types.js'
 
-const baseUrl = process.env.SANITY_CONTEXT_MCP_URL
-const token = process.env.SANITY_ORGANIZATION_TOKEN
+function requiredEnv(name: string): string {
+  const value = process.env[name]
+  if (!value) throw new Error(`Missing ${name}`)
+  return value
+}
 
-if (!baseUrl) throw new Error('Missing SANITY_CONTEXT_MCP_URL')
-if (!token) throw new Error('Missing SANITY_ORGANIZATION_TOKEN')
+const baseUrl = requiredEnv('SANITY_CONTEXT_MCP_URL')
+const token = requiredEnv('SANITY_ORGANIZATION_TOKEN')
 
 function endpointFor(perspective: 'published' | 'drafts') {
   const url = new URL(baseUrl)

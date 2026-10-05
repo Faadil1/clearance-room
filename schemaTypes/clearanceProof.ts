@@ -10,6 +10,11 @@ export const clearanceProof = defineType({
     defineField({name: 'status', type: 'string', options: {list: ['CLEAR', 'BLOCK', 'REVIEW', 'UNKNOWN']}, validation: (r) => r.required()}),
     defineField({name: 'isStale', type: 'boolean', initialValue: false, validation: (r) => r.required()}),
     defineField({name: 'staleReason', type: 'string'}),
+    defineField({name: 'approvedAction', type: 'string'}),
+    defineField({name: 'approvedMutationField', type: 'string'}),
+    defineField({name: 'approvedMutationValue', type: 'string'}),
+    defineField({name: 'approvedAt', type: 'datetime'}),
+    defineField({name: 'recoveryKey', type: 'string'}),
     defineField({name: 'evaluatedAt', type: 'datetime', validation: (r) => r.required()}),
     defineField({name: 'intentSignature', type: 'string', validation: (r) => r.required()}),
     defineField({

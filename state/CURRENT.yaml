@@ -1,7 +1,7 @@
 project: clearance-room
 source_of_truth: github
-branch: gate/knowledge-base-3
-updated: 2026-10-04
+branch: product/judge-workflow-4
+updated: 2026-10-05
 
 concept:
   name: Clearance Room
@@ -18,12 +18,37 @@ gates:
   knowledge_base_grounding_3:
     status: PROVEN
     evidence: evidence/gates/GATE-3-KNOWLEDGE-BASE-PASS.md
-    objectives:
-      - create a Sanity Knowledge Base for rights-source evidence
-      - index published rights-document clauses
-      - expose it through a Knowledge-Base-only Context MCP endpoint
-      - prove retrieval of the music-license expiry evidence
-      - preserve deterministic evaluator authority
+  product_depth_expansion_4:
+    status: ACTIVE
+    plan: product/PRODUCT-MAXIMUM-EXPLOITATION.md
+    gap_review: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+    rule: vertical_slice_is_not_definition_of_done
+    primary_mode: live_product
+    secondary_mode: seeded_reproducibility_harness
+
+canonical_baseline_reconciliation:
+  status: ALIGNED
+  canonical_baseline_version: 0.1.56-canonical-baseline-drift-tripwire-promoted
+  canonical_baseline_commit: 8a7e8a4ff5461641c595e2cf052a95fdc32a6340
+  project_state_commit_at_reconciliation_start: 37399c51fc7e3680d22a03df1f37b5b40c9d1bda
+  last_canonical_reconciliation_at: 2026-10-04
+  baseline_delta_status: ALIGNED
+  project_local_delta_status: NON_MATERIAL_DELTA
+  delta_reason: >-
+    Central canonical version and exact baseline SHA still match the project pin. Central main has advanced with
+    continuity/projection updates under the same promoted baseline, but no new material canonical obligation has
+    displaced Product Reality v1.5 for this project. Local product depth has advanced materially and is reconciled
+    in project state without reopening Concept Lock.
+  first_live_slice_proven: true
+  affected_transition_blocked: false
+  terminal_transition_blocked_by_remaining_product_depth: true
+  material_user_capability_delta_since_previous_milestone:
+    - user_defined_Scenario_Lab_with_real_Sanity_documents
+    - Live_Content_API_auto_refresh_through_Context_MCP_without_manual_refresh
+    - change_centric_rights_document_blast_radius_view
+    - operator_filter_composition_core
+    - second_remediation_class_window_REVIEW_to_human_approved_shorten_to_CLEAR
+  next_reconciliation_trigger: EVERY_MATERIAL_PRODUCT_TOUCH_OR_CENTRAL_CANONICAL_BASELINE_ADVANCE
 
 truth_boundaries:
   - deterministic evaluator is the only authority for CLEAR/BLOCK/REVIEW/UNKNOWN
@@ -31,24 +56,480 @@ truth_boundaries:
   - Context MCP remains read-only
   - writes use a separate Sanity mutation path
   - changed intent or governing source revision invalidates prior proof
+  - repair predictions remain proposals until a real post-mutation recompile
 
 proven_runtime:
-  gate_2_baseline:
-    proof: proof-usage-holiday-ca-baseline
-    status: REVIEW
+  gate_1:
+    published: CLEAR
+    drafts: BLOCK
+    changedAxis: paid
+  gate_2:
+    baselineStatus: REVIEW
     allowedThrough: 2026-10-31
     blockedFrom: 2026-11-01
-    causedBy: rights-music-c09
-  gate_2_remediation:
-    action: shorten_campaign_end_date
-    oldEndDate: 2026-11-30
-    newEndDate: 2026-10-31
     oldProofStale: true
-    newProof: proof-usage-holiday-ca-remediated
-    newStatus: CLEAR
+    remediatedStatus: CLEAR
+  gate_3:
+    knowledgeBaseId: kbjKMGM1H2uf
+    canonicalEntry: music_licensing
+    sourceDocument: rights-music-c09
+    validTo: 2026-10-31
 
 next:
-  - productize the proven graph, proof, remediation, and evidence mechanisms
-  - build the judge/operator-facing workflow
-  - preserve deterministic status authority and source-bound evidence
-  - prepare live demo, story, and submission evidence
+  - resolve WRITE_FAILURE_RECOVERY with an explicitly authorized controlled consequential failure, or formally waive/defer it under existing authority
+  - after the blocker is resolved or formally waived, rerun Product Depth Gap Review and activate Final Canonical Assurance
+  - optional scenario deletion runtime proof is non-terminal and must not be claimed unless observed
+  - keep final submission human-only
+
+
+product_workstream_priority:
+  central_policy: Faadil1/faadil-agent-system@8a7e8a4ff5461641c595e2cf052a95fdc32a6340
+  product_reality_version: "1.5.0"
+  first_live_slice_proven: true
+  remaining_material_depth_gaps:
+    - write_outcome_unknown_reconciliation_runtime_observation
+
+  current_primary_workstream: STOPPED_BY_VALID_CONDITION
+  next_highest_value_depth_delta: WRITE_FAILURE_RECOVERY_PROOF_OR_EXPLICIT_WAIVER
+  valid_stop_condition:
+    status: ACTIVE
+    reasons:
+      - genuine_write_outcome_unknown_proof_requires_explicit_controlled_consequential_mutation
+  demo_packaging_allowed: true_after_valid_stop_condition__terminal_claims_still_forbidden
+  workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
+  last_priority_reconciliation_at: 2026-10-04
+  material_user_capability_delta_since_previous_milestone:
+    - operator_can_create_material_missing_evidence_and_receive_deterministic_UNKNOWN
+    - bounded_Sanity_Content_Agent_can_explain_and_abstain_with_write_authority_NONE
+    - operator_can_observe_fail_closed_Context_MCP_and_evidence_only_KB_degradation_then_recovery
+    - free_text_status_territory_channel_filters_are_individually_live_proven
+    - proof_history_runtime_audit_and_TTFV_are_operator_visible
+    - external_dependency_locked_clean_room_and_engineering_quality_are_proven
+  invariant: PRODUCT_ARCHITECTURE_GENERATES_DEMO_PATH__DEMO_PATH_MUST_NOT_DEFINE_PRODUCT_ARCHITECTURE
+
+
+completion_block_reconciliation:
+  date: 2026-10-04
+  current_lifecycle: EXPAND
+  current_gate: PRODUCT_MAXIMUM_EXPLOITATION__GATE_4
+  judged_build_stage: LIVE_DEPTH__EVIDENCE
+  first_live_slice_status: PROVEN
+  central_baseline:
+    version: 0.1.56-canonical-baseline-drift-tripwire-promoted
+    exact_sha: 8a7e8a4ff5461641c595e2cf052a95fdc32a6340
+    active_project_reconciliation_wave_merge: fb062d6cd792cab8e27c342120824f285120bc2f
+    product_reality: 1.5.0
+  baseline_delta_status: ALIGNED
+  project_code_head_before_state_update: 3811e02b9b4635d529c7f4dcf952e256dee8a83f
+  branch: product/judge-workflow-4
+  pull_request: 4
+  pull_request_state: DRAFT_OPEN_MERGEABLE
+  runtime_binding:
+    class: LIVE_PRODUCTION_FROZEN
+    production_deployment_commit: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+    production_deployment_id: dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB
+    stable_alias: https://clearance-room.vercel.app
+    public_runtime_binding: PROVEN
+  completion_harness:
+    one_command: npm run verify:completion
+    runtime_assurance: npm run verify:runtime-assurance
+    engineering_quality: npm run verify:engineering-quality
+    runbook: evidence/assurance/COMPLETION-BLOCK-RUNBOOK.md
+  material_user_capability_delta_since_previous_milestone:
+    truth: OBSERVED
+    capability: >-
+      Operator can persist explicit NOT DOCUMENTED structured rights state on user-owned live content and can now
+      execute a read-only integrated assurance pass covering live Context MCP scans, Runtime Health, TTFV measurement,
+      Proof Integrity and optional bounded-agent/release checks without seeding or business mutation.
+  current_primary_workstream: STOPPED_BY_VALID_CONDITION
+  valid_stop_condition:
+    status: ACTIVE
+    reason: genuine_write_outcome_unknown_recovery_requires_explicit_controlled_consequential_failure
+  demo_packaging_permission: true
+  workstream_drift_status: NO_NEW_DRIFT__PRIOR_DRIFT_CORRECTED
+  blocked_transition: BUILD_CANDIDATE_READY
+  exact_next_gate: WRITE_FAILURE_RECOVERY
+  exact_next_owner: HUMAN_OR_EXISTING_AUTHORITY
+  exact_next_action: >-
+    Either authorize a disposable controlled consequential write failure to observe reconciliation truthfully,
+    or formally waive/defer the gate under existing authority. Final submission remains human-only.
+
+
+runtime_assurance_2026_10_05:
+  observed_commit: 17463ebed6b4e2e3038119fde2625c5bae1d760d
+  evidence: evidence/assurance/RUNTIME-ASSURANCE-2026-10-05.md
+  regression:
+    test_files: 12
+    tests: 42
+    tests_status: PASS
+    next_production_build: PASS
+    typescript: PASS
+  runtime_health:
+    status: PROVEN
+    overall: healthy
+    context_mcp: available
+    knowledge_base: available
+    content_lake_read: available
+    content_lake_write_dry_run: available
+  time_to_first_value:
+    status: PROVEN
+    milliseconds: 442
+    definition: server_side_concurrent_live_Context_MCP_portfolio_plus_rights_change_scan
+  live_portfolio:
+    total_usage_requests: 3
+    affected_usage_requests: 0
+    blocked: 0
+    review: 0
+    unknown: 0
+    clear: 3
+  proof_integrity:
+    status: PROVEN_WITH_HISTORICAL_WARNINGS
+    result: PASS_WITH_HISTORICAL_WARNINGS
+    proofs: 16
+    usages_with_proofs: 3
+    fresh: 11
+    stale: 5
+    warnings: 3
+    errors: 0
+  material_unknown:
+    status: BLOCKED
+    reason: no user-created usage currently evaluates to UNKNOWN under drafts
+  bounded_agent:
+    status: SKIPPED
+  release_perspective:
+    status: SKIPPED
+  scenario_deletion:
+    status: BLOCKED_PROTECTED_ACTION
+  dependency_failure_runtime:
+    status: BLOCKED_UNOBSERVED
+  write_failure_recovery_runtime:
+    status: BLOCKED_UNOBSERVED
+  clean_room_external_replay:
+    status: BLOCKED_NOT_RUN
+  engineering_quality:
+    observed_verdict: PASS_WITH_ACCEPTED_DEBT
+    observed_unresolved:
+      - EQ_DIRTY_001_GENERATED_FILE_SIGNAL
+    dependency_audit:
+      low: 2
+      moderate: 10
+      high: 11
+      critical: 0
+    follow_up: >-
+      rerun after generated-dirty handling fix; high vulnerabilities remain disclosed accepted dependency debt and
+      npm audit fix --force is forbidden under deadline because proposed remediation is breaking.
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  valid_stop_condition: null
+  workstream_drift_status: NO_NEW_DRIFT
+  blocked_transition: BUILD_CANDIDATE_READY
+
+
+runtime_unknown_agent_2026_10_05:
+  evidence: evidence/assurance/UNKNOWN-AGENT-RUNTIME-2026-10-05.md
+  user_usage: usage-user-3dd4ef777a29
+  structured_change:
+    field: validTo
+    proposed_state: NOT_DOCUMENTED
+  deterministic_result:
+    current: CLEAR
+    proposed: UNKNOWN
+    unknown_axis: window
+    reason: at_least_one_governing_right_is_missing_a_validity_boundary
+  read_only_assurance:
+    status: PROVEN_RUNTIME
+    user_unknown_count: 1
+    all_unknown_count: 1
+    affected_usage_requests: 1
+    time_to_first_value_ms: 380
+  bounded_agent:
+    status: PROVEN_RUNTIME
+    sanity_content_agent_narrative: GENERATED
+    context_mcp: OK
+    deterministic_evaluator: OK
+    knowledge_base: PARTIAL
+    remediation_registry: OK
+    sanity_content_agent: OK
+    abstention: true
+    invented_repair: false
+    write_authority: NONE
+  material_user_capability_delta_since_previous_milestone:
+    truth: OBSERVED
+    capability: >-
+      Operator can now create a materially incomplete rights state that deterministically fails closed to UNKNOWN,
+      receive a bounded Sanity Content Agent explanation grounded in Context MCP and deterministic receipts, and
+      obtain explicit abstention with no invented repair or write authority.
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  valid_stop_condition: null
+  workstream_drift_status: NO_NEW_DRIFT
+  blocked_transition: BUILD_CANDIDATE_READY
+  exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
+
+
+dependency_recovery_runtime_2026_10_05:
+  evidence: evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md
+  truth_class: OBSERVED
+  runtime_class: LOCAL_CONTROLLED_INTEGRATION_FAILURE
+  real_production_outage_claimed: false
+  business_mutation: false
+  baseline_health: healthy
+  context_mcp_fail_closed:
+    status: PROVEN_RUNTIME
+    health: degraded
+    context_graph: unavailable
+    live_scan_failed_closed: true
+  knowledge_base_degradation:
+    status: PROVEN_RUNTIME
+    knowledge_base: unavailable
+    context_graph: available
+    structured_source: available
+    deterministic_status_authority_affected: false
+  dependency_recovery_after_restore:
+    status: PROVEN_RUNTIME
+    runtime_health: healthy
+    usage_count: 3
+    affected_usage_requests: 1
+  write_recovery_idempotence:
+    status: PROVEN_RUNTIME
+    result: ALREADY_COMPLETE
+    usage: usage-holiday-ca
+    business_mutation_repeated: false
+  write_outcome_unknown_recovery:
+    status: BLOCKED_UNOBSERVED
+    reason: requires_controlled_consequential_failure
+  material_user_capability_delta_since_previous_milestone:
+    truth: OBSERVED
+    capability: >-
+      The product now has observed fail-closed Context MCP behavior, evidence-only Knowledge Base degradation,
+      healthy dependency recovery after restoration, and idempotent completed-write reconciliation without repeating
+      the business mutation.
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  valid_stop_condition: null
+  workstream_drift_status: NO_NEW_DRIFT
+  exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
+
+
+remaining_readonly_runtime_2026_10_05:
+  evidence: evidence/assurance/REMAINING-READONLY-RUNTIME-2026-10-05.md
+  observed_head: 94637e9a8b9594a1bae14885924ac80d9bbb2adb
+  regression:
+    tests: 42_of_42_PASS
+    production_build: PASS
+    engineering_quality: PASS_WITH_ACCEPTED_DEBT
+    observed_unresolved:
+      - EQ_DIRTY_001_FALSE_POSITIVE_PENDING_RERUN
+      - EQ_AUDIT_HIGH_001_ACCEPTED_DEBT
+  operator_filters:
+    free_text: PROVEN_RUNTIME
+    proposed_status: PROVEN_RUNTIME
+    territory: PROVEN_RUNTIME
+    channel: PROVEN_RUNTIME
+  release_availability:
+    status: BLOCKED_ASSURANCE_BUG
+    observed_primary_query_result: null
+    bug: null_length_dereference
+    fix_committed: true
+    rerun_required: true
+  material_user_capability_delta_since_previous_milestone:
+    truth: OBSERVED
+    capability: >-
+      Operator filtering is now individually runtime-proven across free-text, proposed status, territory and channel
+      on the live portfolio.
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  workstream_drift_status: NO_NEW_DRIFT
+  exact_next_gate: RELEASE_AVAILABILITY_PLUS_ENGINEERING_QUALITY_RERUN
+
+
+remaining_readonly_final_2026_10_05:
+  evidence: evidence/assurance/REMAINING-READONLY-FINAL-2026-10-05.md
+  regression:
+    tests: 42_of_42_PASS
+    production_build: PASS
+  operator_filters:
+    status: PROVEN
+    free_text: PROVEN_RUNTIME
+    proposed_status: PROVEN_RUNTIME
+    territory: PROVEN_RUNTIME
+    channel: PROVEN_RUNTIME
+  release_availability:
+    status: PROVEN_ABSENT
+    classification: NO_RELEASE_PRESENT
+    release_count: 0
+    primary_query_returned_null: true
+    fallback_query: system_release
+    release_aware_gate: N_A_CURRENT_RUNTIME_WITH_REASON
+  safe_readonly_gaps:
+    satisfied: true
+    blockers: []
+  engineering_quality:
+    status: ACTIVE
+    local_receipt: PASS_WITH_ACCEPTED_DEBT
+    local_dirty_signal: UNRESOLVED_NEEDS_CLEAN_ENV
+    high_dependency_findings: 11
+    critical_dependency_findings: 0
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  exact_next_gate: EXTERNAL_CLEAN_ROOM_AND_ENGINEERING_QUALITY
+
+
+external_clean_room_ci_2026_10_05:
+  evidence: evidence/assurance/EXTERNAL-CLEAN-ROOM-CI-2026-10-05.md
+  workflow_run_id: 37261638163
+  workflow_conclusion: success
+  runner: github_hosted_ubuntu_latest
+  install: npm_ci
+  tests: 42_of_42_PASS
+  production_build: PASS
+  clean_room_reproducibility: PROVEN
+  engineering_quality:
+    verdict: PASS_WITH_ACCEPTED_DEBT
+    false_positive_dirty_path: next-env.d.ts
+    parser_bug_root_cause: git_helper_trimmed_porcelain_leading_status_column
+    parser_fix_committed: true
+    clean_receipt_rerun_required: true
+  exact_next_gate: ENGINEERING_QUALITY_CLEAN_RECEIPT
+
+
+engineering_quality_clean_ci_2026_10_05:
+  evidence: evidence/assurance/ENGINEERING-QUALITY-CLEAN-CI-2026-10-05.md
+  workflow_run_id: 37261750103
+  workflow_conclusion: success
+  install: npm_ci
+  tests: 42_of_42_PASS
+  production_build: PASS
+  working_tree_dirty: false
+  substantive_dirty_paths: none
+  generated_safe_dirty_paths:
+    - next-env.d.ts
+  verdict: PASS_WITH_ACCEPTED_DEBT
+  accepted_debt:
+    - EQ_AUDIT_HIGH_001
+  critical_findings: 0
+  engineering_quality_gate: PROVEN
+  exact_next_gate: TRACE_DESIGN_ASSURANCE
+
+
+trace_design_assurance_2026_10_05:
+  evidence: evidence/assurance/TRACE-DESIGN-ASSURANCE-2026-10-05.md
+  verdict: PASS_WITH_ACCEPTED_DEBT
+  gate: PROVEN
+  observed_surface: evaluator_facing_desktop_runtime
+  blocking_design_findings: 0
+  accepted_debt:
+    - long_proof_history_vertical_density
+    - no_explicit_custom_focus_visible_rule
+    - mobile_runtime_not_recorded
+    - reduced_motion_runtime_not_recorded
+    - long_raw_identifiers_in_expert_surfaces
+  current_primary_workstream: STOPPED_BY_VALID_CONDITION
+  valid_stop_condition:
+    - protected_runtime_commit_binding
+    - protected_controlled_write_failure
+  blocked_transition: BUILD_CANDIDATE_READY
+  exact_next_owner: HUMAN_OR_EXISTING_AUTHORITY
+
+
+public_runtime_binding_2026_10_05:
+  evidence: evidence/assurance/PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
+  provider: Vercel
+  project_id: prj_IzIaWRsgFqosTRmdeQ123iEliaLF
+  project_name: clearance-room
+  team_id: team_twDc66jGM0sPvNM4I5Huc0x7
+  git_repository: Faadil1/clearance-room
+  configured_branch: product/judge-workflow-4
+  framework: nextjs
+  build_command: npm run app:build
+  install_command: npm ci
+  node_version: 22.x
+  stable_alias: https://clearance-room.vercel.app
+  observed_deployment:
+    id: dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB
+    state: READY
+    target: production
+    git_sha: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+    deployment_url: https://clearance-room-q5xp8w2sb-faadil1s-projects.vercel.app
+    root_http_status: 200
+    health: healthy
+  product_quality:
+    workflow_run_id: 37264248408
+    conclusion: success
+  public_dependencies:
+    context_mcp: available
+    knowledge_base: available
+    content_lake_read: available
+    content_lake_write_dry_run: available
+  deployment_protection:
+    sso: disabled
+    password: disabled
+  runtime_state: PRODUCTION_READY
+  production_promotion: HUMAN_AUTHORIZED_2026_10_05
+  exact_commit_binding: PROVEN
+  continuity_rule: POST_DEPLOY_DOCS_STATE_EVIDENCE_COMMITS_DO_NOT_REDEFINE_RUNTIME_CANDIDATE
+  protected_submission: NOT_PERFORMED
+
+public_runtime_binding_prefinal_2026_10_05:
+  status: SUPERSEDED_BY_FINAL_BINDING
+  evidence: evidence/assurance/PUBLIC-RUNTIME-BINDING-PREFINAL-2026-10-05.md
+  provider: Vercel
+  project_id: prj_IzIaWRsgFqosTRmdeQ123iEliaLF
+  stable_alias: https://clearance-room.vercel.app
+  observed_deployment:
+    id: dpl_2cNmZcKVMixj2q3iNJQFvb26B1or
+    state: READY
+    target: production
+    git_sha: e3290d15b902b64ea6e822dbd1b9e424f8335e0a
+    root_http_status: 200
+    health: healthy
+  public_dependencies:
+    context_mcp: available
+    knowledge_base: available
+    content_lake_read: available
+    content_lake_write_dry_run: available
+  endurance_finding:
+    prior_deployment_api_live_timeout_seconds: 300
+    affected_route: /api/live
+    fix_commit: 461d67841562648446c46002918f5aee61b991c8
+    fix: graceful_sse_rotation_at_240_seconds
+  runtime_commit_binding:
+    status: SUPERSEDED
+    reason: final production binding is proven in PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
+  exact_next_gate: COMPLETE
+
+
+submission_packaging_2026_10_05:
+  evidence: evidence/assurance/SUBMISSION-READINESS-2026-10-05.md
+  readme: JUDGE_FACING_UPDATED
+  repository_visibility: PUBLIC
+  runtime_binding: PROVEN
+  clean_room_reproducibility: PROVEN
+  engineering_quality: PROVEN_WITH_ACCEPTED_DEBT
+  trace_design_assurance: PROVEN_WITH_ACCEPTED_DEBT
+  package_status: READY_FOR_REVIEW
+  terminal_canonical_ready: false
+  remaining_terminal_material_blocker:
+    - WRITE_FAILURE_RECOVERY
+  final_submission: HUMAN_ONLY
+
+project_outcome_2026_10_05:
+  submission_status: NOT_SUBMITTED
+  submission_receipt: NONE
+  human_outcome_confirmed: true
+  project_status: PAUSED_PORTFOLIO_READY
+  competition_outcome: NOT_ENTERED
+  product_outcome: LIVE_PRODUCT_AND_EVIDENCE_RETAINED
+  production_runtime_retained:
+    commit: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+    deployment_id: dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB
+    stable_alias: https://clearance-room.vercel.app
+  design_delta:
+    branch: design/shockwave-impact-5
+    pull_request: 6
+    status: NOT_PROMOTED
+    disposition: RETAIN_FOR_PORTFOLIO_OR_FUTURE_REOPEN
+  unresolved_terminal_gates:
+    - WRITE_FAILURE_RECOVERY
+  final_canonical_assurance: NOT_RUN
+  protected_submission: NOT_EXECUTED
+  post_mortem:
+    evidence: evidence/learning/NON-SUBMISSION-POSTMORTEM-2026-10-05.md
+    classification: DELIVERY_AND_SUBMISSION_EXECUTION_LEARNING
+  reopen_rule: EXPLICIT_HUMAN_REOPEN_ONLY
+  truth_rule: SUBMISSION_READY_OR_PACKAGED_DOES_NOT_EQUAL_SUBMITTED

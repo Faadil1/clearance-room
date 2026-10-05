@@ -1,4 +1,4 @@
-import type {ClearanceProof, Finding, Right, Status, UsageGraph} from './types.js'
+import type {ClearanceProof, Finding, Right, Status, UsageGraph} from './types'
 
 const rank: Record<Status, number> = {CLEAR: 0, REVIEW: 1, UNKNOWN: 2, BLOCK: 3}
 
