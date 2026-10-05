@@ -148,12 +148,12 @@ completion_block_reconciliation:
   demo_packaging_permission: false
   workstream_drift_status: NO_NEW_DRIFT__PRIOR_DRIFT_CORRECTED
   blocked_transition: BUILD_CANDIDATE_READY
-  exact_next_gate: PROTECTED_RUNTIME_BINDING_OR_WRITE_FAILURE_PROOF
-  exact_next_owner: HUMAN_OR_EXISTING_AUTHORITY
+  exact_next_gate: FINAL_PUBLIC_RUNTIME_BINDING
+  exact_next_owner: HUMAN_AUTHORIZED_RUNTIME_DEPLOYMENT
   exact_next_action: >-
-    Choose and explicitly authorize the next protected action: either freeze/deploy a stable public runtime and bind it
-    to an exact commit, or authorize a disposable controlled consequential mutation to exercise write-outcome-unknown recovery.
-    Until then, preserve BUILD_CANDIDATE_READY=false and do not fabricate either proof.
+    Pull the SSE runtime-rotation fix, wait for Product quality to pass, deploy the clean current head to Vercel production,
+    then verify stable alias 200 + /api/health healthy + Vercel deployment Git SHA equality before promoting
+    RUNTIME_COMMIT_BINDING.
 
 
 runtime_assurance_2026_10_05:
@@ -452,3 +452,31 @@ public_runtime_binding_2026_10_05:
   production_promotion: HUMAN_AUTHORIZED_2026_10_05
   exact_commit_binding: PENDING_DEPLOYMENT
   protected_submission: NOT_PERFORMED
+
+
+public_runtime_binding_prefinal_2026_10_05:
+  evidence: evidence/assurance/PUBLIC-RUNTIME-BINDING-PREFINAL-2026-10-05.md
+  provider: Vercel
+  project_id: prj_IzIaWRsgFqosTRmdeQ123iEliaLF
+  stable_alias: https://clearance-room.vercel.app
+  observed_deployment:
+    id: dpl_2cNmZcKVMixj2q3iNJQFvb26B1or
+    state: READY
+    target: production
+    git_sha: e3290d15b902b64ea6e822dbd1b9e424f8335e0a
+    root_http_status: 200
+    health: healthy
+  public_dependencies:
+    context_mcp: available
+    knowledge_base: available
+    content_lake_read: available
+    content_lake_write_dry_run: available
+  endurance_finding:
+    prior_deployment_api_live_timeout_seconds: 300
+    affected_route: /api/live
+    fix_commit: 461d67841562648446c46002918f5aee61b991c8
+    fix: graceful_sse_rotation_at_240_seconds
+  runtime_commit_binding:
+    status: ACTIVE
+    reason: final production must be redeployed from the post-hardening candidate head
+  exact_next_gate: FINAL_PUBLIC_RUNTIME_BINDING
