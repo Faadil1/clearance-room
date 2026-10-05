@@ -129,10 +129,10 @@ gates:
       - evidence/assurance/EXTERNAL-CLEAN-ROOM-CI-2026-10-05.md
     note: GitHub-hosted fresh runner completed dependency-locked npm ci, 42/42 tests and Next production build successfully
   ENGINEERING_QUALITY_ASSURANCE:
-    status: ACTIVE
+    status: PROVEN
     evidence:
-      - evidence/assurance/REMAINING-READONLY-RUNTIME-2026-10-05.md
-    blocker: 42/42 tests and production build pass; high dependency debt is disclosed; generated-file dirty detection had a porcelain parsing false positive and must be rerun on the corrected harness before promotion
+      - evidence/assurance/ENGINEERING-QUALITY-CLEAN-CI-2026-10-05.md
+    note: fresh GitHub-hosted npm ci runner produced PASS_WITH_ACCEPTED_DEBT with working_tree_dirty=false; only EQ-AUDIT-HIGH-001 remains as disclosed accepted debt
   TRACE_DESIGN_ASSURANCE:
     status: ACTIVE
     blocker: evaluator-facing surface exists but no current TRACE assurance receipt is recorded locally
@@ -159,6 +159,5 @@ terminal_fail_closed:
     allowed: false
     blocking_gates:
       - WRITE_FAILURE_RECOVERY
-      - ENGINEERING_QUALITY_ASSURANCE
       - TRACE_DESIGN_ASSURANCE
       - RELEASE_AWARE_PERSPECTIVE
