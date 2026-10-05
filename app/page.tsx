@@ -213,6 +213,7 @@ export default function Home() {
     code: string
   } | null>(null)
   const [recoveryResult, setRecoveryResult] = useState<any | null>(null)
+  const [lastTtfvMs, setLastTtfvMs] = useState<number | null>(null)
   const [liveState, setLiveState] = useState<'connecting' | 'connected' | 'reconnecting' | 'offline'>('connecting')
   const [lastLiveSync, setLastLiveSync] = useState<string | null>(null)
   const [lastLiveEvent, setLastLiveEvent] = useState<{type: string; id: string | null; observedAt: string} | null>(null)
@@ -347,6 +348,7 @@ export default function Home() {
   }
 
   async function scan({keepReceipt = false}: {keepReceipt?: boolean} = {}) {
+    const ttfvStartedAt = performance.now()
     openUsageRef.current = null
     setBusy('scan')
     setError(null)
@@ -365,6 +367,7 @@ export default function Home() {
       portfolioRef.current = impactResult
       setPortfolio(impactResult)
       setRightsChanges(changeResult)
+      setLastTtfvMs(Math.round(performance.now() - ttfvStartedAt))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Blast-radius scan failed')
     } finally {
@@ -676,6 +679,11 @@ export default function Home() {
               <span>Writes</span>
               <strong>Content Lake transaction</strong>
               <small>human-approved · proof staleness atomic</small>
+            </div>
+            <div>
+              <span>Time to first value</span>
+              <strong>{lastTtfvMs == null ? 'not measured' : `${lastTtfvMs} ms`}</strong>
+              <small>manual scan click → usable impact + rights-change portfolio</small>
             </div>
           </div>
 
