@@ -91,11 +91,10 @@ product_workstream_priority:
   remaining_material_depth_gaps:
     - write_outcome_unknown_reconciliation_runtime_observation
     - user_created_scenario_deletion_runtime_proof
-    - external_clean_room_reexecution
     - current_Engineering_Quality_receipt
     - TRACE_design_assurance_receipt
   current_primary_workstream: PRODUCT_EXPLOITATION
-  next_highest_value_depth_delta: EXTERNAL_CLEAN_ROOM_AND_ENGINEERING_QUALITY
+  next_highest_value_depth_delta: ENGINEERING_QUALITY_CLEAN_RECEIPT
   valid_stop_condition: null
   demo_packaging_allowed: false
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
@@ -147,11 +146,11 @@ completion_block_reconciliation:
   demo_packaging_permission: false
   workstream_drift_status: NO_NEW_DRIFT__PRIOR_DRIFT_CORRECTED
   blocked_transition: BUILD_CANDIDATE_READY
-  exact_next_gate: EXTERNAL_CLEAN_ROOM_AND_ENGINEERING_QUALITY
+  exact_next_gate: ENGINEERING_QUALITY_CLEAN_RECEIPT
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Run the dependency-locked test/build/Engineering Quality suite on a fresh GitHub Actions runner using npm ci,
-    preserve high dependency findings as accepted debt, and promote clean-room/quality only from that external clean receipt.
+    Let the corrected GitHub Actions quality workflow rerun on the raw-porcelain parsing fix and promote Engineering
+    Quality only if EQ-DIRTY disappears, leaving only disclosed EQ-AUDIT-HIGH accepted debt.
 
 
 runtime_assurance_2026_10_05:
@@ -367,3 +366,21 @@ remaining_readonly_final_2026_10_05:
     critical_dependency_findings: 0
   current_primary_workstream: PRODUCT_EXPLOITATION
   exact_next_gate: EXTERNAL_CLEAN_ROOM_AND_ENGINEERING_QUALITY
+
+
+external_clean_room_ci_2026_10_05:
+  evidence: evidence/assurance/EXTERNAL-CLEAN-ROOM-CI-2026-10-05.md
+  workflow_run_id: 37261638163
+  workflow_conclusion: success
+  runner: github_hosted_ubuntu_latest
+  install: npm_ci
+  tests: 42_of_42_PASS
+  production_build: PASS
+  clean_room_reproducibility: PROVEN
+  engineering_quality:
+    verdict: PASS_WITH_ACCEPTED_DEBT
+    false_positive_dirty_path: next-env.d.ts
+    parser_bug_root_cause: git_helper_trimmed_porcelain_leading_status_column
+    parser_fix_committed: true
+    clean_receipt_rerun_required: true
+  exact_next_gate: ENGINEERING_QUALITY_CLEAN_RECEIPT
