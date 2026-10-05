@@ -46,7 +46,11 @@ const audit = functional.status === 'PASS' && build.status === 'PASS'
 
 const commit = git(['rev-parse', 'HEAD'])
 const branch = git(['branch', '--show-current'])
-const dirtyLines = git(['status', '--porcelain'])
+const dirtyLines = execFileSync(
+  'git',
+  ['status', '--porcelain'],
+  {encoding: 'utf8'},
+)
   .split('\n')
   .filter((line) => line.length > 0)
 const generatedSafeDirtyPaths = new Set([
