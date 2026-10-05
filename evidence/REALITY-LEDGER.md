@@ -23,9 +23,10 @@ This ledger separates what is observed from what is implemented, inferred, or st
 | free-text/status/territory/channel filters each work in runtime | UNKNOWN | PARTIAL | filter engine + composition observed; individual controls not all exercised |
 | user-created scenario deletion works in runtime | UNKNOWN | PARTIAL | implementation exists; runtime proof pending |
 | bounded product agent is load-bearing | OBSERVED | LIVE | in-product investigation generated Sanity Content Agent narrative over deterministic CLEAR → UNKNOWN receipt; Context MCP/evaluator/registry active; write authority NONE; agent abstained |
-| Context MCP outage recovers safely | UNKNOWN | PARTIAL | fail-closed Runtime Health policy + UI + unit tests exist; real outage not observed |
-| KB outage degrades without status corruption | INFERRED | PARTIAL | route architecture supports separation; outage not exercised |
-| write failure preserves truthful mutation state | UNKNOWN | PARTIAL | write-outcome reconciliation exists and never repeats business mutation automatically; runtime failure observation pending |
+| Context MCP failure recovers safely | OBSERVED | LOCAL_CONTROLLED_INTEGRATION_FAILURE | process-local unreachable endpoint caused degraded health + fail-closed scan; restoring endpoint returned healthy live scan |
+| Knowledge Base failure degrades without status corruption | OBSERVED | LOCAL_CONTROLLED_INTEGRATION_FAILURE | KB unavailable while Context MCP + structured source remained available; deterministic status authority unaffected; recovery succeeded |
+| write recovery is idempotent after an already-completed remediation | OBSERVED | LIVE | existing stale baseline + replacement returned ALREADY_COMPLETE; business mutation was not repeated |
+| genuine write-outcome-unknown recovery preserves truthful mutation state | UNKNOWN | PARTIAL | implementation exists and blind retry is forbidden; a controlled consequential failure has not been executed |
 | App SDK is required for the current core product | INFERRED | N/A | official SDK is viable but would duplicate current surface; see native-depth evaluation |
 | Editorial Workflows are required for current single-operator loop | INFERRED | N/A | additive team coordination, not core correctness; availability account-dependent |
 | release-aware perspective is supported by Sanity Context | OBSERVED | PARTIAL | product accepts release-id perspective read-only; actual project release-id runtime availability remains unobserved |
