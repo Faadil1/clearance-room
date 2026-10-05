@@ -1,4 +1,5 @@
 import {getRightsEvidence} from './evidenceService'
+import type {ContentPerspective} from './contextGraph'
 import {getUsageImpact} from './productSurface'
 import type {Status} from './types'
 
@@ -119,8 +120,9 @@ export function composeAgentBrief(
 
 export async function investigateUsageWithAgent(
   usageRequestId: string,
+  proposedPerspective: ContentPerspective = 'drafts',
 ): Promise<ClearanceAgentBrief> {
-  const impact = await getUsageImpact(usageRequestId, false)
+  const impact = await getUsageImpact(usageRequestId, false, proposedPerspective)
   const causalIds = [...new Set(impact.causalRights.map((right) => right.id))]
 
   const evidence = await Promise.all(
