@@ -41,6 +41,11 @@ type AgentBrief = {
     result: string
   }>
   writeAuthority: 'NONE'
+  aiNarrative: {
+    status: 'generated' | 'not_configured' | 'rejected' | 'unavailable'
+    text: string | null
+    provider: 'sanity-content-agent'
+  }
   observedAt: string
 }
 
@@ -116,6 +121,28 @@ export default function ClearanceAgentPanel({
           </div>
 
           <p>{brief.summary}</p>
+
+          <div className="agentNarrative">
+            <div>
+              <strong>Sanity Content Agent narrative</strong>
+              <span>{brief.aiNarrative.status}</span>
+            </div>
+            {brief.aiNarrative.status === 'generated' && brief.aiNarrative.text ? (
+              <p>{brief.aiNarrative.text}</p>
+            ) : brief.aiNarrative.status === 'rejected' ? (
+              <div className="errorBanner">
+                AI narrative was rejected because it violated the deterministic status receipt.
+              </div>
+            ) : brief.aiNarrative.status === 'unavailable' ? (
+              <div className="proposalNote">
+                AI explanation is temporarily unavailable. The deterministic receipt and tool evidence remain authoritative.
+              </div>
+            ) : (
+              <div className="proposalNote">
+                Sanity Content Agent is not configured for this runtime. The bounded tool investigation remains available without AI narration.
+              </div>
+            )}
+          </div>
 
           {brief.abstention.active && (
             <div className="proposalNote">
