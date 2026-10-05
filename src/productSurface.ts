@@ -3,7 +3,7 @@ import {diffProofs} from './diff'
 import {proofDocument} from './proof'
 import {ALL_RIGHTS_DOCUMENTS_QUERY, ALL_USAGE_GRAPHS_QUERY, USAGE_GRAPH_QUERY} from './query'
 import {getServerSanity} from './serverSanity'
-import {queryRightsGraph} from './contextGraph'
+import {normalizePerspective, queryRightsGraph, type ContentPerspective} from './contextGraph'
 import type {Finding, Right, UsageGraph} from './types'
 
 export type RepairOption =
@@ -79,15 +79,16 @@ function causalRights(graph: UsageGraph, findings: Finding[]) {
     }))
 }
 
-export async function scanLiveImpacts() {
-  const [publishedGraphs, draftGraphs] = await Promise.all([
+export async function scanLiveImpacts(proposedPerspective: ContentPerspective = 'drafts') {
+  const proposedPerspectiveId = normalizePerspective(proposedPerspective)
+  const [publishedGraphs, proposedGraphs] = await Promise.all([
     queryRightsGraph<UsageGraph[]>('published', ALL_USAGE_GRAPHS_QUERY),
-    queryRightsGraph<UsageGraph[]>('drafts', ALL_USAGE_GRAPHS_QUERY),
+    queryRightsGraph<UsageGraph[]>(proposedPerspectiveId, ALL_USAGE_GRAPHS_QUERY),
   ])
 
   const publishedById = new Map(publishedGraphs.map((graph) => [graph._id, graph]))
 
-  const impacts = draftGraphs.flatMap((proposedGraph) => {
+  const impacts = proposedGraphs.flatMap((proposedGraph) => {
     const currentGraph = publishedById.get(proposedGraph._id)
     if (!currentGraph) return []
 
@@ -137,7 +138,7 @@ export async function scanLiveImpacts() {
     observedAt: new Date().toISOString(),
     truth: {
       currentPerspective: 'published',
-      proposedPerspective: 'drafts',
+      proposedPerspective: proposedPerspectiveId,
       statusAuthority: 'deterministic-evaluator',
       graphReadIntegration: 'sanity-context-mcp',
       scope: 'all-usage-requests',
@@ -145,28 +146,36 @@ export async function scanLiveImpacts() {
   }
 }
 
-export async function getUsageImpact(usageRequestId: string, persist = false) {
+export async function getUsageImpact(
+  usageRequestId: string,
+  persist = false,
+  proposedPerspective: ContentPerspective = 'drafts',
+) {
   const client = getServerSanity()
+  const proposedPerspectiveId = normalizePerspective(proposedPerspective)
   const query = USAGE_GRAPH_QUERY.replace('$id', JSON.stringify(usageRequestId))
-  const [published, drafts] = await Promise.all([
+  const [published, proposedGraph] = await Promise.all([
     queryRightsGraph<UsageGraph>('published', query),
-    queryRightsGraph<UsageGraph>('drafts', query),
+    queryRightsGraph<UsageGraph>(proposedPerspectiveId, query),
   ])
 
-  if (!published || !drafts) {
+  if (!published || !proposedGraph) {
     throw new Error(`Usage request ${usageRequestId} was not found in both perspectives`)
   }
 
   const current = compileClearance(published)
-  const proposed = compileClearance(drafts)
+  const proposed = compileClearance(proposedGraph)
   const diff = diffProofs(current, proposed)
   const findings = proposed.findings.filter((finding) => finding.status !== 'CLEAR')
-  const repairs = deriveRepairOptions(drafts, proposed.findings)
+  const repairs = deriveRepairOptions(proposedGraph, proposed.findings)
 
   let persistedProof: {id: string; rev?: string} | null = null
   if (persist) {
+    if (proposedPerspectiveId !== 'drafts') {
+      throw new Error('Proof persistence is currently limited to the drafts perspective')
+    }
     const saved = await client.create(
-      proofDocument(impactProofId(usageRequestId), drafts, proposed, {
+      proofDocument(impactProofId(usageRequestId), proposedGraph, proposed, {
         perspective: 'drafts',
       }),
     )
@@ -194,20 +203,20 @@ export async function getUsageImpact(usageRequestId: string, persist = false) {
 
   return {
     usage: {
-      id: drafts._id,
-      title: drafts.title,
-      assetId: drafts.asset._id,
-      assetTitle: drafts.asset.title,
-      territory: drafts.territory,
-      channel: drafts.channel,
-      isPaid: drafts.isPaid,
-      startDate: drafts.startDate,
-      endDate: drafts.endDate,
+      id: proposedGraph._id,
+      title: proposedGraph.title,
+      assetId: proposedGraph.asset._id,
+      assetTitle: proposedGraph.asset.title,
+      territory: proposedGraph.territory,
+      channel: proposedGraph.channel,
+      isPaid: proposedGraph.isPaid,
+      startDate: proposedGraph.startDate,
+      endDate: proposedGraph.endDate,
     },
     current,
     proposed,
     diff,
-    causalRights: causalRights(drafts, findings.length ? findings : proposed.findings),
+    causalRights: causalRights(proposedGraph, findings.length ? findings : proposed.findings),
     repairs,
     persistedProof,
     proofHistory,
@@ -234,10 +243,9 @@ export type RightsFieldDiff = {
 }
 
 function canonicalRightId(right: Right) {
-  const original = right._originalId
-  if (original?.startsWith('drafts.')) return original.slice('drafts.'.length)
-  if (right._id.startsWith('drafts.')) return right._id.slice('drafts.'.length)
-  return right._id
+  const source = right._originalId || right._id
+  if (source.startsWith('drafts.')) return source.slice('drafts.'.length)
+  return source.replace(/^versions\.[^.]+\./, '')
 }
 
 function normalizedArray(value?: string[]) {
@@ -286,17 +294,18 @@ function summarizeUsage(graph: UsageGraph) {
   }
 }
 
-export async function scanRightsChanges() {
+export async function scanRightsChanges(proposedPerspective: ContentPerspective = 'drafts') {
+  const proposedPerspectiveId = normalizePerspective(proposedPerspective)
   const [
     publishedRights,
-    draftRights,
+    proposedRights,
     publishedGraphs,
-    draftGraphs,
+    proposedGraphs,
   ] = await Promise.all([
     queryRightsGraph<Right[]>('published', ALL_RIGHTS_DOCUMENTS_QUERY),
-    queryRightsGraph<Right[]>('drafts', ALL_RIGHTS_DOCUMENTS_QUERY),
+    queryRightsGraph<Right[]>(proposedPerspectiveId, ALL_RIGHTS_DOCUMENTS_QUERY),
     queryRightsGraph<UsageGraph[]>('published', ALL_USAGE_GRAPHS_QUERY),
-    queryRightsGraph<UsageGraph[]>('drafts', ALL_USAGE_GRAPHS_QUERY),
+    queryRightsGraph<UsageGraph[]>(proposedPerspectiveId, ALL_USAGE_GRAPHS_QUERY),
   ])
 
   const publishedRightsById = new Map(
@@ -306,13 +315,13 @@ export async function scanRightsChanges() {
     publishedGraphs.map((graph) => [graph._id, graph]),
   )
 
-  const changes = draftRights.flatMap((proposedRight) => {
+  const changes = proposedRights.flatMap((proposedRight) => {
     const rightId = canonicalRightId(proposedRight)
     const currentRight = publishedRightsById.get(rightId) || null
     const fields = rightsFieldDiff(currentRight, proposedRight)
     if (fields.length === 0) return []
 
-    const downstream = draftGraphs
+    const downstream = proposedGraphs
       .filter((graph) =>
         graph.asset.rights.some((right) => canonicalRightId(right) === rightId),
       )
@@ -387,7 +396,7 @@ export async function scanRightsChanges() {
     observedAt: new Date().toISOString(),
     truth: {
       currentPerspective: 'published',
-      proposedPerspective: 'drafts',
+      proposedPerspective: proposedPerspectiveId,
       graphReadIntegration: 'sanity-context-mcp',
       statusAuthority: 'deterministic-evaluator',
       scope: 'changed-rights-documents-to-downstream-usages',
