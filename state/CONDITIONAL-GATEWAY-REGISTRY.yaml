@@ -73,16 +73,16 @@ gates:
     blocker: implementation exists but runtime UNKNOWN consequence is not yet observed
   AGENT_ORCHESTRATION:
     status: ACTIVE
-    blocker: bounded agent implementation and runtime proof pending
+    blocker: bounded Context MCP + deterministic receipt + Sanity Content Agent implementation exists; real Content Agent narration runtime proof remains pending
   EXTERNAL_DEPENDENCY_FAILURE:
     status: ACTIVE
-    blocker: degraded Context MCP / Live API / KB recovery not yet runtime exercised
+    blocker: fail-closed/degraded recovery implementation and deterministic policy tests exist; real controlled dependency-failure runtime observation remains pending
   WRITE_FAILURE_RECOVERY:
     status: ACTIVE
-    blocker: write-outcome-unknown path not yet runtime exercised
+    blocker: reconciliation implementation exists and never repeats the business mutation automatically; write-outcome-unknown runtime path remains unobserved
   PROOF_HISTORY_REPEATED_RUNS:
     status: ACTIVE
-    blocker: repeated multi-run supersession audit not yet explicitly verified
+    blocker: read-only proof-integrity audit and regression tests now exist; current live dataset audit remains pending
   OPERATOR_FILTERS:
     status: ACTIVE
     note: composable core proven; free-text/status/territory/channel individual runtime proofs remain
@@ -90,8 +90,8 @@ gates:
     status: ACTIVE
     blocker: implemented but runtime proof pending
   TIME_TO_FIRST_VALUE:
-    status: BLOCKED
-    blocker: no measured operator TTFV yet
+    status: ACTIVE
+    blocker: live scan TTFV instrumentation and read-only assurance measurement exist; current runtime value has not yet been recorded
   OPERATIONAL_ECONOMICS:
     status: N/A
     reason: no paid transactional core loop
@@ -111,10 +111,10 @@ gates:
     blocker: setup and failure recovery still require assurance
   CLEAN_ROOM_REPRODUCIBILITY:
     status: ACTIVE
-    blocker: clean-room run has not been externally re-executed from zero
+    blocker: package-lock.json is not committed and clean-room run has not been externally re-executed from zero
   ENGINEERING_QUALITY_ASSURANCE:
-    status: BLOCKED
-    blocker: no current project-local Engineering Quality receipt
+    status: ACTIVE
+    blocker: canonical receipt generator and regression checks are implemented; current branch receipt has not yet been executed and committed
   TRACE_DESIGN_ASSURANCE:
     status: ACTIVE
     blocker: evaluator-facing surface exists but no current TRACE assurance receipt is recorded locally
