@@ -79,11 +79,15 @@ gates:
       - evidence/assurance/UNKNOWN-AGENT-RUNTIME-2026-10-05.md
     note: live operator run observed GENERATED Sanity Content Agent narration over deterministic CLEAR to UNKNOWN receipt; Context MCP, evaluator, remediation registry and Content Agent tool trace were active; write authority remained NONE
   EXTERNAL_DEPENDENCY_FAILURE:
-    status: ACTIVE
-    blocker: fail-closed/degraded recovery implementation and deterministic policy tests exist; real controlled dependency-failure runtime observation remains pending
+    status: PROVEN
+    evidence:
+      - evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md
+    note: process-local controlled Context MCP and Knowledge Base failures proved fail-closed/degraded behavior and healthy recovery without business mutation
   WRITE_FAILURE_RECOVERY:
     status: ACTIVE
-    blocker: reconciliation implementation exists and never repeats the business mutation automatically; write-outcome-unknown runtime path remains unobserved
+    evidence:
+      - evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md
+    blocker: write-recovery idempotence is runtime proven as ALREADY_COMPLETE with no repeated business mutation; genuine write-outcome-unknown recovery remains unobserved and requires a controlled consequential failure
   PROOF_HISTORY_REPEATED_RUNS:
     status: PROVEN
     evidence:
@@ -146,7 +150,6 @@ terminal_fail_closed:
   BUILD_CANDIDATE_READY:
     allowed: false
     blocking_gates:
-      - EXTERNAL_DEPENDENCY_FAILURE
       - WRITE_FAILURE_RECOVERY
       - ENGINEERING_QUALITY_ASSURANCE
       - TRACE_DESIGN_ASSURANCE
