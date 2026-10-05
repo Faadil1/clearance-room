@@ -1,121 +1,132 @@
 # Post-Vertical-Slice Product Depth Gap Review
 
 Date: 2026-10-04  
-Status: ACTIVE
+Status: ACTIVE  
+Primary workstream: PRODUCT_EXPLOITATION
 
-## Current proven depth
+## Proven product depth
 
 PROVEN:
 - published vs drafts deterministic comparison
-- real Sanity Context MCP endpoint
-- persistent clearance proofs
-- explicit human-approved mutation
-- stale proof + replacement proof
-- Knowledge Base evidence
-- multi-usage portfolio surface
-- finding-driven remediation registry
-- immutable proof snapshots
-- real Sanity writes
-- build/test pipeline
+- real Context MCP graph path
+- Context Knowledge Base evidence boundary
+- user-defined Scenario Lab with real Sanity content
+- user-created structured permission change producing CLEAR → BLOCK
+- user-created multi-right intersection
+- paid BLOCK → human-approved organic-only → CLEAR/FRESH
+- window REVIEW → human-approved shorten campaign → CLEAR/FRESH
+- read-only inspection does not create proof snapshots
+- stale baseline + superseding replacement proof chain
+- no-action Live Content API → Context MCP automatic reread
+- change-centric rights-document blast radius
+- causal rights and source revisions
+- operator filter composition core
+- evidence-not-indexed fails closed without unrelated KB substitution
+- evidence text cannot override structured permission
+- seeded fixtures are secondary reproducibility harness only
 
-PROVEN — live integration runtime:
-- Context MCP is the product graph-read path for published + drafts
-- Live Content API invalidates an already-open product view
-- no manual Refresh graph action is required
-- completed AUTO receipt is distinct from a manual refresh
-- receipt records event type/id, completion time, Context MCP reread, and affected-count before→after
-- runtime video shows `AUTO #2` after a user-created Sanity write
-- rights-change view visibly updates from 2 changed fields to 1 changed field after the automatic reread
+## Implemented — runtime proof still required
 
-ACTIVE / needs runtime proof:
-- multi-impact product behavior after canonical reset
-- proof-history behavior across repeated real runs
+### UNKNOWN / missing structured evidence
+- proposed paid permission supports explicit NOT DOCUMENTED
+- proposed validity end supports explicit NOT DOCUMENTED
+- draft fields are genuinely unset in Sanity
+- deterministic compiler maps missing grants/boundaries to UNKNOWN
+- UNKNOWN exposes explicit abstention and no invented remediation
+- latest recorded run proves ALLOW → NOT DOCUMENTED can be persisted, but the usage was organic, so material UNKNOWN consequence remains unproven
 
-RUNTIME PROVEN — user-defined Scenario Lab:
-- PROVEN: user creates a scenario from product UI
-- PROVEN: real Sanity rights/asset/usage documents are created
-- PROVEN: created scenario enters the product as a first-class live usage
-- PROVEN: user-created scenario opens in the same deterministic clearance engine
-- PROVEN: structured proposed-right edit `paid permission ALLOW → PROHIBIT`
-- PROVEN: UI previews the structured decision delta before save
-- PROVEN: deterministic recompute produces `CLEAR → BLOCK` on the `paid` axis
-- PROVEN: causal right remains the user-created draft rights document
-- PROVEN: finding-driven remediation `switch_to_organic` becomes available
-- PROVEN: explicit human-approved remediation executes
-- PROVEN: approval-time baseline proof records `BLOCK`
-- PROVEN: baseline proof becomes `STALE`
-- PROVEN: replacement proof becomes `CLEAR / FRESH`
-- PROVEN: replacement proof supersedes the stale baseline
-- PROVEN: post-write usage intent changes to `isPaid=false`
-- PROVEN: multiple governing rights in one user-created scenario
-- IMPLEMENTED / proof pending: user-created scenario deletion
-- PROVEN: visible no-action Live Content API auto-update of an already-open portfolio/detail view
-- change-centric rights-document view
-  - published vs draft field-level diff
-  - revision identifiers
-  - linked assets/usages
-  - downstream deterministic status transitions
-  - direct drill-down into affected usage
-  - Live Content API refresh path includes rights-change view
+### Bounded product agent
+- Context MCP graph read happens before explanation
+- deterministic evaluator remains sole status authority
+- causal evidence is gathered through Knowledge Base/structured source service
+- remediation options come only from the deterministic registry
+- Sanity Content Agent is the AI narrative provider
+- its own read/write capabilities are disabled for this flow
+- AI narrative is rejected if it introduces a status outside the deterministic current/proposed receipt
+- agent write authority is NONE
+- operator surface is implemented
+- runtime Content Agent narration still requires product execution / AI credits
 
-RUNTIME PROVEN — operator filtering core:
-- asset filter: 3 visible → 1 visible
-- combined asset + causal-right filter: 1 visible → 0 visible
-- active-filter count updates to 2
-- filter intersection behavior is correct
-- IMPLEMENTED / individual runtime proof pending: free-text search, proposed status, territory, channel
-- visible result count + clear-all are present
+### Dependency failure and recovery
+- Runtime Health checks Context MCP, Knowledge Base, Content Lake read, and Content Lake write with dry-run
+- live-stream offline state exposes manual Context MCP scan fallback
+- Knowledge Base outage degrades evidence explanation without changing deterministic status
+- write failure returns explicit phase/code and forbids blind retry
+- approved action metadata is persisted atomically with the business mutation
+- remediation recovery rereads proof + usage state and can rebuild only a missing replacement proof
+- product does not repeat the business mutation automatically
+- runtime failure injection/recovery observation remains pending
 
-IMPLEMENTED / runtime proof pending:
-- UNKNOWN / missing-evidence product path
-  - proposed paid permission supports explicit NOT DOCUMENTED
-  - proposed validity end supports explicit NOT DOCUMENTED
-  - Sanity draft fields are genuinely unset rather than replaced with sentinel values
-  - deterministic compiler already maps missing paid permission / validity / territory / channel grants to UNKNOWN
-  - UNKNOWN exposes no consequential remediation and explicitly asks for evidence completion
-  - 3 tests cover missing validity, missing paid permission, and missing territory grant
+### Proof integrity
+- read-only proof-chain audit detects:
+  - multiple fresh proofs
+  - stale proof without replacement
+  - orphan supersession
+- historical evidence is never auto-deleted
+- runtime audit on the current dataset remains pending
 
-MISSING / not yet load-bearing:
-- agent orchestration in the product
-- live integration degraded/offline recovery
-- write-failure recovery
-- UNKNOWN / missing-evidence product path
-- native App SDK surface evaluation
-- Workflows fit / availability verification
-- release-aware perspective evaluation if available
+### Release-aware analysis
+- proposed perspective is selectable
+- Context MCP receives drafts/raw/release id perspective
+- usage-centric and change-centric scans share the selected perspective
+- release analysis is server-enforced read-only
+- proof persistence and remediation remain drafts-only
+- actual project release-id runtime availability remains UNKNOWN until a real release exists
 
-## Immediate product expansion order
+### Operator depth
+- free-text/status/territory/channel filters implemented; individual runtime exercise pending
+- user-created scenario deletion implemented; runtime proof pending
+- Time to First Value measurement implemented for manual live scan; runtime value pending
 
-1. Runtime-prove UNKNOWN by marking a proposed validity end NOT DOCUMENTED on the user-created multi-right scenario.
-4. Runtime-prove free-text/status/territory/channel operator filters.
-5. Runtime-prove user-created scenario deletion.
-7. Add product agent using MCP/KB + deterministic receipts.
-8. Add recovery UI for MCP unavailable, Live API offline, KB unavailable, write failure.
-9. Evaluate App SDK native surface and Workflows; mark PROVEN/N/A/BLOCKED with evidence.
-10. Run final Product Depth Gap Review again before submission.
+## N/A current scope with material reason
+
+### App SDK
+Verdict: N/A_CURRENT_SCOPE_WITH_REASON.
+
+A second Sanity Dashboard-hosted UI would duplicate the existing operator surface without adding a new rights-impact capability. Reopen only if native Dashboard distribution becomes a material requirement.
+
+### Editorial Workflows
+Verdict: N/A_CURRENT_SCOPE_WITH_REASON.
+
+Current core is a single explicit operator approval tied to proof/mutation state. Multi-party assignment/stage orchestration is additive, not required for current correctness. Reopen if rights/legal/marketing approval becomes materially multi-actor.
+
+Detailed evidence:
+- `product/SANITY-NATIVE-DEPTH-EVALUATION.md`
+
+## Assurance / reproducibility blockers
+
+- current production build + full test suite must pass after this completion block
+- current Engineering Quality receipt must be emitted after regression verification
+- `package-lock.json` is not committed; dependency clean-room reproducibility remains incomplete
+- current TRACE design assurance receipt is not recorded locally
+- clean-room zero-state re-execution is not yet externally observed
+- final Project Finisher / Final Canonical Assurance activates only after BUILD_CANDIDATE_READY
+
+## Immediate product expansion / assurance order
+
+1. complete current test + production-build CI on the completion-block head
+2. commit the generated dependency lockfile from a verified install
+3. runtime-prove a material UNKNOWN case on user-created content
+4. runtime-prove bounded Sanity Content Agent narration over Context MCP receipts
+5. runtime-prove dependency degradation/write reconciliation behavior
+6. runtime-run Proof Integrity Audit and remaining operator filters/scenario deletion
+7. runtime-test a release id if this Sanity project has a usable Content Release
+8. emit current Engineering Quality receipt
+9. obtain TRACE assurance at the next safe terminal boundary
+10. rerun this Product Depth Gap Review before BUILD_CANDIDATE_READY
 
 ## Non-negotiable
 
-Do not switch back to "demo polish" as the primary workstream until this gap list has been materially reduced and every remaining item is explicitly classified.
+Do not switch back to demo/submission polish while justified material product gaps remain.
 
-
-## Workstream priority enforcement
-
-Central canon: `Faadil1/faadil-agent-system@8a7e8a4ff5461641c595e2cf052a95fdc32a6340` / Product Reality v1.5.
-
-Current state:
-- first live vertical slice: **PROVEN**
-- remaining material depth gaps: **YES**
-- primary workstream: **PRODUCT_EXPLOITATION**
-- valid stop condition: **NONE**
-- demo packaging allowed as primary workstream: **NO**
-- prior drift: **CORRECTED_FROM_WORKSTREAM_DRIFT**
-- next highest-value delta: **runtime-prove UNKNOWN / missing-evidence behavior on user-created multi-right content**
-
-At every material product touch, re-evaluate the gap list before changing workstream priority. If seeded reset, judge flow, replay, receipts, screenshots, video, story or submission packaging begin displacing justified live product depth, mark `WORKSTREAM_DRIFT` and restore product exploitation.
+Current:
+- first live vertical slice: PROVEN
+- primary workstream: PRODUCT_EXPLOITATION
+- valid stop condition: NONE
+- demo packaging as primary workstream: NOT ALLOWED
+- workstream drift: prior drift corrected; no new drift observed in this product implementation block
 
 **Product architecture generates the demo path; the demo path must not define product architecture.**
-
 
 ## Runtime proof — 2026-10-04 user Scenario Lab edit
 
