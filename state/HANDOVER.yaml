@@ -52,8 +52,6 @@ architecture_invariants:
   mutationBoundary: explicit human approval required
 
 next:
-  - runtime-prove material UNKNOWN on user-created content
-  - runtime-prove bounded Sanity Content Agent narration when credits/provider permit
   - runtime-exercise degraded dependency and write reconciliation only through truthful controlled conditions
   - runtime-run Proof Integrity Audit plus remaining individual operator controls
   - delete only a disposable user-created scenario with explicit operator confirmation for deletion proof
@@ -94,8 +92,6 @@ completion_block:
   current_gate: PRODUCT_MAXIMUM_EXPLOITATION__GATE_4
   current_primary_workstream: PRODUCT_EXPLOITATION
   remaining_material_product_depth_gaps:
-    - material_UNKNOWN_runtime
-    - bounded_Content_Agent_runtime
     - dependency_failure_runtime
     - write_reconciliation_runtime
     - remaining_individual_operator_controls
@@ -112,11 +108,11 @@ completion_block:
     capability: >-
       Operators can persist explicit NOT DOCUMENTED structured rights state and run a non-mutating integrated
       assurance pass over the live product dependencies and proof chain.
-  exact_next_gate: MATERIAL_UNKNOWN_RUNTIME_PROOF
+  exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    On the existing user-created multi-right case, set one proposed validity boundary to NOT DOCUMENTED, observe
-    deterministic UNKNOWN with no invented remediation, then rerun runtime assurance.
+    Exercise a non-mutating controlled dependency failure and recovery, verify truthful fail-closed/degraded behavior,
+    then continue only to safe remaining runtime gaps.
   protected_actions:
     final_submission: HUMAN_ONLY
     consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
@@ -155,3 +151,23 @@ latest_runtime_assurance:
   exact_next_action: >-
     Set proposed validTo to NOT DOCUMENTED on user-created content, observe UNKNOWN and abstention, rerun runtime assurance,
     then proceed to bounded Content Agent runtime if credits/provider permit.
+
+
+unknown_agent_runtime_proof:
+  date: 2026-10-05
+  evidence: evidence/assurance/UNKNOWN-AGENT-RUNTIME-2026-10-05.md
+  material_unknown: PROVEN
+  bounded_content_agent: PROVEN
+  usage: usage-user-3dd4ef777a29
+  current_to_proposed: CLEAR_TO_UNKNOWN
+  unknown_axis: window
+  agent_narrative: GENERATED
+  agent_abstention: true
+  agent_write_authority: NONE
+  no_invented_remediation: PROVEN
+  runtime_assurance_unknown_count: 1
+  latest_ttfv_ms: 380
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  next_highest_value_depth_delta: DEPENDENCY_FAILURE_AND_RECOVERY
+  exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
+  exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
