@@ -94,9 +94,13 @@ Evidence:
 - actual project release-id runtime availability remains UNKNOWN until a real release exists
 
 ### Operator depth
-- free-text/status/territory/channel filters implemented; individual runtime exercise pending
+- free-text/status/territory/channel filters: PROVEN individually against the live portfolio
+- multi-filter composition: already PROVEN
 - user-created scenario deletion implemented; runtime proof pending
-- Time to First Value measurement implemented for manual live scan; runtime value pending
+- Time to First Value: PROVEN (442 ms first receipt; 380 ms subsequent live receipt)
+
+Evidence:
+- `evidence/assurance/REMAINING-READONLY-RUNTIME-2026-10-05.md`
 
 ## N/A current scope with material reason
 
