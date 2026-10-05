@@ -5,6 +5,7 @@ import RightsChangePortfolio, {
   type RightsChangePortfolioData,
 } from './components/RightsChangePortfolio'
 import ScenarioLab from './components/ScenarioLab'
+import ClearanceAgentPanel from './components/ClearanceAgentPanel'
 import {
   EMPTY_IMPACT_FILTERS,
   filterImpacts,
@@ -114,6 +115,13 @@ type ImpactDetail = {
     supersedes?: string
   }>
   observedAt: string
+  truth?: {
+    currentPerspective?: string
+    proposedPerspective?: string
+    statusAuthority?: string
+    graphReadIntegration?: string
+    mutationMode?: string
+  }
 }
 
 type EvidenceRecord = {
@@ -205,6 +213,8 @@ export default function Home() {
   const [liveRefreshCount, setLiveRefreshCount] = useState(0)
   const [autoRefreshReceipt, setAutoRefreshReceipt] = useState<AutoRefreshReceipt | null>(null)
   const [filters, setFilters] = useState<ImpactFilters>({...EMPTY_IMPACT_FILTERS})
+  const [proposedPerspective, setProposedPerspective] = useState('drafts')
+  const [perspectiveInput, setPerspectiveInput] = useState('drafts')
   const scannedRef = useRef(false)
   const openUsageRef = useRef<string | null>(null)
   const portfolioRef = useRef<Portfolio | null>(null)
@@ -250,8 +260,16 @@ export default function Home() {
 
         if (scannedRef.current) {
           const [impactResponse, changeResponse] = await Promise.all([
-            fetch('/api/impacts', {method: 'POST'}),
-            fetch('/api/changes', {method: 'POST'}),
+            fetch('/api/impacts', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({proposedPerspective}),
+            }),
+            fetch('/api/changes', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({proposedPerspective}),
+            }),
           ])
           const [refreshedImpacts, refreshedChanges] = await Promise.all([
             impactResponse.json(),
@@ -287,6 +305,7 @@ export default function Home() {
             body: JSON.stringify({
               usageRequestId: openUsageRef.current,
               persist: false,
+              proposedPerspective,
             }),
           })
           const refreshed = await response.json()
@@ -303,7 +322,7 @@ export default function Home() {
     }
 
     return () => source.close()
-  }, [])
+  }, [proposedPerspective])
 
   async function run(path: string, body?: unknown) {
     const response = await fetch(path, {
@@ -328,8 +347,8 @@ export default function Home() {
 
     try {
       const [impactResult, changeResult] = await Promise.all([
-        run('/api/impacts'),
-        run('/api/changes'),
+        run('/api/impacts', {proposedPerspective}),
+        run('/api/changes', {proposedPerspective}),
       ])
       scannedRef.current = true
       portfolioRef.current = impactResult
@@ -352,7 +371,7 @@ export default function Home() {
     setApproved(false)
 
     try {
-      setDetail(await run('/api/analyze', {usageRequestId}))
+      setDetail(await run('/api/analyze', {usageRequestId, proposedPerspective}))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Impact analysis failed')
     } finally {
@@ -392,8 +411,8 @@ export default function Home() {
       setApproved(false)
 
       const [refreshed, refreshedChanges] = await Promise.all([
-        run('/api/impacts'),
-        run('/api/changes'),
+        run('/api/impacts', {proposedPerspective}),
+        run('/api/changes', {proposedPerspective}),
       ])
       portfolioRef.current = refreshed
       setPortfolio(refreshed)
@@ -463,6 +482,42 @@ export default function Home() {
           <span>WRITE · human approval required</span>
         </div>
 
+        <div className="perspectiveControl">
+          <div>
+            <p className="cardKicker">Proposed content perspective</p>
+            <strong>{proposedPerspective}</strong>
+            <span>
+              Use <code>drafts</code> for the write-capable product path, or enter a Sanity Content Release id for read-only impact analysis.
+            </span>
+          </div>
+          <div className="perspectiveInput">
+            <input
+              value={perspectiveInput}
+              onChange={(event) => setPerspectiveInput(event.target.value)}
+              placeholder="drafts or release-id"
+            />
+            <button
+              className="secondaryButton"
+              onClick={() => {
+                const value = perspectiveInput.trim() || 'drafts'
+                setProposedPerspective(value)
+                setPortfolio(null)
+                setRightsChanges(null)
+                setDetail(null)
+                scannedRef.current = false
+                openUsageRef.current = null
+              }}
+            >
+              Apply perspective
+            </button>
+          </div>
+          {proposedPerspective !== 'drafts' && (
+            <div className="proposalNote">
+              Release perspective is analysis-only. Human-approved mutation/proof persistence remains locked to the drafts path until release-write semantics are explicitly implemented and proven.
+            </div>
+          )}
+        </div>
+
         {!portfolio && (
           <div className="launchCard">
             <div>
@@ -495,7 +550,7 @@ export default function Home() {
               <p className="cardKicker">Live blast radius</p>
               <h2>{portfolio.summary.affectedUsageRequests} of {portfolio.summary.totalUsageRequests} usages affected</h2>
               <p className="muted">
-                Observed {formatWhen(portfolio.observedAt)} · published → drafts · graph read via Context MCP
+                Observed {formatWhen(portfolio.observedAt)} · published → {proposedPerspective} · graph read via Context MCP
                 {lastLiveSync ? ` · last live sync ${formatWhen(lastLiveSync)}` : ''}
               </p>
             </div>
@@ -516,7 +571,7 @@ export default function Home() {
             <div>
               <span>Graph read</span>
               <strong>Sanity Context MCP</strong>
-              <small>load-bearing · published + drafts</small>
+              <small>load-bearing · published + {proposedPerspective}</small>
             </div>
             <div>
               <span>Realtime</span>
@@ -911,6 +966,11 @@ export default function Home() {
               )}
             </article>
 
+            <ClearanceAgentPanel
+              usageRequestId={detail.usage.id}
+              proposedPerspective={proposedPerspective}
+            />
+
             <article className="panel repairPanel">
               <div className="panelHeading">
                 <span className="stepIndex">05</span>
@@ -920,7 +980,11 @@ export default function Home() {
                 </div>
               </div>
 
-              {detail.repairs.length === 0 ? (
+              {proposedPerspective !== 'drafts' ? (
+                <div className="proposalNote">
+                  This perspective is analysis-only. Switch back to <code>drafts</code> before any consequential remediation.
+                </div>
+              ) : detail.repairs.length === 0 ? (
                 detail.proposed.status === 'UNKNOWN' ? (
                   <div className="proposalNote">
                     Clearance is UNKNOWN because required structured evidence is missing. Clearance Room will not convert missing evidence into permission or prohibition. Complete the missing rights data, then recompile.
