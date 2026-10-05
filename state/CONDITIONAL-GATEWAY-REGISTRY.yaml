@@ -157,10 +157,10 @@ gates:
     reason: corrected read-only availability probe observed NO_RELEASE_PRESENT with releaseCount 0; release-id execution cannot be truthfully runtime-proven without an actual Content Release and this gate must reactivate if one is created
   FINAL_CANONICAL_ASSURANCE:
     status: N/A
-    reason: activates after WRITE_FAILURE_RECOVERY is proven or explicitly waived/deferred and BUILD_CANDIDATE_READY can advance
+    reason: project ended NOT_SUBMITTED before terminal assurance; reactivate only after explicit human reopen and resolution/reclassification of remaining material gates
   PROTECTED_FINAL_SUBMISSION:
     status: N/A
-    reason: human-only action; submission package is prepared but terminal canonical readiness remains fail-closed on WRITE_FAILURE_RECOVERY
+    reason: explicitly NOT_SUBMITTED by human outcome; no verified submission receipt exists and no submission action was executed
 
 terminal_fail_closed:
   BUILD_CANDIDATE_READY:

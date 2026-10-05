@@ -214,3 +214,21 @@ submission_packaging:
   terminal_canonical_ready: false
   remaining_terminal_material_blocker: WRITE_FAILURE_RECOVERY
   final_submission: HUMAN_ONLY
+
+final_project_outcome:
+  date: 2026-10-05
+  submission_status: NOT_SUBMITTED
+  submission_receipt: NONE
+  project_status: PAUSED_PORTFOLIO_READY
+  product_runtime_status: RETAINED
+  production_runtime_commit: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+  design_delta_pr: 6
+  design_delta_status: NOT_PROMOTED
+  remaining_terminal_blocker: WRITE_FAILURE_RECOVERY
+  final_canonical_assurance: NOT_RUN
+  protected_submission: NOT_EXECUTED
+  post_mortem: evidence/learning/NON-SUBMISSION-POSTMORTEM-2026-10-05.md
+  exact_next_gate: NONE_PROJECT_PAUSED
+  exact_next_action: >-
+    Preserve the project as portfolio evidence and route the non-submission learning into the central system.
+    Do not resume build, design, submission packaging, or terminal assurance unless the human explicitly reopens the project.
