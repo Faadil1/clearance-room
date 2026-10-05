@@ -76,8 +76,8 @@ proven_runtime:
     validTo: 2026-10-31
 
 next:
-  - runtime-exercise dependency degradation and write reconciliation only through truthful controlled conditions
-  - runtime-run Proof Integrity Audit and remaining individual filters
+  - runtime-run remaining individual operator filters
+  - classify or runtime-test Content Release availability through a real release if present
   - runtime-prove deletion only on a disposable user-created scenario with explicit operator confirmation
   - runtime-test a real release id if one exists; otherwise preserve availability as BLOCKED/UNKNOWN
   - obtain TRACE assurance at the next safe terminal boundary
@@ -89,7 +89,6 @@ product_workstream_priority:
   product_reality_version: "1.5.0"
   first_live_slice_proven: true
   remaining_material_depth_gaps:
-    - degraded_live_integration_runtime_observation
     - write_outcome_unknown_reconciliation_runtime_observation
     - free_text_status_territory_channel_filter_runtime_proof
     - user_created_scenario_deletion_runtime_proof
@@ -98,7 +97,7 @@ product_workstream_priority:
     - current_Engineering_Quality_receipt
     - TRACE_design_assurance_receipt
   current_primary_workstream: PRODUCT_EXPLOITATION
-  next_highest_value_depth_delta: RUNTIME_EXERCISE_DEPENDENCY_DEGRADATION_AND_RECOVERY
+  next_highest_value_depth_delta: CLOSE_REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
   valid_stop_condition: null
   demo_packaging_allowed: false
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
@@ -150,12 +149,12 @@ completion_block_reconciliation:
   demo_packaging_permission: false
   workstream_drift_status: NO_NEW_DRIFT__PRIOR_DRIFT_CORRECTED
   blocked_transition: BUILD_CANDIDATE_READY
-  exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
+  exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Pull the current branch and run npm run verify:dependency-recovery. This process-locally redirects Context MCP
-    and Knowledge Base endpoints to an unreachable address, verifies fail-closed/degraded behavior, restores the real
-    endpoints, verifies recovery, and checks write-recovery idempotence without mutating business data.
+    Run the remaining read-only assurance block for live operator filters, Content Release availability classification
+    and current Engineering Quality; keep write-outcome-unknown, scenario deletion and other protected actions blocked
+    until explicit safe conditions or human approval exist.
 
 
 runtime_assurance_2026_10_05:
@@ -266,3 +265,46 @@ runtime_unknown_agent_2026_10_05:
   workstream_drift_status: NO_NEW_DRIFT
   blocked_transition: BUILD_CANDIDATE_READY
   exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
+
+
+dependency_recovery_runtime_2026_10_05:
+  evidence: evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md
+  truth_class: OBSERVED
+  runtime_class: LOCAL_CONTROLLED_INTEGRATION_FAILURE
+  real_production_outage_claimed: false
+  business_mutation: false
+  baseline_health: healthy
+  context_mcp_fail_closed:
+    status: PROVEN_RUNTIME
+    health: degraded
+    context_graph: unavailable
+    live_scan_failed_closed: true
+  knowledge_base_degradation:
+    status: PROVEN_RUNTIME
+    knowledge_base: unavailable
+    context_graph: available
+    structured_source: available
+    deterministic_status_authority_affected: false
+  dependency_recovery_after_restore:
+    status: PROVEN_RUNTIME
+    runtime_health: healthy
+    usage_count: 3
+    affected_usage_requests: 1
+  write_recovery_idempotence:
+    status: PROVEN_RUNTIME
+    result: ALREADY_COMPLETE
+    usage: usage-holiday-ca
+    business_mutation_repeated: false
+  write_outcome_unknown_recovery:
+    status: BLOCKED_UNOBSERVED
+    reason: requires_controlled_consequential_failure
+  material_user_capability_delta_since_previous_milestone:
+    truth: OBSERVED
+    capability: >-
+      The product now has observed fail-closed Context MCP behavior, evidence-only Knowledge Base degradation,
+      healthy dependency recovery after restoration, and idempotent completed-write reconciliation without repeating
+      the business mutation.
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  valid_stop_condition: null
+  workstream_drift_status: NO_NEW_DRIFT
+  exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
