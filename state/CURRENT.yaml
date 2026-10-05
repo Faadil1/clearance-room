@@ -1,7 +1,7 @@
 project: clearance-room
 source_of_truth: github
 branch: product/judge-workflow-4
-updated: 2026-10-04
+updated: 2026-10-05
 
 concept:
   name: Clearance Room
@@ -76,12 +76,11 @@ proven_runtime:
     validTo: 2026-10-31
 
 next:
-  - runtime-run remaining individual operator filters
-  - classify or runtime-test Content Release availability through a real release if present
-  - runtime-prove deletion only on a disposable user-created scenario with explicit operator confirmation
-  - runtime-test a real release id if one exists; otherwise preserve availability as BLOCKED/UNKNOWN
-  - obtain TRACE assurance at the next safe terminal boundary
-  - rerun Product Depth Gap Review before BUILD_CANDIDATE_READY
+  - human-authorize stable public runtime / exact commit binding, or explicitly waive/defer it under existing authority
+  - optionally authorize a disposable controlled consequential mutation if write-outcome-unknown recovery must be runtime-proven
+  - optionally authorize deletion of a disposable user-created scenario if deletion runtime proof is still desired
+  - after protected blockers are resolved or formally waived, rerun Product Depth Gap Review and activate Final Canonical Assurance
+  - keep final submission human-only
 
 
 product_workstream_priority:
