@@ -29,7 +29,7 @@ This ledger separates what is observed from what is implemented, inferred, or st
 | genuine write-outcome-unknown recovery preserves truthful mutation state | UNKNOWN | PARTIAL | implementation exists and blind retry is forbidden; a controlled consequential failure has not been executed |
 | App SDK is required for the current core product | INFERRED | N/A | official SDK is viable but would duplicate current surface; see native-depth evaluation |
 | Editorial Workflows are required for current single-operator loop | INFERRED | N/A | additive team coordination, not core correctness; availability account-dependent |
-| release-aware perspective is supported by Sanity Context | OBSERVED | PARTIAL | product accepts release-id perspective read-only; actual project release-id runtime availability remains unobserved |
+| release-aware perspective support exists but current project has no Content Release | OBSERVED | N/A_CURRENT_RUNTIME | corrected read-only probe classified NO_RELEASE_PRESENT / releaseCount 0; gate reactivates if a release is created |
 | Time to First Value is measured on the live graph path | OBSERVED | LIVE | 442 ms server-side concurrent Context MCP portfolio + rights-change scan |
 | current proof history can be audited without rewriting history | OBSERVED | LIVE | 16 proofs / 3 usages / PASS_WITH_HISTORICAL_WARNINGS; 3 historical duplicate-fresh warnings, 0 audit errors |
 | dependency lock is committed for clean-room reproducibility | OBSERVED | LOCAL | package-lock.json committed at 17463eb; external zero-state replay remains unobserved |
