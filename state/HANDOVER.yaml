@@ -111,12 +111,11 @@ completion_block:
     capability: >-
       Operators can persist explicit NOT DOCUMENTED structured rights state and run a non-mutating integrated
       assurance pass over the live product dependencies and proof chain.
-  exact_next_gate: PROTECTED_RUNTIME_BINDING_OR_WRITE_FAILURE_PROOF
-  exact_next_owner: HUMAN_OR_EXISTING_AUTHORITY
+  exact_next_gate: FINAL_PUBLIC_RUNTIME_BINDING
+  exact_next_owner: HUMAN_AUTHORIZED_RUNTIME_DEPLOYMENT
   exact_next_action: >-
-    Explicitly authorize either stable public runtime/commit binding or a disposable controlled consequential mutation
-    for write-outcome-unknown recovery. Do not promote BUILD_CANDIDATE_READY before one of these protected gaps is resolved
-    or formally waived by the existing human authority.
+    Pull the current branch after the SSE timeout-hardening commit, confirm Product quality passes, deploy production
+    from a clean tree, and bind clearance-room.vercel.app to the exact deployed Git SHA.
   protected_actions:
     final_submission: HUMAN_ONLY
     consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
