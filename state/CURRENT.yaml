@@ -76,8 +76,6 @@ proven_runtime:
     validTo: 2026-10-31
 
 next:
-  - commit package-lock.json from a verified install
-  - run npm run verify:completion on the committed completion-block head
   - runtime-prove a material UNKNOWN case on user-created content
   - runtime-prove bounded Sanity Content Agent narration if provider/credits are available
   - runtime-exercise dependency degradation and write reconciliation only through truthful controlled conditions
@@ -97,12 +95,10 @@ product_workstream_priority:
     - bounded_Content_Agent_runtime_execution
     - degraded_live_integration_runtime_observation
     - write_outcome_unknown_reconciliation_runtime_observation
-    - proof_integrity_audit_on_current_live_dataset
     - free_text_status_territory_channel_filter_runtime_proof
     - user_created_scenario_deletion_runtime_proof
-    - measured_Time_to_First_Value_receipt
     - release_id_runtime_availability_or_explicit_unavailable_classification
-    - committed_dependency_lock_and_external_clean_room_reexecution
+    - external_clean_room_reexecution
     - current_Engineering_Quality_receipt
     - TRACE_design_assurance_receipt
   current_primary_workstream: PRODUCT_EXPLOITATION
@@ -115,6 +111,10 @@ product_workstream_priority:
     - operator_can_persist_explicit_NOT_DOCUMENTED_state_on_live_user_created_right
     - operator_can_run_read_only_integrated_runtime_assurance_without_seeding_or_business_mutation
     - proof_integrity_and_runtime_dependency_fail_closed_policies_are_now_directly_auditable
+    - live_runtime_health_is_observed_healthy
+    - Time_to_First_Value_measured_at_442_ms
+    - current_live_proof_integrity_audit_observed_PASS_WITH_HISTORICAL_WARNINGS
+    - dependency_lock_committed_at_17463ebed6b4e2e3038119fde2625c5bae1d760d
   invariant: PRODUCT_ARCHITECTURE_GENERATES_DEMO_PATH__DEMO_PATH_MUST_NOT_DEFINE_PRODUCT_ARCHITECTURE
 
 
@@ -154,8 +154,77 @@ completion_block_reconciliation:
   demo_packaging_permission: false
   workstream_drift_status: NO_NEW_DRIFT__PRIOR_DRIFT_CORRECTED
   blocked_transition: BUILD_CANDIDATE_READY
-  exact_next_gate: COMPLETION_BLOCK_RUNTIME_ASSURANCE
+  exact_next_gate: MATERIAL_UNKNOWN_RUNTIME_PROOF
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Commit the verified dependency lock, execute npm run verify:completion, then close only runtime gaps actually
-    observed by that receipt and preserve UNKNOWN/BLOCKED states for protected or unavailable conditions.
+    Create one material missing-evidence state on user-created content (preferred: proposed validTo NOT DOCUMENTED),
+    observe UNKNOWN in the live product, then rerun runtime assurance and continue only with the remaining truthful blockers.
+
+
+runtime_assurance_2026_10_05:
+  observed_commit: 17463ebed6b4e2e3038119fde2625c5bae1d760d
+  evidence: evidence/assurance/RUNTIME-ASSURANCE-2026-10-05.md
+  regression:
+    test_files: 12
+    tests: 42
+    tests_status: PASS
+    next_production_build: PASS
+    typescript: PASS
+  runtime_health:
+    status: PROVEN
+    overall: healthy
+    context_mcp: available
+    knowledge_base: available
+    content_lake_read: available
+    content_lake_write_dry_run: available
+  time_to_first_value:
+    status: PROVEN
+    milliseconds: 442
+    definition: server_side_concurrent_live_Context_MCP_portfolio_plus_rights_change_scan
+  live_portfolio:
+    total_usage_requests: 3
+    affected_usage_requests: 0
+    blocked: 0
+    review: 0
+    unknown: 0
+    clear: 3
+  proof_integrity:
+    status: PROVEN_WITH_HISTORICAL_WARNINGS
+    result: PASS_WITH_HISTORICAL_WARNINGS
+    proofs: 16
+    usages_with_proofs: 3
+    fresh: 11
+    stale: 5
+    warnings: 3
+    errors: 0
+  material_unknown:
+    status: BLOCKED
+    reason: no user-created usage currently evaluates to UNKNOWN under drafts
+  bounded_agent:
+    status: SKIPPED
+  release_perspective:
+    status: SKIPPED
+  scenario_deletion:
+    status: BLOCKED_PROTECTED_ACTION
+  dependency_failure_runtime:
+    status: BLOCKED_UNOBSERVED
+  write_failure_recovery_runtime:
+    status: BLOCKED_UNOBSERVED
+  clean_room_external_replay:
+    status: BLOCKED_NOT_RUN
+  engineering_quality:
+    observed_verdict: PASS_WITH_ACCEPTED_DEBT
+    observed_unresolved:
+      - EQ_DIRTY_001_GENERATED_FILE_SIGNAL
+    dependency_audit:
+      low: 2
+      moderate: 10
+      high: 11
+      critical: 0
+    follow_up: >-
+      rerun after generated-dirty handling fix; high vulnerabilities remain disclosed accepted dependency debt and
+      npm audit fix --force is forbidden under deadline because proposed remediation is breaking.
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  valid_stop_condition: null
+  workstream_drift_status: NO_NEW_DRIFT
+  blocked_transition: BUILD_CANDIDATE_READY
