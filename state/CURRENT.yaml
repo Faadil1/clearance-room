@@ -103,13 +103,12 @@ product_workstream_priority:
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
   last_priority_reconciliation_at: 2026-10-04
   material_user_capability_delta_since_previous_milestone:
-    - operator_can_persist_explicit_NOT_DOCUMENTED_state_on_live_user_created_right
-    - operator_can_run_read_only_integrated_runtime_assurance_without_seeding_or_business_mutation
-    - proof_integrity_and_runtime_dependency_fail_closed_policies_are_now_directly_auditable
-    - live_runtime_health_is_observed_healthy
-    - Time_to_First_Value_measured_at_442_ms
-    - current_live_proof_integrity_audit_observed_PASS_WITH_HISTORICAL_WARNINGS
-    - dependency_lock_committed_at_17463ebed6b4e2e3038119fde2625c5bae1d760d
+    - operator_can_create_material_missing_evidence_and_receive_deterministic_UNKNOWN
+    - bounded_Sanity_Content_Agent_can_explain_and_abstain_with_write_authority_NONE
+    - operator_can_observe_fail_closed_Context_MCP_and_evidence_only_KB_degradation_then_recovery
+    - free_text_status_territory_channel_filters_are_individually_live_proven
+    - proof_history_runtime_audit_and_TTFV_are_operator_visible
+    - external_dependency_locked_clean_room_and_engineering_quality_are_proven
   invariant: PRODUCT_ARCHITECTURE_GENERATES_DEMO_PATH__DEMO_PATH_MUST_NOT_DEFINE_PRODUCT_ARCHITECTURE
 
 
