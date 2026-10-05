@@ -20,7 +20,8 @@
     "verify:runtime-env": "tsx scripts/verify-runtime-env.ts",
     "verify:product": "npm test && npm run app:build",
     "verify:runtime-assurance": "tsx scripts/runtime-assurance.ts",
-    "verify:completion": "npm run verify:runtime-env && npm test && npm run app:build && npm run verify:runtime-assurance"
+    "verify:completion": "npm run verify:runtime-env && npm run verify:engineering-quality && npm run verify:runtime-assurance",
+    "verify:engineering-quality": "tsx scripts/engineering-quality-receipt.ts"
   },
   "dependencies": {
     "@sanity/client": "latest",
