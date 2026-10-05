@@ -6,8 +6,14 @@ import RightsChangePortfolio, {
 } from './components/RightsChangePortfolio'
 import ScenarioLab from './components/ScenarioLab'
 import ClearanceAgentPanel from './components/ClearanceAgentPanel'
-import RuntimeHealthPanel from './components/RuntimeHealthPanel'
 import ProofIntegrityPanel from './components/ProofIntegrityPanel'
+import ShockwaveMap from './components/ShockwaveMap'
+import SystemStatus from './components/SystemStatus'
+import {
+  highestRisk,
+  shockwaveCounts,
+  type MapPerspective,
+} from '../src/shockwaveLayout'
 import {
   EMPTY_IMPACT_FILTERS,
   filterImpacts,
@@ -224,6 +230,9 @@ export default function Home() {
   const [filters, setFilters] = useState<ImpactFilters>({...EMPTY_IMPACT_FILTERS})
   const [proposedPerspective, setProposedPerspective] = useState('drafts')
   const [perspectiveInput, setPerspectiveInput] = useState('drafts')
+  const [mapPerspective, setMapPerspective] = useState<MapPerspective>('proposed')
+  const [selectedUsageId, setSelectedUsageId] = useState<string | null>(null)
+  const detailRef = useRef<HTMLElement | null>(null)
   const scannedRef = useRef(false)
   const openUsageRef = useRef<string | null>(null)
   const portfolioRef = useRef<Portfolio | null>(null)
@@ -516,211 +525,218 @@ export default function Home() {
     key === 'search' ? Boolean(value.trim()) : value !== 'ALL',
   ).length
 
+  // Map + selection read evaluator output only; nothing here computes a status.
+  const allImpacts = portfolio?.impacts ?? []
+  const counts = shockwaveCounts(allImpacts)
+  const riskiest = highestRisk(allImpacts)
+  const selectedImpact =
+    allImpacts.find((impact) => impact.usage.id === selectedUsageId) ?? riskiest
+  const distributionLine = useMemo(() => {
+    if (!portfolio) return ''
+    const tally: Record<Status, number> = {BLOCK: 0, UNKNOWN: 0, REVIEW: 0, CLEAR: 0}
+    for (const impact of portfolio.impacts) {
+      tally[mapPerspective === 'proposed' ? impact.proposedStatus : impact.currentStatus] += 1
+    }
+    const order: Status[] = ['BLOCK', 'UNKNOWN', 'REVIEW', 'CLEAR']
+    return `${mapPerspective === 'proposed' ? `published → ${proposedPerspective}` : 'current rights state'} · ${order.map((status) => `${tally[status]} ${status}`).join(' · ')}`
+  }, [portfolio, mapPerspective, proposedPerspective])
+  const selectedCause = useMemo(() => {
+    if (!selectedImpact) return ''
+    const axes = selectedImpact.changedAxes.map((axis) => axis.axis)
+    const finding = selectedImpact.nonClearFindings[0]
+    const rights = selectedImpact.causalRights.map((right) => right.title)
+    if (!selectedImpact.changed) {
+      return finding ? `Unchanged · ${finding.reason}` : 'No status change under the proposed rights state.'
+    }
+    const why = finding?.reason ?? 'Status changed under the proposed rights state.'
+    return `${axes.length ? `${axes.join(' · ')} · ` : ''}${why}${rights.length ? ` Governed by ${rights.join(', ')}.` : ''}`
+  }, [selectedImpact])
+
+  // Opening a case file moves the reader to it instead of appending it off-screen.
+  useEffect(() => {
+    if (!detail || !detailRef.current) return
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    detailRef.current.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'})
+    detailRef.current.focus({preventScroll: true})
+  }, [detail?.usage.id])
+
   return (
     <main>
       <header className="topbar">
         <div className="brand">
-          <span className="brandMark">CR</span>
-          <span>Clearance Room</span>
+          <span className="brandName">Clearance Room</span>
+          <span className="brandDescriptor">Rights Impact System</span>
         </div>
-        <div className="runtimeBadge">
-          <span className={`liveDot liveDot--${liveState}`} />
-          {liveState === 'connected' ? 'Live sync connected' : liveState === 'offline' ? 'Live sync offline' : 'Connecting live sync…'}
+        <nav className="modeNav" aria-label="Sections">
+          <a href="#impact">Impact</a>
+          <a href="#scenario-lab">Scenario Lab</a>
+          <a href="#system">Engine &amp; assurance</a>
+        </nav>
+        <div className="topbarStatus">
+          <span className="runtimeBadge">
+            <span className={`liveDot liveDot--${liveState}`} aria-hidden="true" />
+            {liveState === 'connected' ? 'Live' : liveState === 'offline' ? 'Live sync offline' : 'Connecting…'}
+          </span>
+          <SystemStatus liveState={liveState} onManualScan={() => scan({keepReceipt: true})} />
         </div>
       </header>
 
-      <section className="hero">
-        <p className="eyebrow">Pre-publish rights impact operations</p>
-        <h1>See what breaks before rights changes go live.</h1>
-        <p className="lede">
-          Scan every active usage request against published and proposed rights state, investigate the exact source of each impact,
-          and repair what can be repaired without letting an AI invent the decision.
-        </p>
+      <section className="impactHero" id="impact" aria-labelledby="impact-title">
+        <div className="impactHeroCopy">
+          <p className="eyebrow">Pre-publish rights impact</p>
+          <h1 id="impact-title">See what breaks before a rights change goes live.</h1>
+          <p className="lede">
+            {portfolio
+              ? 'Every dot is a live usage. Flip to the proposed rights state and watch which ones get pulled toward the change.'
+              : 'Compare proposed rights against live usage. Clearance Room finds the blast radius, explains the deterministic cause, and exposes only evidence-backed next actions.'}
+          </p>
 
-        <div className="truthStrip" aria-label="System truth boundaries">
-          <span>GRAPH · Sanity Context MCP</span>
-          <span>SYNC · Live Content API</span>
-          <span>STATUS · deterministic evaluator</span>
-          <span>EVIDENCE · Sanity Knowledge Base</span>
-          <span>WRITE · human approval required</span>
-        </div>
-
-        <div className="perspectiveControl">
-          <div>
-            <p className="cardKicker">Proposed content perspective</p>
-            <strong>{proposedPerspective}</strong>
-            <span>
-              Use <code>drafts</code> for the write-capable product path, or enter a Sanity Content Release id for read-only impact analysis.
-            </span>
-          </div>
-          <div className="perspectiveInput">
-            <input
-              value={perspectiveInput}
-              onChange={(event) => setPerspectiveInput(event.target.value)}
-              placeholder="drafts or release-id"
-            />
-            <button
-              className="secondaryButton"
-              onClick={() => {
-                const value = perspectiveInput.trim() || 'drafts'
-                setProposedPerspective(value)
-                setPortfolio(null)
-                setRightsChanges(null)
-                setDetail(null)
-                scannedRef.current = false
-                openUsageRef.current = null
-              }}
-            >
-              Apply perspective
-            </button>
-          </div>
-          {proposedPerspective !== 'drafts' && (
-            <div className="proposalNote">
-              Release perspective is analysis-only. Human-approved mutation/proof persistence remains locked to the drafts path until release-write semantics are explicitly implemented and proven.
+          {portfolio && (
+            <div className="perspectiveToggle" role="group" aria-label="Rights state shown on the map">
+              <button
+                type="button"
+                aria-pressed={mapPerspective === 'published'}
+                onClick={() => setMapPerspective('published')}
+              >
+                Published
+              </button>
+              <button
+                type="button"
+                aria-pressed={mapPerspective === 'proposed'}
+                onClick={() => setMapPerspective('proposed')}
+              >
+                Proposed · {proposedPerspective}
+              </button>
             </div>
           )}
-        </div>
 
-        {!portfolio && (
-          <div className="launchCard">
-            <div>
-              <p className="cardKicker">Live product</p>
-              <h2>Scan the current rights graph</h2>
-              <p>
-                Clearance Room will compare the published and draft perspectives for every live usage request and rank the resulting blast radius.
-              </p>
-            </div>
-            <button className="primaryButton" onClick={() => scan()} disabled={busy !== null}>
-              {busy === 'scan' ? 'Scanning live graph…' : 'Scan live blast radius'}
-            </button>
-          </div>
-        )}
-
-        {error && <div className="errorBanner" role="alert">{error}</div>}
-
-        <RuntimeHealthPanel
-          liveState={liveState}
-          onManualScan={() => scan({keepReceipt: true})}
-        />
-
-        {writeRecovery && (
-          <div className="writeRecoveryPanel">
-            <div>
-              <strong>Write outcome requires reconciliation</strong>
-              <span>
-                {writeRecovery.code}. Do not repeat the business mutation until the current proof and usage state are reread.
-              </span>
-              <code>{writeRecovery.baselineProofId}</code>
-            </div>
-            <button
-              className="dangerButton"
-              onClick={reconcileWriteOutcome}
-              disabled={busy !== null}
-            >
-              {busy === 'recover' ? 'Reconciling…' : 'Reconcile write outcome'}
-            </button>
-          </div>
-        )}
-
-        {recoveryResult && (
-          <div className="proposalNote">
-            Recovery state: <strong>{recoveryResult.state}</strong>
-            {recoveryResult.action ? <span> · {recoveryResult.action}</span> : null}
-          </div>
-        )}
-      </section>
-
-      <section className="workspace scenarioWorkspace">
-        <ScenarioLab
-          onOpenUsage={openImpact}
-          liveRefreshCount={liveEventCount}
-        />
-      </section>
-
-      {portfolio && (
-        <section className="workspace">
-          <div className="portfolioHeader">
-            <div>
-              <p className="cardKicker">Live blast radius</p>
-              <h2>{portfolio.summary.affectedUsageRequests} of {portfolio.summary.totalUsageRequests} usages affected</h2>
-              <p className="muted">
-                Observed {formatWhen(portfolio.observedAt)} · published → {proposedPerspective} · graph read via Context MCP
-                {lastLiveSync ? ` · last live sync ${formatWhen(lastLiveSync)}` : ''}
-              </p>
-            </div>
-            <button className="secondaryButton" onClick={() => scan({keepReceipt: true})} disabled={busy !== null}>
-              {busy === 'scan' ? 'Refreshing…' : 'Refresh graph'}
-            </button>
-          </div>
-
-          <div className="metricGrid">
-            <div className="metricCard"><span>Affected</span><strong>{portfolio.summary.affectedUsageRequests}</strong></div>
-            <div className="metricCard"><span>Blocked</span><strong>{portfolio.summary.blocked}</strong></div>
-            <div className="metricCard"><span>Review</span><strong>{portfolio.summary.review}</strong></div>
-            <div className="metricCard"><span>Unknown</span><strong>{portfolio.summary.unknown}</strong></div>
-            <div className="metricCard"><span>Clear proposed</span><strong>{portfolio.summary.clear}</strong></div>
-          </div>
-
-          <div className="integrationRail" aria-label="Load-bearing integrations">
-            <div>
-              <span>Graph read</span>
-              <strong>Sanity Context MCP</strong>
-              <small>load-bearing · published + {proposedPerspective}</small>
-            </div>
-            <div>
-              <span>Realtime</span>
-              <strong>Sanity Live Content API</strong>
-              <small>{liveState === 'connected' ? `connected · drafts included · ${liveRefreshCount} completed auto-refresh${liveRefreshCount === 1 ? '' : 'es'}` : liveState}</small>
-            </div>
-            <div>
-              <span>Evidence</span>
-              <strong>Context Knowledge Base</strong>
-              <small>source-bound · evidence only</small>
-            </div>
-            <div>
-              <span>Writes</span>
-              <strong>Content Lake transaction</strong>
-              <small>human-approved · proof staleness atomic</small>
-            </div>
-            <div>
-              <span>Time to first value</span>
-              <strong>{lastTtfvMs == null ? 'not measured' : `${lastTtfvMs} ms`}</strong>
-              <small>manual scan click → usable impact + rights-change portfolio</small>
-            </div>
-          </div>
-
-          <div className="liveReceipt">
-            <span className={`liveDot liveDot--${liveState}`} />
-            <div>
-              <strong>Live integration receipt</strong>
-              <span>
-                {autoRefreshReceipt
-                  ? `AUTO #${autoRefreshReceipt.sequence} · ${autoRefreshReceipt.triggerType}${autoRefreshReceipt.triggerId ? ` · ${autoRefreshReceipt.triggerId}` : ''} · completed ${formatWhen(autoRefreshReceipt.completedAt)}`
-                  : lastLiveEvent
-                    ? `Event received · ${lastLiveEvent.type}${lastLiveEvent.id ? ` · ${lastLiveEvent.id}` : ''} · waiting for an active portfolio to auto-refresh`
-                    : 'Waiting for the next Sanity content event…'}
-              </span>
-              {autoRefreshReceipt && (
+          {portfolio ? (
+            <div className="breakCounter" aria-live="polite">
+              <div>
+                <strong>{mapPerspective === 'proposed' ? counts.regressions : counts.total}</strong>
                 <span>
-                  Sanity Live Content API → Context MCP reread · affected {autoRefreshReceipt.beforeAffected ?? '—'} → {autoRefreshReceipt.afterAffected}
+                  {mapPerspective === 'proposed'
+                    ? counts.regressions === 1 ? 'usage breaks' : 'usages break'
+                    : counts.total === 1 ? 'usage · published baseline' : 'usages · published baseline'}
                 </span>
+              </div>
+              <p>{distributionLine}</p>
+              {mapPerspective === 'proposed' && counts.regressions === 0 && (
+                <p>No downstream usage gets worse under this proposed rights state.</p>
               )}
             </div>
-            <div>
-              <strong>{liveRefreshCount}</strong>
-              <span>completed automatic graph refreshes</span>
-            </div>
+          ) : null}
+
+          {portfolio && selectedImpact && (
+            <article className="selectedUsage" aria-label="Selected usage">
+              <p className="cardKicker">{selectedImpact.usage.id === riskiest?.usage.id ? 'Highest-risk usage' : 'Selected usage'}</p>
+              <h2>{selectedImpact.usage.title}</h2>
+              <div className="transition">
+                <StatusPill status={selectedImpact.currentStatus} />
+                <span className="arrow" aria-label="becomes">→</span>
+                <span className="statusLarge"><StatusPill status={selectedImpact.proposedStatus} /></span>
+              </div>
+              <p className="selectedCause">{selectedCause}</p>
+              <p className="selectedMeta">
+                {selectedImpact.usage.territory} · {formatChannel(selectedImpact.usage.channel)} · {selectedImpact.usage.isPaid ? 'paid' : 'organic'}
+                {' · '}
+                {selectedImpact.proposedStatus === 'UNKNOWN' && selectedImpact.repairCount === 0
+                  ? 'no supported repair, permission will not be inferred'
+                  : `${selectedImpact.repairCount} supported action${selectedImpact.repairCount === 1 ? '' : 's'}`}
+              </p>
+              <button
+                className="primaryButton"
+                onClick={() => openImpact(selectedImpact.usage.id)}
+                disabled={busy !== null}
+              >
+                {busy === 'open' ? 'Opening case file…' : 'Open case file →'}
+              </button>
+            </article>
+          )}
+
+          <div className="heroActions">
+            {portfolio ? (
+              <button className="secondaryButton" onClick={() => scan({keepReceipt: true})} disabled={busy !== null}>
+                {busy === 'scan' ? 'Rescanning…' : 'Rescan live graph'}
+              </button>
+            ) : (
+              <button className="primaryButton" onClick={() => scan()} disabled={busy !== null}>
+                {busy === 'scan' ? 'Scanning live graph…' : 'Scan live rights graph'}
+              </button>
+            )}
+            <a className="textLink" href="#scenario-lab">Create scenario</a>
           </div>
 
-          <ProofIntegrityPanel />
+          <p className="heroStateLine">
+            {portfolio
+              ? `published → ${proposedPerspective} · observed ${formatWhen(portfolio.observedAt)} · graph read via Context MCP`
+              : 'No impact scan yet. Nothing on the map is invented: it fills only from the live graph.'}
+          </p>
 
-          {rightsChanges && (
-            <RightsChangePortfolio
-              data={rightsChanges}
-              onOpenUsage={openImpact}
-              busy={busy !== null}
-            />
+          {proposedPerspective !== 'drafts' && (
+            <div className="proposalNote">
+              Release perspective is analysis-only. Human-approved mutation and proof persistence remain locked to the drafts path.
+            </div>
           )}
+        </div>
+
+        <ShockwaveMap
+          impacts={portfolio?.impacts ?? null}
+          perspective={mapPerspective}
+          selectedId={selectedImpact?.usage.id ?? null}
+          changedRights={rightsChanges?.summary.changedRightsDocuments ?? null}
+          onSelect={setSelectedUsageId}
+          busy={busy !== null}
+        />
+      </section>
+
+      <ol className="stageStrip" aria-label="How a verdict is reached">
+        <li><span>01 Change</span><strong>Field-level rights diff</strong><small>published vs proposed</small></li>
+        <li><span>02 Why</span><strong>Deterministic, per axis</strong><small>territory · channel · paid · window</small></li>
+        <li><span>03 Evidence</span><strong>Source clause per right</strong><small>Knowledge Base, never substituted</small></li>
+        <li><span>04 Action</span><strong>Registered repairs only</strong><small>human approval before any write</small></li>
+      </ol>
+
+      {error && <div className="errorBanner pageBanner" role="alert">{error}</div>}
+
+      {writeRecovery && (
+        <div className="writeRecoveryPanel pageBanner">
+          <div>
+            <strong>Write outcome requires reconciliation</strong>
+            <span>
+              {writeRecovery.code}. Do not repeat the business mutation until the current proof and usage state are reread.
+            </span>
+            <code>{writeRecovery.baselineProofId}</code>
+          </div>
+          <button
+            className="dangerButton"
+            onClick={reconcileWriteOutcome}
+            disabled={busy !== null}
+          >
+            {busy === 'recover' ? 'Reconciling…' : 'Reconcile write outcome'}
+          </button>
+        </div>
+      )}
+
+      {recoveryResult && (
+        <div className="proposalNote pageBanner">
+          Recovery state: <strong>{recoveryResult.state}</strong>
+          {recoveryResult.action ? <span> · {recoveryResult.action}</span> : null}
+        </div>
+      )}
+
+      {portfolio && (
+        <section className="workspace" id="blast-radius">
+          <div className="portfolioHeader">
+            <div>
+              <p className="cardKicker">Blast radius</p>
+              <h2>{portfolio.summary.affectedUsageRequests} of {portfolio.summary.totalUsageRequests} usages change status</h2>
+              <p className="muted">
+                Every downstream usage under the proposed rights state, most severe first.
+                {lastLiveSync ? ` Last live sync ${formatWhen(lastLiveSync)}.` : ''}
+              </p>
+            </div>
+          </div>
 
           {receipt && (
             <article className="panel successPanel">
@@ -915,11 +931,24 @@ export default function Home() {
               </div>
             </details>
           )}
+
+          {rightsChanges && (
+            <details className="changeDetails">
+              <summary>
+                View by rights change · {rightsChanges.summary.changedRightsDocuments} changed document{rightsChanges.summary.changedRightsDocuments === 1 ? '' : 's'}
+              </summary>
+              <RightsChangePortfolio
+                data={rightsChanges}
+                onOpenUsage={openImpact}
+                busy={busy !== null}
+              />
+            </details>
+          )}
         </section>
       )}
 
       {detail && (
-        <section className="workspace detailWorkspace" aria-live="polite">
+        <section className="workspace detailWorkspace" aria-live="polite" aria-label="Case file" ref={detailRef} tabIndex={-1}>
           <div className="detailHeader">
             <button className="textButton" onClick={() => {setDetail(null); setEvidence(null); openUsageRef.current = null}}>← Back to blast radius</button>
             <div className="transition">
@@ -1147,6 +1176,100 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      <section className="workspace scenarioWorkspace" id="scenario-lab">
+        <ScenarioLab
+          onOpenUsage={openImpact}
+          liveRefreshCount={liveEventCount}
+        />
+      </section>
+
+      <section className="workspace assuranceWorkspace" id="system" aria-labelledby="system-title">
+        <div className="sectionHeading">
+          <div>
+            <p className="cardKicker">Engine &amp; assurance</p>
+            <h2 id="system-title">How every verdict on this page is produced</h2>
+          </div>
+        </div>
+
+        <ol className="productEngine" aria-label="Live product engine">
+          <li><code>Sanity Context MCP</code><span>graph read · published + {proposedPerspective}</span></li>
+          <li><code>Deterministic evaluator</code><span>the only status authority</span></li>
+          <li><code>Context Knowledge Base</code><span>source-bound evidence only</span></li>
+          <li><code>Content Lake transaction</code><span>proof + human-approved writes</span></li>
+        </ol>
+        <p className="productEngineAside">
+          <code>Live Content API</code> invalidates and re-reads automatically ({liveState === 'connected' ? `connected · ${liveRefreshCount} completed auto-refresh${liveRefreshCount === 1 ? '' : 'es'}` : liveState}).
+          {' '}<code>Sanity Content Agent</code> explains on request, with no decision or write authority.
+        </p>
+
+        <details className="assuranceDetails">
+          <summary>Live integration receipt · time to first value</summary>
+          <div className="liveReceipt">
+            <span className={`liveDot liveDot--${liveState}`} />
+            <div>
+              <strong>Live integration receipt</strong>
+              <span>
+                {autoRefreshReceipt
+                  ? `AUTO #${autoRefreshReceipt.sequence} · ${autoRefreshReceipt.triggerType}${autoRefreshReceipt.triggerId ? ` · ${autoRefreshReceipt.triggerId}` : ''} · completed ${formatWhen(autoRefreshReceipt.completedAt)}`
+                  : lastLiveEvent
+                    ? `Event received · ${lastLiveEvent.type}${lastLiveEvent.id ? ` · ${lastLiveEvent.id}` : ''} · waiting for an active portfolio to auto-refresh`
+                    : 'Waiting for the next Sanity content event…'}
+              </span>
+              {autoRefreshReceipt && (
+                <span>
+                  Sanity Live Content API → Context MCP reread · affected {autoRefreshReceipt.beforeAffected ?? '—'} → {autoRefreshReceipt.afterAffected}
+                </span>
+              )}
+              <span>Time to first value: {lastTtfvMs == null ? 'not measured yet' : `${lastTtfvMs} ms (scan click → usable impact + rights-change portfolio)`}</span>
+            </div>
+            <div>
+              <strong>{liveRefreshCount}</strong>
+              <span>completed automatic graph refreshes</span>
+            </div>
+          </div>
+        </details>
+
+        <details className="assuranceDetails">
+          <summary>Proof integrity audit</summary>
+          <ProofIntegrityPanel />
+        </details>
+
+        <details className="assuranceDetails">
+          <summary>Proposed content perspective · {proposedPerspective}</summary>
+          <div className="perspectiveControl">
+            <div>
+              <p className="cardKicker">Proposed content perspective</p>
+              <strong>{proposedPerspective}</strong>
+              <span>
+                Use <code>drafts</code> for the write-capable product path, or enter a Sanity Content Release id for read-only impact analysis.
+              </span>
+            </div>
+            <div className="perspectiveInput">
+              <input
+                aria-label="Proposed perspective"
+                value={perspectiveInput}
+                onChange={(event) => setPerspectiveInput(event.target.value)}
+                placeholder="drafts or release-id"
+              />
+              <button
+                className="secondaryButton"
+                onClick={() => {
+                  const value = perspectiveInput.trim() || 'drafts'
+                  setProposedPerspective(value)
+                  setPortfolio(null)
+                  setRightsChanges(null)
+                  setDetail(null)
+                  scannedRef.current = false
+                  openUsageRef.current = null
+                }}
+              >
+                Apply perspective
+              </button>
+            </div>
+          </div>
+        </details>
+      </section>
 
       <footer>
         <div>
