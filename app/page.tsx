@@ -7,6 +7,7 @@ import RightsChangePortfolio, {
 import ScenarioLab from './components/ScenarioLab'
 import ClearanceAgentPanel from './components/ClearanceAgentPanel'
 import RuntimeHealthPanel from './components/RuntimeHealthPanel'
+import ProofIntegrityPanel from './components/ProofIntegrityPanel'
 import {
   EMPTY_IMPACT_FILTERS,
   filterImpacts,
@@ -710,6 +711,8 @@ export default function Home() {
               <span>completed automatic graph refreshes</span>
             </div>
           </div>
+
+          <ProofIntegrityPanel />
 
           {rightsChanges && (
             <RightsChangePortfolio
