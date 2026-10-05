@@ -1,0 +1,149 @@
+version: 1
+project: clearance-room
+policy: Conditional Gateway Registry
+allowed_states: [ACTIVE, N/A, BLOCKED, PROVEN]
+updated: 2026-10-04
+
+gates:
+  CANONICAL_BASELINE_RECONCILIATION:
+    status: PROVEN
+    evidence: state/CURRENT.yaml
+  PROJECT_AUTHORIZATION:
+    status: PROVEN
+    note: carried forward from active authorized project state
+  CONCEPT_LOCK:
+    status: PROVEN
+    evidence: state/CURRENT.yaml
+  PRE_BUILD_REALITY:
+    status: PROVEN
+    note: carried forward; product has since accumulated live runtime evidence
+  COMPETITIVE_NOVELTY_KILL:
+    status: PROVEN
+    note: carried forward from locked concept; no new collision evidence currently reopening concept
+  WINNING_INTELLIGENCE_V2:
+    status: PROVEN
+    note: concept predates current reconciliation; central wave does not require reopening Concept Lock
+  TECHNICAL_REALITY:
+    status: PROVEN
+    evidence: evidence/gates/GATE-1-TECHNICAL-REALITY-PASS.md
+  TRUTH_BOUNDARY:
+    status: PROVEN
+    evidence:
+      - product/LIVING-PRD.md
+      - evidence/REALITY-LEDGER.md
+  NEGATIVE_PATH:
+    status: PROVEN
+    evidence:
+      - BLOCK path
+      - REVIEW path
+      - explicit abstention design for UNKNOWN
+  EVIDENCE_INTEGRITY:
+    status: PROVEN
+    evidence:
+      - evidence/gates/GATE-3-KNOWLEDGE-BASE-PASS.md
+      - evidence/REALITY-LEDGER.md
+  RUNTIME_COMMIT_BINDING:
+    status: ACTIVE
+    blocker: public product deployment commit binding not yet frozen
+  DETERMINISTIC_DEMO:
+    status: PROVEN
+    note: retained only as reproducibility fallback
+  LIVE_CORE_LOOP:
+    status: PROVEN
+    evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  LOAD_BEARING_CONTEXT_MCP:
+    status: PROVEN
+    evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  LIVE_CONTENT_AUTO_INVALIDATION:
+    status: PROVEN
+    evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  REAL_CONSEQUENCE:
+    status: PROVEN
+    evidence:
+      - paid BLOCK to organic-only real mutation
+      - window REVIEW to shortened campaign real mutation
+  USER_DEFINED_LIVE_CONTENT:
+    status: PROVEN
+    evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  MULTI_RIGHT_INTERSECTION:
+    status: PROVEN
+    evidence: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+  UNKNOWN_MISSING_EVIDENCE:
+    status: ACTIVE
+    blocker: implementation exists but runtime UNKNOWN consequence is not yet observed
+  AGENT_ORCHESTRATION:
+    status: ACTIVE
+    blocker: bounded agent implementation and runtime proof pending
+  EXTERNAL_DEPENDENCY_FAILURE:
+    status: ACTIVE
+    blocker: degraded Context MCP / Live API / KB recovery not yet runtime exercised
+  WRITE_FAILURE_RECOVERY:
+    status: ACTIVE
+    blocker: write-outcome-unknown path not yet runtime exercised
+  PROOF_HISTORY_REPEATED_RUNS:
+    status: ACTIVE
+    blocker: repeated multi-run supersession audit not yet explicitly verified
+  OPERATOR_FILTERS:
+    status: ACTIVE
+    note: composable core proven; free-text/status/territory/channel individual runtime proofs remain
+  SCENARIO_DELETION:
+    status: ACTIVE
+    blocker: implemented but runtime proof pending
+  TIME_TO_FIRST_VALUE:
+    status: BLOCKED
+    blocker: no measured operator TTFV yet
+  OPERATIONAL_ECONOMICS:
+    status: N/A
+    reason: no paid transactional core loop
+  SHARED_PRODUCT_CORE:
+    status: PROVEN
+    evidence: Next API surfaces route through shared Context MCP + deterministic compiler + mutation services
+  REALITY_LEDGER:
+    status: PROVEN
+    evidence: evidence/REALITY-LEDGER.md
+  OBSERVABILITY_RECEIPTS:
+    status: PROVEN
+    evidence:
+      - live auto-refresh receipts
+      - proof supersession receipts
+  JUDGE_OPERATOR_SELF_SERVE:
+    status: ACTIVE
+    blocker: setup and failure recovery still require assurance
+  CLEAN_ROOM_REPRODUCIBILITY:
+    status: ACTIVE
+    blocker: clean-room run has not been externally re-executed from zero
+  ENGINEERING_QUALITY_ASSURANCE:
+    status: BLOCKED
+    blocker: no current project-local Engineering Quality receipt
+  TRACE_DESIGN_ASSURANCE:
+    status: ACTIVE
+    blocker: evaluator-facing surface exists but no current TRACE assurance receipt is recorded locally
+  APP_SDK:
+    status: N/A
+    reason: evaluated as duplicate surface for current Path One core; current Sanity integrations are already load-bearing
+  WORKFLOWS:
+    status: N/A
+    reason: team-process coordination is additive, not required for single-operator core correctness; feature enablement is account-dependent
+  RELEASE_AWARE_PERSPECTIVE:
+    status: ACTIVE
+    blocker: release-id perspective support to be added and runtime availability remains unverified
+  FINAL_CANONICAL_ASSURANCE:
+    status: N/A
+    reason: activates only after BUILD_CANDIDATE_READY
+  PROTECTED_FINAL_SUBMISSION:
+    status: N/A
+    reason: human-only action; project is not terminal-ready
+
+terminal_fail_closed:
+  BUILD_CANDIDATE_READY:
+    allowed: false
+    blocking_gates:
+      - UNKNOWN_MISSING_EVIDENCE
+      - AGENT_ORCHESTRATION
+      - EXTERNAL_DEPENDENCY_FAILURE
+      - WRITE_FAILURE_RECOVERY
+      - PROOF_HISTORY_REPEATED_RUNS
+      - TIME_TO_FIRST_VALUE
+      - ENGINEERING_QUALITY_ASSURANCE
+      - TRACE_DESIGN_ASSURANCE
+      - RELEASE_AWARE_PERSPECTIVE
