@@ -153,9 +153,9 @@ completion_block_reconciliation:
   exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Exercise a truthful controlled Context MCP or Knowledge Base dependency failure without mutating business data,
-    verify fail-closed/degraded behavior and recovery, then continue to write-outcome reconciliation or classify it
-    STOPPED_BY_VALID_CONDITION if a safe consequential failure cannot be induced.
+    Pull the current branch and run npm run verify:dependency-recovery. This process-locally redirects Context MCP
+    and Knowledge Base endpoints to an unreachable address, verifies fail-closed/degraded behavior, restores the real
+    endpoints, verifies recovery, and checks write-recovery idempotence without mutating business data.
 
 
 runtime_assurance_2026_10_05:
