@@ -214,3 +214,33 @@ submission_packaging:
   terminal_canonical_ready: false
   remaining_terminal_material_blocker: WRITE_FAILURE_RECOVERY
   final_submission: HUMAN_ONLY
+
+
+active_design_delta:
+  date: 2026-10-05
+  branch: design/shockwave-impact-5
+  preview_commit_before_continuity_commit: 89168ebec476a1b0108063205090c4a471d8cf55
+  preview_deployment_id: dpl_2hUSoADQALrA3kRxbU9vBf6Ajsp7
+  preview_url: https://clearance-room-g2ywcaiec-faadil1s-projects.vercel.app
+  production_runtime_unchanged: true
+  production_candidate: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+  design_scope:
+    - Shockwave impact map
+    - Marginalia Case File
+    - compact System Status
+    - truth-boundary visual tightening
+  business_logic_changed: false
+  api_contract_changed: false
+  write_path_changed: false
+  trace_design_assurance:
+    status: ACTIVE
+    provisional_receipt: evidence/assurance/TRACE-DESIGN-ASSURANCE-SHOCKWAVE-MARGINALIA-2026-10-05.md
+    live_runtime_visual_verification_pending: true
+  demo_video:
+    plan: evidence/demo/SUBMISSION-DEMO-VIDEO-PLAN-2026-10-05.md
+    duration_seconds: 72
+    script_approved: true
+    narration_ready: true
+    footage_pending: real_preview_capture_only
+  exact_next_gate: DESIGN_PR_PRODUCT_QUALITY_THEN_TRACE_RUNTIME
+  promotion_rule: NEW_UI_REQUIRES_NEW_RUNTIME_CANDIDATE_AND_BINDING
