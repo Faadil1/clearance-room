@@ -52,8 +52,6 @@ architecture_invariants:
   mutationBoundary: explicit human approval required
 
 next:
-  - commit package-lock.json from a verified install
-  - run npm run verify:completion
   - runtime-prove material UNKNOWN on user-created content
   - runtime-prove bounded Sanity Content Agent narration when credits/provider permit
   - runtime-exercise degraded dependency and write reconciliation only through truthful controlled conditions
@@ -100,13 +98,11 @@ completion_block:
     - bounded_Content_Agent_runtime
     - dependency_failure_runtime
     - write_reconciliation_runtime
-    - current_dataset_proof_integrity_runtime
     - remaining_individual_operator_controls
     - scenario_deletion_runtime
-    - measured_TTFV_receipt
     - release_availability_runtime_or_explicit_block
-    - dependency_lock_plus_external_clean_room
-    - Engineering_Quality_receipt_execution
+    - external_clean_room
+    - Engineering_Quality_receipt_rerun_and_commit
     - TRACE_assurance
   valid_stop_condition: null
   demo_packaging_permission: false
@@ -116,12 +112,46 @@ completion_block:
     capability: >-
       Operators can persist explicit NOT DOCUMENTED structured rights state and run a non-mutating integrated
       assurance pass over the live product dependencies and proof chain.
-  exact_next_gate: COMPLETION_BLOCK_RUNTIME_ASSURANCE
+  exact_next_gate: MATERIAL_UNKNOWN_RUNTIME_PROOF
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Generate and commit package-lock.json from the verified install, run npm run verify:completion, then update
-    gate states strictly from its observed receipts without auto-performing protected mutations or submission.
+    On the existing user-created multi-right case, set one proposed validity boundary to NOT DOCUMENTED, observe
+    deterministic UNKNOWN with no invented remediation, then rerun runtime assurance.
   protected_actions:
     final_submission: HUMAN_ONLY
     consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
     production_deploy_when_protected: HUMAN_OR_EXISTING_AUTHORITY
+
+
+latest_runtime_assurance:
+  date: 2026-10-05
+  commit: 17463ebed6b4e2e3038119fde2625c5bae1d760d
+  evidence: evidence/assurance/RUNTIME-ASSURANCE-2026-10-05.md
+  result:
+    runtime_env: PASS
+    tests: 42_of_42_PASS
+    production_build: PASS
+    runtime_health: PROVEN_HEALTHY
+    time_to_first_value_ms: 442
+    proof_integrity: PASS_WITH_HISTORICAL_WARNINGS
+    material_unknown: BLOCKED_NOT_OBSERVED
+    bounded_agent: SKIPPED
+    release_perspective: SKIPPED
+    scenario_deletion: BLOCKED_PROTECTED_ACTION
+    dependency_failure: BLOCKED_NOT_OBSERVED
+    write_failure_recovery: BLOCKED_NOT_OBSERVED
+    external_clean_room: BLOCKED_NOT_RUN
+  engineering_quality:
+    observed: PASS_WITH_ACCEPTED_DEBT
+    rerun_required: true
+    reason: generated-file dirt handling was corrected after the observed run
+    high_dependency_vulnerabilities_disclosed: 11
+    critical_dependency_vulnerabilities_observed: 0
+  dependency_lock:
+    status: COMMITTED
+    commit: 17463ebed6b4e2e3038119fde2625c5bae1d760d
+  exact_next_gate: MATERIAL_UNKNOWN_RUNTIME_PROOF
+  exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
+  exact_next_action: >-
+    Set proposed validTo to NOT DOCUMENTED on user-created content, observe UNKNOWN and abstention, rerun runtime assurance,
+    then proceed to bounded Content Agent runtime if credits/provider permit.
