@@ -95,9 +95,17 @@ Detailed evidence:
 
 ## Assurance / reproducibility blockers
 
-- current production build + full test suite must pass after this completion block
-- current Engineering Quality receipt must be emitted after regression verification
-- `package-lock.json` is not committed; dependency clean-room reproducibility remains incomplete
+Observed on runtime commit `17463ebed6b4e2e3038119fde2625c5bae1d760d`:
+- 42/42 tests PASS
+- Next production build PASS
+- Runtime Health healthy
+- Time to First Value = 442 ms
+- Proof Integrity = PASS_WITH_HISTORICAL_WARNINGS
+- package-lock.json committed
+
+Still open:
+- Engineering Quality receipt must be rerun after generated-file dirt handling correction and committed against the new head
+- 11 high-severity dependency vulnerabilities remain disclosed; 0 critical were observed by the critical gate; do not force a breaking dependency downgrade under deadline
 - current TRACE design assurance receipt is not recorded locally
 - clean-room zero-state re-execution is not yet externally observed
 - final Project Finisher / Final Canonical Assurance activates only after BUILD_CANDIDATE_READY
@@ -277,3 +285,40 @@ The assurance command intentionally reports BLOCKED rather than faking proof whe
 
 Runbook:
 - `evidence/assurance/COMPLETION-BLOCK-RUNBOOK.md`
+
+
+## Runtime assurance — 2026-10-05 completion block
+
+Observed against `17463ebed6b4e2e3038119fde2625c5bae1d760d`:
+
+PROVEN:
+- runtime env configured
+- 12/12 test files PASS
+- 42/42 tests PASS
+- Next production build PASS
+- Runtime Health healthy
+- Context MCP available
+- Knowledge Base available
+- Content Lake read available
+- Content Lake write permission available by dry-run
+- Time to First Value measured at 442 ms
+- live portfolio scan completed over 3 usage requests
+- change-centric scan completed over 3 changed rights documents
+- proof-integrity audit ran on 16 proofs / 3 usages
+- proof-integrity result PASS_WITH_HISTORICAL_WARNINGS
+- no stale-without-replacement or orphan-supersession error observed
+- package-lock.json committed
+
+Historical warnings preserved:
+- 3 MULTIPLE_FRESH_PROOFS warnings from pre-fix proof noise
+- historical evidence was not deleted to make the audit green
+
+Still BLOCKED / not observed:
+- material user-created UNKNOWN consequence
+- real bounded Sanity Content Agent narration
+- real dependency-failure runtime recovery
+- write-outcome-unknown reconciliation runtime
+- protected disposable-scenario deletion proof
+- real Content Release id runtime or explicit no-release classification
+- external zero-state clean-room replay
+- current TRACE assurance
