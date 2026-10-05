@@ -1,3 +1,5 @@
+import {generateText} from 'ai'
+import {createContentAgent} from 'content-agent'
 import {getRightsEvidence} from './evidenceService'
 import type {ContentPerspective} from './contextGraph'
 import {getUsageImpact} from './productSurface'
@@ -37,6 +39,11 @@ export type ClearanceAgentBrief = {
     result: 'ok' | 'partial' | 'unavailable'
   }>
   writeAuthority: 'NONE'
+  aiNarrative: {
+    status: 'generated' | 'not_configured' | 'rejected' | 'unavailable'
+    text: string | null
+    provider: 'sanity-content-agent'
+  }
   observedAt: string
 }
 
@@ -114,7 +121,107 @@ export function composeAgentBrief(
       },
     ],
     writeAuthority: 'NONE',
+    aiNarrative: {
+      status: 'not_configured',
+      text: null,
+      provider: 'sanity-content-agent',
+    },
     observedAt: new Date().toISOString(),
+  }
+}
+
+
+const STATUS_WORDS = ['CLEAR', 'BLOCK', 'REVIEW', 'UNKNOWN'] as const
+
+export function aiNarrativeRespectsReceipt(
+  narrative: string,
+  current: Status,
+  proposed: Status,
+) {
+  const allowed = new Set<Status>([current, proposed])
+  const mentioned = STATUS_WORDS.filter((status) =>
+    new RegExp(`\\b${status}\\b`, 'i').test(narrative),
+  )
+  return mentioned.every((status) => allowed.has(status))
+}
+
+async function generateSanityNarrative(
+  brief: ClearanceAgentBrief,
+): Promise<ClearanceAgentBrief['aiNarrative']> {
+  const organizationId = process.env.SANITY_ORGANIZATION_ID
+  const token = process.env.SANITY_API_TOKEN
+
+  if (!organizationId || !token) {
+    return {
+      status: 'not_configured',
+      text: null,
+      provider: 'sanity-content-agent',
+    }
+  }
+
+  try {
+    const provider = createContentAgent({organizationId, token})
+    const model = provider.agent(`clearance-room-${brief.usageRequestId}-${Date.now()}`, {
+      config: {
+        instruction: [
+          'You are the explanation layer for Clearance Room.',
+          'Use only the receipt and evidence included in the user prompt.',
+          'The deterministic receipt is the sole authority for CLEAR, BLOCK, REVIEW, or UNKNOWN.',
+          'Never invent another status.',
+          'Never propose a repair that is absent from repairOptions.',
+          'Never claim a mutation happened.',
+          'If abstention.active is true, explain the missing evidence and stop.',
+        ].join(' '),
+        capabilities: {
+          read: false,
+          write: false,
+        },
+      },
+    })
+
+    const {text} = await generateText({
+      model,
+      prompt: JSON.stringify({
+        statusReceipt: brief.statusReceipt,
+        findings: brief.findings,
+        evidence: brief.evidence,
+        repairOptions: brief.repairOptions,
+        abstention: brief.abstention,
+      }),
+    })
+
+    const narrative = text?.trim()
+    if (!narrative) {
+      return {
+        status: 'unavailable',
+        text: null,
+        provider: 'sanity-content-agent',
+      }
+    }
+
+    if (!aiNarrativeRespectsReceipt(
+      narrative,
+      brief.statusReceipt.current,
+      brief.statusReceipt.proposed,
+    )) {
+      return {
+        status: 'rejected',
+        text: null,
+        provider: 'sanity-content-agent',
+      }
+    }
+
+    return {
+      status: 'generated',
+      text: narrative,
+      provider: 'sanity-content-agent',
+    }
+  } catch {
+    return {
+      status: 'unavailable',
+      text: null,
+      provider: 'sanity-content-agent',
+    }
   }
 }
 
@@ -149,5 +256,9 @@ export async function investigateUsageWithAgent(
     }),
   )
 
-  return composeAgentBrief(impact, evidence)
+  const brief = composeAgentBrief(impact, evidence)
+  return {
+    ...brief,
+    aiNarrative: await generateSanityNarrative(brief),
+  }
 }
