@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {composeAgentBrief} from '../src/clearanceAgent'
+import {aiNarrativeRespectsReceipt, composeAgentBrief} from '../src/clearanceAgent'
 
 function impact(status: 'CLEAR' | 'BLOCK' | 'REVIEW' | 'UNKNOWN') {
   const finding = {
@@ -68,6 +68,24 @@ describe('bounded clearance agent', () => {
     expect(brief.abstention.active).toBe(true)
     expect(brief.repairOptions).toEqual([])
     expect(brief.writeAuthority).toBe('NONE')
+  })
+
+  it('rejects AI narrative that invents a different status', () => {
+    expect(
+      aiNarrativeRespectsReceipt(
+        'The deterministic receipt is CLEAR, but I think this should be BLOCK.',
+        'CLEAR',
+        'CLEAR',
+      ),
+    ).toBe(false)
+
+    expect(
+      aiNarrativeRespectsReceipt(
+        'The proposed state is BLOCK because the paid axis is blocked.',
+        'CLEAR',
+        'BLOCK',
+      ),
+    ).toBe(true)
   })
 
   it('surfaces only registry-backed repairs for BLOCK', () => {
