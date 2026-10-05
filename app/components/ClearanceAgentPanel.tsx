@@ -96,7 +96,7 @@ export default function ClearanceAgentPanel({
       </div>
 
       <p className="muted">
-        The agent may gather, explain, and propose. It cannot create a clearance status and it cannot execute a mutation.
+        The agent may gather, explain, and propose. It cannot create a clearance status and it cannot execute a mutation. The Sanity Content Agent narrative runs only when you click investigate and may consume Sanity AI credits.
       </p>
 
       {!brief && (
