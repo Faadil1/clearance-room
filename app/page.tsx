@@ -418,6 +418,7 @@ export default function Home() {
         usageRequestId: detail.usage.id,
         repairId: selectedRepair,
         baselineProofId: detail.persistedProof?.id,
+        proposedPerspective,
       })
       setReceipt(result)
       setDetail(null)
