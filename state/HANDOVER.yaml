@@ -94,7 +94,6 @@ completion_block:
   remaining_material_product_depth_gaps:
     - write_outcome_unknown_runtime
     - scenario_deletion_runtime
-    - external_clean_room
     - Engineering_Quality_receipt_rerun_and_commit
     - TRACE_assurance
   valid_stop_condition: null
@@ -105,11 +104,11 @@ completion_block:
     capability: >-
       Operators can persist explicit NOT DOCUMENTED structured rights state and run a non-mutating integrated
       assurance pass over the live product dependencies and proof chain.
-  exact_next_gate: EXTERNAL_CLEAN_ROOM_AND_ENGINEERING_QUALITY
+  exact_next_gate: ENGINEERING_QUALITY_CLEAN_RECEIPT
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Use the fresh GitHub Actions runner with npm ci to produce the next clean Engineering Quality / reproducibility receipt.
-    Keep write-outcome-unknown and scenario deletion protected until separately authorized.
+    Verify the next GitHub Actions quality run after raw porcelain parsing fix. Promote Engineering Quality only if
+    EQ-DIRTY is gone and the only remaining finding is disclosed high dependency debt.
   protected_actions:
     final_submission: HUMAN_ONLY
     consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
@@ -181,6 +180,6 @@ dependency_recovery_runtime_proof:
   business_mutation_repeated: false
   write_outcome_unknown_recovery: BLOCKED_UNOBSERVED
   current_primary_workstream: PRODUCT_EXPLOITATION
-  next_highest_value_depth_delta: EXTERNAL_CLEAN_ROOM_AND_ENGINEERING_QUALITY
+  next_highest_value_depth_delta: ENGINEERING_QUALITY_CLEAN_RECEIPT
   exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
