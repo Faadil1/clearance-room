@@ -13,6 +13,26 @@ proven:
     status: PROVEN
     capability: source-bound Knowledge Base evidence through separate KB-only MCP endpoint
 
+canonical_baseline:
+  status: ALIGNED
+  version: 0.1.56-canonical-baseline-drift-tripwire-promoted
+  commit: 8a7e8a4ff5461641c595e2cf052a95fdc32a6340
+  project_state_commit_at_reconciliation_start: 37399c51fc7e3680d22a03df1f37b5b40c9d1bda
+  delta_status: NON_MATERIAL_DELTA
+  first_live_slice_proven: true
+  affected_transition_blocked: false
+  terminal_transition_blocked_by_remaining_product_depth: true
+  material_user_capability_delta_since_previous_milestone:
+    - user_defined_Scenario_Lab_real_content
+    - automatic_Live_Content_to_Context_MCP_refresh
+    - change_centric_blast_radius
+    - operator_filter_composition
+    - second_window_REVIEW_remediation_class
+  rule: >-
+    Re-resolve the central version and exact commit at every material product touch. Remaining depth gaps keep
+    PRODUCT_EXPLOITATION primary. Demo, reset, replay, receipts, screenshots, video, story and submission packaging
+    cannot be treated as product progress without a real material user-capability delta.
+
 active:
   gate_4:
     name: Product Maximum Exploitation / Live Product Depth
@@ -31,26 +51,27 @@ architecture_invariants:
   mutationBoundary: explicit human approval required
 
 next:
-  - continue product exploitation beyond the current vertical slice
-  - prove load-bearing live integrations
-  - implement change-centric blast radius
-  - implement filters/search and missing-evidence/UNKNOWN path
-  - exercise multiple remediation classes
+  - runtime-prove UNKNOWN and missing-evidence behavior on user-created multi-right content
+  - runtime-prove free-text, proposed-status, territory and channel filters
+  - runtime-prove user-created scenario deletion
+  - verify multi-impact behavior after canonical reset and repeated proof-history behavior
   - add constrained product agent
-  - test recovery paths
-  - evaluate App SDK and Workflows
-  - do not return to demo-polish-first work until the depth gap review is materially closed
+  - test degraded integration and write-failure recovery
+  - evaluate App SDK, Workflows and release-aware perspective availability
+  - rerun Product Depth Gap Review
+  - do not return to demo-polish-first work until the remaining depth gap is materially closed
 
 
 workstream_priority:
-  central_policy: Faadil1/faadil-agent-system@ff101a6e79c20d5b9c3ba370bc48c9b07d5fd3fa
-  product_reality_version: "1.4.0"
+  central_policy: Faadil1/faadil-agent-system@8a7e8a4ff5461641c595e2cf052a95fdc32a6340
+  product_reality_version: "1.5.0"
   first_live_slice_proven: true
   current_primary_workstream: PRODUCT_EXPLOITATION
-  next_highest_value_depth_delta: CONTEXT_MCP_AND_LIVE_CONTENT_API_LOAD_BEARING_RUNTIME_PROOF
+  next_highest_value_depth_delta: RUNTIME_PROVE_UNKNOWN_AND_MISSING_EVIDENCE_PATH
   valid_stop_condition: null
   demo_packaging_allowed: false
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
+  material_user_capability_delta_since_previous_milestone: MATERIAL_AND_OBSERVED
   rule: >-
     While justified material product-depth gaps remain, product exploitation is primary. Judge flow,
     seeded reset, replay, receipts, screenshots, video and submission packaging are secondary support only.
