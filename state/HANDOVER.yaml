@@ -110,8 +110,8 @@ completion_block:
   exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Run the read-only remainder block for operator filters, release availability and Engineering Quality. Preserve
-    write-outcome-unknown and scenario deletion as protected/unobserved until a safe explicit test is authorized.
+    Pull the branch and run npm run verify:remaining-readonly. Promote only live filter/release/quality observations,
+    and preserve write-outcome-unknown and scenario deletion as protected/unobserved until a safe explicit test is authorized.
   protected_actions:
     final_submission: HUMAN_ONLY
     consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
