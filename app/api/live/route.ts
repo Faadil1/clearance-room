@@ -8,7 +8,16 @@ export async function GET() {
   const encoder = new TextEncoder()
   let subscription: {unsubscribe: () => void} | null = null
   let heartbeat: ReturnType<typeof setInterval> | null = null
+  let lifespan: ReturnType<typeof setTimeout> | null = null
   let closed = false
+
+  const cleanup = () => {
+    if (closed) return
+    closed = true
+    subscription?.unsubscribe()
+    if (heartbeat) clearInterval(heartbeat)
+    if (lifespan) clearTimeout(lifespan)
+  }
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
@@ -54,11 +63,27 @@ export async function GET() {
           observedAt: new Date().toISOString(),
         })
       }, 15000)
+
+      // Vercel functions have a finite execution window. Rotate the SSE
+      // connection before the platform timeout so EventSource reconnects
+      // normally instead of surfacing a runtime timeout as a product outage.
+      lifespan = setTimeout(() => {
+        send({
+          type: 'reconnect',
+          reason: 'runtime-rotation',
+          integration: 'sanity-live-content-api',
+          observedAt: new Date().toISOString(),
+        })
+        cleanup()
+        try {
+          controller.close()
+        } catch {
+          // The client may already have disconnected.
+        }
+      }, 240000)
     },
     cancel() {
-      closed = true
-      subscription?.unsubscribe()
-      if (heartbeat) clearInterval(heartbeat)
+      cleanup()
     },
   })
 
