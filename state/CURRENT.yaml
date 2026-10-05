@@ -152,8 +152,9 @@ completion_block_reconciliation:
   exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Run the remaining read-only assurance block for live operator filters, Content Release availability classification
-    and current Engineering Quality; keep write-outcome-unknown, scenario deletion and other protected actions blocked
+    Pull the current branch and run npm run verify:remaining-readonly. This reruns current Engineering Quality,
+    exercises free-text/status/territory/channel filtering against the live Context MCP portfolio, and classifies
+    Content Release availability read-only via releases::all(). Keep write-outcome-unknown and scenario deletion blocked
     until explicit safe conditions or human approval exist.
 
 
