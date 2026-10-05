@@ -141,10 +141,10 @@ gates:
     status: N/A
     reason: team-process coordination is additive, not required for single-operator core correctness; feature enablement is account-dependent
   RELEASE_AWARE_PERSPECTIVE:
-    status: ACTIVE
+    status: N/A
     evidence:
-      - evidence/assurance/REMAINING-READONLY-RUNTIME-2026-10-05.md
-    blocker: first read-only availability probe returned null from releases::all() and exposed an assurance null-handling bug; corrected probe now falls back to the equivalent system.release query and must be rerun before classification
+      - evidence/assurance/REMAINING-READONLY-FINAL-2026-10-05.md
+    reason: corrected read-only availability probe observed NO_RELEASE_PRESENT with releaseCount 0; release-id execution cannot be truthfully runtime-proven without an actual Content Release and this gate must reactivate if one is created
   FINAL_CANONICAL_ASSURANCE:
     status: N/A
     reason: activates only after BUILD_CANDIDATE_READY
