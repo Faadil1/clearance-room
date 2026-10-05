@@ -46,7 +46,19 @@ const audit = functional.status === 'PASS' && build.status === 'PASS'
 
 const commit = git(['rev-parse', 'HEAD'])
 const branch = git(['branch', '--show-current'])
-const dirty = Boolean(git(['status', '--porcelain']))
+const dirtyLines = git(['status', '--porcelain'])
+  .split('\n')
+  .map((line) => line.trim())
+  .filter(Boolean)
+const generatedSafeDirtyPaths = new Set([
+  'next-env.d.ts',
+  'evidence/assurance/ENGINEERING-QUALITY-RECEIPT.json',
+])
+const substantiveDirtyLines = dirtyLines.filter((line) => {
+  const path = line.slice(3).trim()
+  return !generatedSafeDirtyPaths.has(path)
+})
+const dirty = substantiveDirtyLines.length > 0
 const lockExists = existsSync('package-lock.json')
 const lockTracked = lockExists && tracked('package-lock.json')
 
@@ -76,15 +88,57 @@ if (dirty) {
   })
 }
 
-if (audit.status === 'FAIL') {
+let auditCounts = {low: 0, moderate: 0, high: 0, critical: 0, total: 0}
+try {
+  const auditJsonRaw = execFileSync(
+    'npm',
+    ['audit', '--omit=dev', '--json'],
+    {encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore']},
+  )
+  const parsed = JSON.parse(auditJsonRaw)
+  auditCounts = {
+    low: Number(parsed?.metadata?.vulnerabilities?.low || 0),
+    moderate: Number(parsed?.metadata?.vulnerabilities?.moderate || 0),
+    high: Number(parsed?.metadata?.vulnerabilities?.high || 0),
+    critical: Number(parsed?.metadata?.vulnerabilities?.critical || 0),
+    total: Number(parsed?.metadata?.vulnerabilities?.total || 0),
+  }
+} catch (error: any) {
+  try {
+    const parsed = JSON.parse(String(error?.stdout || '{}'))
+    auditCounts = {
+      low: Number(parsed?.metadata?.vulnerabilities?.low || 0),
+      moderate: Number(parsed?.metadata?.vulnerabilities?.moderate || 0),
+      high: Number(parsed?.metadata?.vulnerabilities?.high || 0),
+      critical: Number(parsed?.metadata?.vulnerabilities?.critical || 0),
+      total: Number(parsed?.metadata?.vulnerabilities?.total || 0),
+    }
+  } catch {
+    // The human-readable critical audit command above remains the authoritative fallback.
+  }
+}
+
+if (audit.status === 'FAIL' || auditCounts.critical > 0) {
   unresolved.push({
-    id: 'EQ-AUDIT-001',
+    id: 'EQ-AUDIT-CRITICAL-001',
     class: 'correctness_or_bug_risk',
-    severity: 'high',
+    severity: 'critical',
     summary: 'Runtime dependency critical-vulnerability audit did not pass.',
     disposition: 'BLOCKING',
     reason: 'Resolve critical runtime dependency vulnerability findings without weakening behavior.',
     next_gate: 'ENGINEERING_QUALITY_ASSURANCE',
+  })
+}
+
+if (auditCounts.high > 0 && auditCounts.critical === 0) {
+  unresolved.push({
+    id: 'EQ-AUDIT-HIGH-001',
+    class: 'correctness_or_bug_risk',
+    severity: 'high',
+    summary: `npm audit reports ${auditCounts.high} high-severity runtime dependency vulnerabilities and no critical vulnerabilities.`,
+    disposition: 'ACCEPTED_DEBT',
+    reason: 'Current npm remediation proposes breaking dependency changes. Preserve the verified build under deadline and disclose this debt rather than force-upgrading the Sanity/Content Agent dependency graph.',
+    next_gate: 'POST_SUBMISSION_DEPENDENCY_REMEDIATION',
   })
 }
 
@@ -161,6 +215,12 @@ const receipt = {
       build.command,
       audit.command,
       `working_tree_dirty=${dirty}`,
+      `substantive_dirty_paths=${substantiveDirtyLines.join(',') || 'none'}`,
+      `generated_safe_dirty_paths=${dirtyLines.filter((line) => generatedSafeDirtyPaths.has(line.slice(3).trim())).map((line) => line.slice(3).trim()).join(',') || 'none'}`,
+      `audit_low=${auditCounts.low}`,
+      `audit_moderate=${auditCounts.moderate}`,
+      `audit_high=${auditCounts.high}`,
+      `audit_critical=${auditCounts.critical}`,
       `package_lock_exists=${lockExists}`,
       `package_lock_tracked=${lockTracked}`,
     ].join('; '),
