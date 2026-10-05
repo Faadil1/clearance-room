@@ -25,27 +25,36 @@ PROVEN:
 - evidence text cannot override structured permission
 - seeded fixtures are secondary reproducibility harness only
 
+## Newly runtime-proven — 2026-10-05
+
+### UNKNOWN / missing structured evidence — PROVEN
+- operator set one user-created proposed right `validTo → NOT DOCUMENTED`
+- save persisted to Sanity
+- live product observed `CLEAR → UNKNOWN`
+- window axis = `UNKNOWN`
+- exact reason: at least one governing right is missing a validity boundary
+- proposed proof remained not persisted during read-only inspection
+- no consequential remediation was invented
+- product explicitly directed evidence completion + recompile
+- read-only runtime assurance independently observed 1 user-created UNKNOWN usage
+
+### Bounded product agent — PROVEN
+- operator ran the in-product bounded investigation on the UNKNOWN case
+- deterministic receipt remained `CLEAR → UNKNOWN`
+- Sanity Content Agent narrative state = `GENERATED`
+- Context MCP = OK
+- deterministic evaluator = OK
+- Knowledge Base = PARTIAL / evidence-only
+- remediation registry = OK
+- Sanity Content Agent = OK
+- agent abstained on missing structured evidence
+- agent did not invent a remediation
+- write authority remained `NONE`
+
+Evidence:
+- `evidence/assurance/UNKNOWN-AGENT-RUNTIME-2026-10-05.md`
+
 ## Implemented — runtime proof still required
-
-### UNKNOWN / missing structured evidence
-- proposed paid permission supports explicit NOT DOCUMENTED
-- proposed validity end supports explicit NOT DOCUMENTED
-- draft fields are genuinely unset in Sanity
-- deterministic compiler maps missing grants/boundaries to UNKNOWN
-- UNKNOWN exposes explicit abstention and no invented remediation
-- latest recorded run proves ALLOW → NOT DOCUMENTED can be persisted, but the usage was organic, so material UNKNOWN consequence remains unproven
-
-### Bounded product agent
-- Context MCP graph read happens before explanation
-- deterministic evaluator remains sole status authority
-- causal evidence is gathered through Knowledge Base/structured source service
-- remediation options come only from the deterministic registry
-- Sanity Content Agent is the AI narrative provider
-- its own read/write capabilities are disabled for this flow
-- AI narrative is rejected if it introduces a status outside the deterministic current/proposed receipt
-- agent write authority is NONE
-- operator surface is implemented
-- runtime Content Agent narration still requires product execution / AI credits
 
 ### Dependency failure and recovery
 - Runtime Health checks Context MCP, Knowledge Base, Content Lake read, and Content Lake write with dry-run
@@ -314,8 +323,6 @@ Historical warnings preserved:
 - historical evidence was not deleted to make the audit green
 
 Still BLOCKED / not observed:
-- material user-created UNKNOWN consequence
-- real bounded Sanity Content Agent narration
 - real dependency-failure runtime recovery
 - write-outcome-unknown reconciliation runtime
 - protected disposable-scenario deletion proof
