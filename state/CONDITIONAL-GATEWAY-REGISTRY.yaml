@@ -81,8 +81,10 @@ gates:
     status: ACTIVE
     blocker: reconciliation implementation exists and never repeats the business mutation automatically; write-outcome-unknown runtime path remains unobserved
   PROOF_HISTORY_REPEATED_RUNS:
-    status: ACTIVE
-    blocker: read-only proof-integrity audit and regression tests now exist; current live dataset audit remains pending
+    status: PROVEN
+    evidence:
+      - evidence/assurance/RUNTIME-ASSURANCE-2026-10-05.md
+    note: current live dataset audit passed with historical MULTIPLE_FRESH_PROOFS warnings only; no stale-without-replacement or orphan-supersession error was observed
   OPERATOR_FILTERS:
     status: ACTIVE
     note: composable core proven; free-text/status/territory/channel individual runtime proofs remain
@@ -90,8 +92,10 @@ gates:
     status: ACTIVE
     blocker: implemented but runtime proof pending
   TIME_TO_FIRST_VALUE:
-    status: ACTIVE
-    blocker: live scan TTFV instrumentation and read-only assurance measurement exist; current runtime value has not yet been recorded
+    status: PROVEN
+    evidence:
+      - evidence/assurance/RUNTIME-ASSURANCE-2026-10-05.md
+    note: server-side concurrent live Context MCP portfolio + rights-change scan measured 442 ms
   OPERATIONAL_ECONOMICS:
     status: N/A
     reason: no paid transactional core loop
@@ -111,7 +115,7 @@ gates:
     blocker: setup and failure recovery still require assurance
   CLEAN_ROOM_REPRODUCIBILITY:
     status: ACTIVE
-    blocker: package-lock.json is not committed and clean-room run has not been externally re-executed from zero
+    blocker: package-lock.json is committed at 17463ebed6b4e2e3038119fde2625c5bae1d760d; clean-room run has not yet been externally re-executed from zero
   ENGINEERING_QUALITY_ASSURANCE:
     status: ACTIVE
     blocker: canonical receipt generator and regression checks are implemented; current branch receipt has not yet been executed and committed
@@ -142,8 +146,6 @@ terminal_fail_closed:
       - AGENT_ORCHESTRATION
       - EXTERNAL_DEPENDENCY_FAILURE
       - WRITE_FAILURE_RECOVERY
-      - PROOF_HISTORY_REPEATED_RUNS
-      - TIME_TO_FIRST_VALUE
       - ENGINEERING_QUALITY_ASSURANCE
       - TRACE_DESIGN_ASSURANCE
       - RELEASE_AWARE_PERSPECTIVE
