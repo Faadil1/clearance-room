@@ -1,0 +1,36 @@
+version: 1
+project: clearance-room
+updated: 2026-10-04
+claims:
+  - id: C1
+    claim: proposed rights changes can alter downstream clearance before publication
+    truth: OBSERVED
+    scenario: published_vs_drafts_same_usage
+    runtime: Sanity_Context_MCP
+    dependencies: [clearance-room-graph, deterministic_compiler]
+    receipt: evidence/gates/GATE-1-TECHNICAL-REALITY-PASS.md
+    commit_binding: product/judge-workflow-4
+  - id: C2
+    claim: consequential repair is human-approved and produces a stale/superseding proof chain
+    truth: OBSERVED
+    scenario: paid_BLOCK_and_window_REVIEW_repairs
+    runtime: Sanity_Content_Lake
+    dependencies: [deterministic_compiler, mutation_path, clearanceProof]
+    receipt: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+    commit_binding: product/judge-workflow-4
+  - id: C3
+    claim: live content changes automatically invalidate the open product view
+    truth: OBSERVED
+    scenario: AUTO_2_live_refresh
+    runtime: Sanity_Live_Content_API_to_Context_MCP
+    dependencies: [live_events, clearance-room-graph]
+    receipt: evidence/gates/GATE-4-PRODUCT-DEPTH-GAP-REVIEW.md
+    commit_binding: product/judge-workflow-4
+  - id: C4
+    claim: missing structured evidence yields UNKNOWN without invented permission
+    truth: UNKNOWN
+    scenario: user_defined_NOT_DOCUMENTED
+    runtime: pending
+    dependencies: [Scenario_Lab, deterministic_compiler]
+    receipt: tests/unknownEvidence.test.ts
+    commit_binding: product/judge-workflow-4
