@@ -56,21 +56,26 @@ Evidence:
 
 ## Implemented — runtime proof still required
 
-### Dependency failure and recovery
-- non-mutating controlled runtime assurance command: `npm run verify:dependency-recovery`
-- process-local endpoint override only; never presented as a production outage
-- verifies Context MCP fail-closed scan behavior
-- verifies Knowledge Base evidence-only degradation while structured source remains available
-- restores real endpoints and verifies healthy recovery
-- verifies completed write-recovery idempotence when a stale baseline already has a replacement proof
-- Runtime Health checks Context MCP, Knowledge Base, Content Lake read, and Content Lake write with dry-run
-- live-stream offline state exposes manual Context MCP scan fallback
-- Knowledge Base outage degrades evidence explanation without changing deterministic status
-- write failure returns explicit phase/code and forbids blind retry
-- approved action metadata is persisted atomically with the business mutation
-- remediation recovery rereads proof + usage state and can rebuild only a missing replacement proof
-- product does not repeat the business mutation automatically
-- runtime failure injection/recovery observation remains pending
+### Dependency failure and recovery — PROVEN for non-mutating dependency failures
+
+Observed through `npm run verify:dependency-recovery`:
+- baseline Runtime Health = healthy
+- process-local Context MCP endpoint failure → degraded health + fail-closed live scan
+- no business mutation during failure
+- process-local Knowledge Base endpoint failure → KB unavailable while Context MCP remained available
+- exact structured source remained available
+- deterministic status authority remained unaffected
+- restoring real endpoints returned Runtime Health to healthy
+- live scan recovered with 3 usages / 1 affected
+- existing completed write recovery returned `ALREADY_COMPLETE`
+- business mutation was not repeated
+
+Truth boundary:
+- this is `LOCAL_CONTROLLED_INTEGRATION_FAILURE`, not a claimed production outage
+- genuine write-outcome-unknown recovery remains unobserved because proving it safely requires a controlled consequential failure
+
+Evidence:
+- `evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md`
 
 ### Proof integrity
 - read-only proof-chain audit detects:
