@@ -111,8 +111,8 @@ completion_block:
   exact_next_gate: EXTERNAL_DEPENDENCY_FAILURE_RUNTIME
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Exercise a non-mutating controlled dependency failure and recovery, verify truthful fail-closed/degraded behavior,
-    then continue only to safe remaining runtime gaps.
+    Pull the branch and run npm run verify:dependency-recovery. Preserve its truth class as LOCAL_CONTROLLED_INTEGRATION_FAILURE,
+    not a production outage, and promote only the failure/recovery behaviors actually observed.
   protected_actions:
     final_submission: HUMAN_ONLY
     consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
