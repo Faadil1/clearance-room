@@ -244,3 +244,25 @@ active_design_delta:
     footage_pending: real_preview_capture_only
   exact_next_gate: DESIGN_PR_PRODUCT_QUALITY_THEN_TRACE_RUNTIME
   promotion_rule: NEW_UI_REQUIRES_NEW_RUNTIME_CANDIDATE_AND_BINDING
+
+design_preview_capture_handoff:
+  date: 2026-10-05
+  ui_runtime_commit: be3faf115b415ef590f9b24c162abee5e889c7bd
+  preview_deployment_id: dpl_BaJbigASmbpjNXkibkF1W6rAtwMS
+  preview_url: https://clearance-room-pv8oh8cwu-faadil1s-projects.vercel.app
+  preview_live_data_health: PROVEN
+  product_quality_171: success
+  trace_status: ACTIVE
+  remaining_trace_requirement:
+    - interactive_desktop_capture
+    - interactive_mobile_capture
+    - keyboard_focus_runtime_observation
+    - reduced_motion_runtime_observation
+  demo_video_status:
+    narration: READY
+    shot_plan: APPROVED_72S
+    case_file_storyboard: REAL_CAPTURE_ATTACHED
+    remaining_footage: REAL_BROWSER_CAPTURE_REQUIRED
+  tooling_note: current_chat_session_has_repo_vercel_media_tools_but_no_connected_interactive_browser
+  no_fabricated_footage: true
+  production_promotion: FORBIDDEN_UNTIL_TRACE_AND_NEW_BINDING

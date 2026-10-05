@@ -165,3 +165,51 @@ Promote TRACE to PROVEN only after:
 6. at least one real Content Agent run inside the redesigned case file.
 
 No production promotion is authorized by this receipt.
+
+## Live-data preview repair
+
+A first design preview exposed the new UI but did not carry the server-side Sanity secret scope required for live Scenario / Live Content reads.
+
+A controlled preview rebuild was performed at:
+
+- commit: `be3faf115b415ef590f9b24c162abee5e889c7bd`
+- deployment: `dpl_BaJbigASmbpjNXkibkF1W6rAtwMS`
+- preview: https://clearance-room-pv8oh8cwu-faadil1s-projects.vercel.app
+- Product quality: run `37270832274` / #171 — **success**
+
+Observed against the rebuilt preview:
+
+- root: HTTP 200
+- `/api/health`: HTTP 200 / `overall=healthy`
+- Context Graph: available
+- Knowledge Base: available
+- Content Lake read: available
+- Content Lake write: available / dry-run
+- `/api/live`: HTTP 200
+- `/api/scenarios`: HTTP 200 with real Content Lake scenario data
+
+The project-level Sanity secret targets were then returned to production-only. The already-built preview remains healthy; no production alias or production runtime binding was changed.
+
+This proves the redesigned preview can operate against the real Sanity dependencies. It does **not** by itself prove the remaining visual / interaction checks.
+
+## Current TRACE blocker
+
+The remaining TRACE work is not blocked by a product defect.
+
+The current chat execution surface has repository, Vercel and media tools but no connected interactive browser / screen recorder. Therefore it cannot truthfully claim direct runtime observation of:
+
+- full desktop Shockwave interaction;
+- mobile reflow / selected-point interaction;
+- keyboard-only focus movement;
+- browser-level reduced-motion behavior;
+- final live footage for the 72-second demo.
+
+Until those interactions are captured through a real browser surface:
+
+`TRACE_DESIGN_ASSURANCE = ACTIVE`
+
+and the demo remains:
+
+`FOOTAGE_PENDING__NO_FABRICATION`
+
+No production promotion is authorized by this receipt.

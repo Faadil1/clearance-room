@@ -556,3 +556,40 @@ design_delta_shockwave_marginalia_2026_10_05:
     - capture the real preview on live Sanity data for the eight-shot demo path
     - complete TRACE runtime verification on the same preview
     - only after acceptance create a new runtime candidate and new runtime binding
+
+design_preview_live_data_assurance_2026_10_05:
+  runtime_ui_commit: be3faf115b415ef590f9b24c162abee5e889c7bd
+  preview_deployment_id: dpl_BaJbigASmbpjNXkibkF1W6rAtwMS
+  preview_url: https://clearance-room-pv8oh8cwu-faadil1s-projects.vercel.app
+  deployment_state: READY
+  product_quality:
+    workflow_run_id: 37270832274
+    run_number: 171
+    conclusion: success
+  runtime_read_evidence:
+    root_http_status: 200
+    health_http_status: 200
+    health_overall: healthy
+    context_graph: available
+    knowledge_base: available
+    content_lake_read: available
+    content_lake_write: available_dry_run
+    live_content_route: 200
+    scenarios_read: 200
+  preview_secret_scope:
+    temporary_preview_enablement_performed: true
+    project_level_targets_reverted_to_production_only: true
+    existing_preview_deployment_remains_healthy: true
+  trace_design_assurance:
+    status: ACTIVE
+    live_data_runtime_available: PROVEN
+    direct_interactive_visual_capture: BLOCKED_BY_CURRENT_CHAT_BROWSER_CAPABILITY
+    no_project_defect_claimed: true
+  demo_video:
+    script: APPROVED
+    narration: READY
+    real_case_file_storyboard: ATTACHED
+    live_preview_footage: PENDING_BROWSER_CAPTURE
+    fabrication_allowed: false
+  production_promotion: NOT_PERFORMED
+  production_runtime_unchanged: true
