@@ -9,7 +9,7 @@ type RecoveryState =
   | 'WAIT_FOR_CONTEXT_VISIBILITY'
   | 'RECOVERED'
 
-function mutationMatches(
+export function mutationMatches(
   usage: Record<string, unknown>,
   field: string | undefined,
   value: string | undefined,
