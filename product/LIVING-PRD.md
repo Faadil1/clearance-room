@@ -1,6 +1,6 @@
 # Clearance Room — Living PRD
 
-Version: 0.1.0-reconstructed  
+Version: 0.1.1-submission-packaging  
 Status: ACTIVE  
 Owner: PBPD-authorized implementation owner  
 Source of truth: GitHub + state/CURRENT.yaml + state/HANDOVER.yaml  
@@ -188,13 +188,23 @@ Human authority required for:
 
 ## Current workstream
 
-PRODUCT_EXPLOITATION
+STOPPED_BY_VALID_CONDITION
 
-Current highest-value delta:
-- runtime-prove UNKNOWN / missing structured evidence;
-- then bounded agent + recovery behavior.
+Public runtime / exact commit binding is now PROVEN at d2dcd7046643b60d84b508121dc75a8f7f4d3776.
+
+Current highest-value remaining delta:
+- runtime-prove genuine write-outcome-unknown recovery through an explicitly authorized controlled consequential failure;
+- or formally waive/defer that gate under existing authority before terminal canonical promotion.
+
+Judge-facing packaging may proceed. Final submission remains human-only.
 
 ## Version history
+
+### 0.1.1-submission-packaging — 2026-10-05
+- froze and independently verified the public Vercel runtime against exact Git SHA d2dcd7046643b60d84b508121dc75a8f7f4d3776;
+- promoted RUNTIME_COMMIT_BINDING and judge self-serve evidence;
+- reduced the terminal material blocker set to WRITE_FAILURE_RECOVERY;
+- refreshed judge-facing repository packaging without redefining the deployed runtime candidate.
 
 ### 0.1.0-reconstructed — 2026-10-04
 - reconstructed the missing local living PRD from current repository truth;

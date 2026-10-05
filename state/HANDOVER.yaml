@@ -52,10 +52,9 @@ architecture_invariants:
   mutationBoundary: explicit human approval required
 
 next:
-  - human-authorize stable public runtime / exact commit binding, or explicitly waive/defer it under existing authority
-  - if runtime proof is required, human-authorize a disposable controlled consequential mutation for write-outcome-unknown recovery
-  - optionally human-authorize deletion of a disposable scenario for deletion runtime proof
+  - resolve WRITE_FAILURE_RECOVERY with an explicitly authorized controlled consequential failure, or formally waive/defer it
   - then rerun Product Depth Gap Review and activate Final Canonical Assurance
+  - keep scenario deletion runtime proof non-terminal unless the submission claims it
   - final submission remains human-only
 
 
@@ -64,11 +63,10 @@ workstream_priority:
   product_reality_version: "1.5.0"
   first_live_slice_proven: true
   current_primary_workstream: STOPPED_BY_VALID_CONDITION
-  next_highest_value_depth_delta: PROTECTED_RUNTIME_BINDING_OR_WRITE_FAILURE_PROOF
+  next_highest_value_depth_delta: WRITE_FAILURE_RECOVERY_PROOF_OR_EXPLICIT_WAIVER
   valid_stop_condition:
     status: ACTIVE
     reasons:
-      - stable_public_runtime_commit_binding_requires_authorized_action
       - write_outcome_unknown_runtime_requires_explicit_controlled_consequential_mutation
   demo_packaging_allowed: true_after_valid_stop_condition__no_terminal_claims
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
@@ -93,17 +91,19 @@ completion_block:
   current_lifecycle: EXPAND
   current_gate: PRODUCT_MAXIMUM_EXPLOITATION__GATE_4
   current_primary_workstream: STOPPED_BY_VALID_CONDITION
+  runtime_commit_binding:
+    status: PROVEN
+    commit: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+    deployment_id: dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB
+    stable_alias: https://clearance-room.vercel.app
+    evidence: evidence/assurance/PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
   remaining_material_product_depth_gaps:
-    - runtime_commit_binding
     - write_outcome_unknown_runtime
-    - scenario_deletion_runtime
 
   valid_stop_condition:
     status: ACTIVE
     reasons:
-      - stable_public_runtime_commit_binding_requires_authorized_action
       - write_outcome_unknown_runtime_requires_explicit_controlled_consequential_mutation
-      - scenario_deletion_runtime_proof_requires_explicit_disposable_scenario_approval
   demo_packaging_permission: true_after_valid_stop_condition__no_terminal_claims
   workstream_drift_status: NO_NEW_DRIFT
   material_user_capability_delta_since_previous_milestone:
@@ -111,11 +111,11 @@ completion_block:
     capability: >-
       Operators can persist explicit NOT DOCUMENTED structured rights state and run a non-mutating integrated
       assurance pass over the live product dependencies and proof chain.
-  exact_next_gate: FINAL_PUBLIC_RUNTIME_BINDING
-  exact_next_owner: HUMAN_AUTHORIZED_RUNTIME_DEPLOYMENT
+  exact_next_gate: WRITE_FAILURE_RECOVERY
+  exact_next_owner: HUMAN_OR_EXISTING_AUTHORITY
   exact_next_action: >-
-    Pull the current branch after the SSE timeout-hardening commit, confirm Product quality passes, deploy production
-    from a clean tree, and bind clearance-room.vercel.app to the exact deployed Git SHA.
+    Authorize a disposable controlled consequential failure to observe write-outcome-unknown reconciliation,
+    or formally waive/defer that terminal material gate. Final submission remains human-only.
   protected_actions:
     final_submission: HUMAN_ONLY
     consequential_mutation: EXPLICIT_OPERATOR_APPROVAL
@@ -190,3 +190,27 @@ dependency_recovery_runtime_proof:
   next_highest_value_depth_delta: PROTECTED_RUNTIME_BINDING_OR_WRITE_FAILURE_PROOF
   exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
+
+
+final_public_runtime_binding:
+  date: 2026-10-05
+  status: PROVEN
+  evidence: evidence/assurance/PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
+  runtime_candidate: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+  deployment_id: dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB
+  deployment_state: READY
+  stable_alias: https://clearance-room.vercel.app
+  root_http_status: 200
+  health: healthy
+  product_quality_run: 37264248408
+  product_quality_conclusion: success
+  continuity_rule: POST_DEPLOY_DOCS_STATE_EVIDENCE_COMMITS_DO_NOT_REDEFINE_RUNTIME_CANDIDATE
+
+submission_packaging:
+  date: 2026-10-05
+  evidence: evidence/assurance/SUBMISSION-READINESS-2026-10-05.md
+  readme: JUDGE_FACING_UPDATED
+  package_status: READY_FOR_REVIEW
+  terminal_canonical_ready: false
+  remaining_terminal_material_blocker: WRITE_FAILURE_RECOVERY
+  final_submission: HUMAN_ONLY

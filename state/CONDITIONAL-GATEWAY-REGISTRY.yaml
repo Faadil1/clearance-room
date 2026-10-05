@@ -2,7 +2,7 @@ version: 1
 project: clearance-room
 policy: Conditional Gateway Registry
 allowed_states: [ACTIVE, N/A, BLOCKED, PROVEN]
-updated: 2026-10-04
+updated: 2026-10-05
 
 gates:
   CANONICAL_BASELINE_RECONCILIATION:
@@ -43,8 +43,10 @@ gates:
       - evidence/gates/GATE-3-KNOWLEDGE-BASE-PASS.md
       - evidence/REALITY-LEDGER.md
   RUNTIME_COMMIT_BINDING:
-    status: ACTIVE
-    blocker: public product deployment commit binding not yet frozen
+    status: PROVEN
+    evidence:
+      - evidence/assurance/PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
+    note: Vercel production deployment dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB is READY, aliases clearance-room.vercel.app, and records exact Git SHA d2dcd7046643b60d84b508121dc75a8f7f4d3776
   DETERMINISTIC_DEMO:
     status: PROVEN
     note: retained only as reproducibility fallback
@@ -84,10 +86,11 @@ gates:
       - evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md
     note: process-local controlled Context MCP and Knowledge Base failures proved fail-closed/degraded behavior and healthy recovery without business mutation
   WRITE_FAILURE_RECOVERY:
-    status: ACTIVE
+    status: BLOCKED
     evidence:
       - evidence/assurance/DEPENDENCY-RECOVERY-RUNTIME-2026-10-05.md
-    blocker: write-recovery idempotence is runtime proven as ALREADY_COMPLETE with no repeated business mutation; genuine write-outcome-unknown recovery remains unobserved and requires a controlled consequential failure
+    blocker: write-recovery idempotence is runtime proven as ALREADY_COMPLETE with no repeated business mutation; genuine write-outcome-unknown recovery remains unobserved and requires an explicitly authorized controlled consequential failure
+    valid_stop_condition: HUMAN_AUTHORITY_REQUIRED_FOR_CONTROLLED_CONSEQUENTIAL_FAILURE
   PROOF_HISTORY_REPEATED_RUNS:
     status: PROVEN
     evidence:
@@ -99,8 +102,8 @@ gates:
       - evidence/assurance/REMAINING-READONLY-RUNTIME-2026-10-05.md
     note: free-text, proposed-status, territory and channel filters were individually exercised against the live Context MCP portfolio; prior multi-filter composition proof remains preserved
   SCENARIO_DELETION:
-    status: ACTIVE
-    blocker: implemented but runtime proof pending
+    status: N/A
+    reason: implementation exists but runtime deletion proof is not material to the current submission claim; reactivate if deletion is claimed as a proven capability
   TIME_TO_FIRST_VALUE:
     status: PROVEN
     evidence:
@@ -121,8 +124,11 @@ gates:
       - live auto-refresh receipts
       - proof supersession receipts
   JUDGE_OPERATOR_SELF_SERVE:
-    status: ACTIVE
-    blocker: setup and failure recovery are now assured; a stable public runtime/commit binding is still required before judge self-serve can be promoted
+    status: PROVEN
+    evidence:
+      - evidence/assurance/PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
+      - README.md
+    note: stable public alias is healthy and bound to the frozen production candidate; judge-facing runbook is current
   CLEAN_ROOM_REPRODUCIBILITY:
     status: PROVEN
     evidence:
@@ -151,14 +157,13 @@ gates:
     reason: corrected read-only availability probe observed NO_RELEASE_PRESENT with releaseCount 0; release-id execution cannot be truthfully runtime-proven without an actual Content Release and this gate must reactivate if one is created
   FINAL_CANONICAL_ASSURANCE:
     status: N/A
-    reason: activates only after BUILD_CANDIDATE_READY
+    reason: activates after WRITE_FAILURE_RECOVERY is proven or explicitly waived/deferred and BUILD_CANDIDATE_READY can advance
   PROTECTED_FINAL_SUBMISSION:
     status: N/A
-    reason: human-only action; project is not terminal-ready
+    reason: human-only action; submission package is prepared but terminal canonical readiness remains fail-closed on WRITE_FAILURE_RECOVERY
 
 terminal_fail_closed:
   BUILD_CANDIDATE_READY:
     allowed: false
     blocking_gates:
-      - RUNTIME_COMMIT_BINDING
       - WRITE_FAILURE_RECOVERY

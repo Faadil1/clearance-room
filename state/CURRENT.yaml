@@ -76,10 +76,9 @@ proven_runtime:
     validTo: 2026-10-31
 
 next:
-  - human-authorize stable public runtime / exact commit binding, or explicitly waive/defer it under existing authority
-  - optionally authorize a disposable controlled consequential mutation if write-outcome-unknown recovery must be runtime-proven
-  - optionally authorize deletion of a disposable user-created scenario if deletion runtime proof is still desired
-  - after protected blockers are resolved or formally waived, rerun Product Depth Gap Review and activate Final Canonical Assurance
+  - resolve WRITE_FAILURE_RECOVERY with an explicitly authorized controlled consequential failure, or formally waive/defer it under existing authority
+  - after the blocker is resolved or formally waived, rerun Product Depth Gap Review and activate Final Canonical Assurance
+  - optional scenario deletion runtime proof is non-terminal and must not be claimed unless observed
   - keep final submission human-only
 
 
@@ -89,16 +88,13 @@ product_workstream_priority:
   first_live_slice_proven: true
   remaining_material_depth_gaps:
     - write_outcome_unknown_reconciliation_runtime_observation
-    - user_created_scenario_deletion_runtime_proof
 
   current_primary_workstream: STOPPED_BY_VALID_CONDITION
-  next_highest_value_depth_delta: PROTECTED_RUNTIME_BINDING_OR_WRITE_FAILURE_PROOF
+  next_highest_value_depth_delta: WRITE_FAILURE_RECOVERY_PROOF_OR_EXPLICIT_WAIVER
   valid_stop_condition:
     status: ACTIVE
     reasons:
-      - public_runtime_commit_binding_requires_authorized_deployment_or_runtime_freeze
       - genuine_write_outcome_unknown_proof_requires_explicit_controlled_consequential_mutation
-      - scenario_deletion_runtime_proof_requires_explicit_disposable_scenario_approval
   demo_packaging_allowed: true_after_valid_stop_condition__terminal_claims_still_forbidden
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
   last_priority_reconciliation_at: 2026-10-04
@@ -129,9 +125,11 @@ completion_block_reconciliation:
   pull_request: 4
   pull_request_state: DRAFT_OPEN_MERGEABLE
   runtime_binding:
-    class: LIVE_CODESPACES_DEV__NOT_PRODUCTION_FROZEN
-    production_deployment_commit: null
-    public_runtime_binding: NOT_FROZEN
+    class: LIVE_PRODUCTION_FROZEN
+    production_deployment_commit: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+    production_deployment_id: dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB
+    stable_alias: https://clearance-room.vercel.app
+    public_runtime_binding: PROVEN
   completion_harness:
     one_command: npm run verify:completion
     runtime_assurance: npm run verify:runtime-assurance
@@ -143,17 +141,18 @@ completion_block_reconciliation:
       Operator can persist explicit NOT DOCUMENTED structured rights state on user-owned live content and can now
       execute a read-only integrated assurance pass covering live Context MCP scans, Runtime Health, TTFV measurement,
       Proof Integrity and optional bounded-agent/release checks without seeding or business mutation.
-  current_primary_workstream: PRODUCT_EXPLOITATION
-  valid_stop_condition: null
-  demo_packaging_permission: false
+  current_primary_workstream: STOPPED_BY_VALID_CONDITION
+  valid_stop_condition:
+    status: ACTIVE
+    reason: genuine_write_outcome_unknown_recovery_requires_explicit_controlled_consequential_failure
+  demo_packaging_permission: true
   workstream_drift_status: NO_NEW_DRIFT__PRIOR_DRIFT_CORRECTED
   blocked_transition: BUILD_CANDIDATE_READY
-  exact_next_gate: FINAL_PUBLIC_RUNTIME_BINDING
-  exact_next_owner: HUMAN_AUTHORIZED_RUNTIME_DEPLOYMENT
+  exact_next_gate: WRITE_FAILURE_RECOVERY
+  exact_next_owner: HUMAN_OR_EXISTING_AUTHORITY
   exact_next_action: >-
-    Pull the SSE runtime-rotation fix, wait for Product quality to pass, deploy the clean current head to Vercel production,
-    then verify stable alias 200 + /api/health healthy + Vercel deployment Git SHA equality before promoting
-    RUNTIME_COMMIT_BINDING.
+    Either authorize a disposable controlled consequential write failure to observe reconciliation truthfully,
+    or formally waive/defer the gate under existing authority. Final submission remains human-only.
 
 
 runtime_assurance_2026_10_05:
@@ -429,6 +428,7 @@ trace_design_assurance_2026_10_05:
 
 
 public_runtime_binding_2026_10_05:
+  evidence: evidence/assurance/PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
   provider: Vercel
   project_id: prj_IzIaWRsgFqosTRmdeQ123iEliaLF
   project_name: clearance-room
@@ -439,22 +439,34 @@ public_runtime_binding_2026_10_05:
   build_command: npm run app:build
   install_command: npm ci
   node_version: 22.x
+  stable_alias: https://clearance-room.vercel.app
+  observed_deployment:
+    id: dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB
+    state: READY
+    target: production
+    git_sha: d2dcd7046643b60d84b508121dc75a8f7f4d3776
+    deployment_url: https://clearance-room-q5xp8w2sb-faadil1s-projects.vercel.app
+    root_http_status: 200
+    health: healthy
+  product_quality:
+    workflow_run_id: 37264248408
+    conclusion: success
+  public_dependencies:
+    context_mcp: available
+    knowledge_base: available
+    content_lake_read: available
+    content_lake_write_dry_run: available
   deployment_protection:
     sso: disabled
     password: disabled
-  environment:
-    public_configuration: CONFIGURED
-    secret_configuration: BLOCKED_HUMAN_INPUT_REQUIRED
-    missing_secret_names:
-      - SANITY_API_TOKEN
-      - SANITY_ORGANIZATION_TOKEN
-  runtime_state: PRODUCTION_DEPLOY_AUTHORIZED__GIT_DEPLOY_PENDING
+  runtime_state: PRODUCTION_READY
   production_promotion: HUMAN_AUTHORIZED_2026_10_05
-  exact_commit_binding: PENDING_DEPLOYMENT
+  exact_commit_binding: PROVEN
+  continuity_rule: POST_DEPLOY_DOCS_STATE_EVIDENCE_COMMITS_DO_NOT_REDEFINE_RUNTIME_CANDIDATE
   protected_submission: NOT_PERFORMED
 
-
 public_runtime_binding_prefinal_2026_10_05:
+  status: SUPERSEDED_BY_FINAL_BINDING
   evidence: evidence/assurance/PUBLIC-RUNTIME-BINDING-PREFINAL-2026-10-05.md
   provider: Vercel
   project_id: prj_IzIaWRsgFqosTRmdeQ123iEliaLF
@@ -477,6 +489,21 @@ public_runtime_binding_prefinal_2026_10_05:
     fix_commit: 461d67841562648446c46002918f5aee61b991c8
     fix: graceful_sse_rotation_at_240_seconds
   runtime_commit_binding:
-    status: ACTIVE
-    reason: final production must be redeployed from the post-hardening candidate head
-  exact_next_gate: FINAL_PUBLIC_RUNTIME_BINDING
+    status: SUPERSEDED
+    reason: final production binding is proven in PUBLIC-RUNTIME-BINDING-FINAL-2026-10-05.md
+  exact_next_gate: COMPLETE
+
+
+submission_packaging_2026_10_05:
+  evidence: evidence/assurance/SUBMISSION-READINESS-2026-10-05.md
+  readme: JUDGE_FACING_UPDATED
+  repository_visibility: PUBLIC
+  runtime_binding: PROVEN
+  clean_room_reproducibility: PROVEN
+  engineering_quality: PROVEN_WITH_ACCEPTED_DEBT
+  trace_design_assurance: PROVEN_WITH_ACCEPTED_DEBT
+  package_status: READY_FOR_REVIEW
+  terminal_canonical_ready: false
+  remaining_terminal_material_blocker:
+    - WRITE_FAILURE_RECOVERY
+  final_submission: HUMAN_ONLY

@@ -1,6 +1,6 @@
 # Clearance Room — Reality Ledger
 
-Updated: 2026-10-04
+Updated: 2026-10-05
 
 This ledger separates what is observed from what is implemented, inferred, or still unknown.
 
@@ -20,8 +20,9 @@ This ledger separates what is observed from what is implemented, inferred, or st
 | NOT DOCUMENTED produces UNKNOWN in a material runtime case | OBSERVED | LIVE | user-created proposed validTo removed; UI and runtime assurance independently observed CLEAR → UNKNOWN / window UNKNOWN |
 | integrated runtime assurance can inspect live graph/health/TTFV/proof chain without business mutation | OBSERVED | LIVE | verify:completion executed on 17463eb; Runtime Health healthy, live scans completed, TTFV 442 ms, proof audit observed |
 | Engineering Quality receipt passes on a clean external runner | OBSERVED | EXTERNAL_CI | fresh npm ci runner produced PASS_WITH_ACCEPTED_DEBT with 42/42 tests, production build PASS, working_tree_dirty=false; only disclosed high dependency debt remains |
+| public production runtime is bound to the exact frozen Git candidate | OBSERVED | LIVE_PRODUCTION | Vercel deployment dpl_BfGiDcKJFWtGoHfHmxbMEk5NchCB is READY, aliases clearance-room.vercel.app, records Git SHA d2dcd7046643b60d84b508121dc75a8f7f4d3776, and public root/health checks passed |
 | free-text/status/territory/channel filters each work in runtime | OBSERVED | LIVE | all four filters individually exercised against live portfolio; target user usage remained correctly selectable; prior composition proof also preserved |
-| user-created scenario deletion works in runtime | UNKNOWN | PARTIAL | implementation exists; runtime proof pending |
+| user-created scenario deletion works in runtime | UNKNOWN | PARTIAL | implementation exists; runtime proof is not claimed and is non-terminal for the current submission scope |
 | bounded product agent is load-bearing | OBSERVED | LIVE | in-product investigation generated Sanity Content Agent narrative over deterministic CLEAR → UNKNOWN receipt; Context MCP/evaluator/registry active; write authority NONE; agent abstained |
 | Context MCP failure recovers safely | OBSERVED | LOCAL_CONTROLLED_INTEGRATION_FAILURE | process-local unreachable endpoint caused degraded health + fail-closed scan; restoring endpoint returned healthy live scan |
 | Knowledge Base failure degrades without status corruption | OBSERVED | LOCAL_CONTROLLED_INTEGRATION_FAILURE | KB unavailable while Context MCP + structured source remained available; deterministic status authority unaffected; recovery succeeded |
