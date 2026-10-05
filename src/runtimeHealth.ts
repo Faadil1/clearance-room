@@ -4,6 +4,13 @@ import {getServerSanity} from './serverSanity'
 
 export type DependencyState = 'available' | 'degraded' | 'unavailable' | 'unverified'
 
+export type RuntimeDependencySnapshot = {
+  contextGraph: DependencyState
+  knowledgeBase: DependencyState
+  contentLakeRead: DependencyState
+  contentLakeWrite: DependencyState
+}
+
 export type RuntimeHealth = {
   overall: 'healthy' | 'degraded'
   checkedAt: string
@@ -111,50 +118,47 @@ async function checkContentLake() {
   }
 }
 
-export async function getRuntimeHealth(): Promise<RuntimeHealth> {
-  const [contextGraph, knowledgeBase, contentLake] = await Promise.all([
-    checkContextGraph(),
-    checkKnowledgeBase(),
-    checkContentLake(),
-  ])
-
+export function deriveRuntimeHealth(
+  snapshot: RuntimeDependencySnapshot,
+  checkedAt = new Date().toISOString(),
+): RuntimeHealth {
   const degraded =
-    contextGraph !== 'available' ||
-    knowledgeBase !== 'available' ||
-    contentLake.read !== 'available' ||
-    contentLake.write === 'unavailable'
+    snapshot.contextGraph !== 'available' ||
+    snapshot.knowledgeBase !== 'available' ||
+    snapshot.contentLakeRead !== 'available' ||
+    snapshot.contentLakeWrite === 'unavailable'
 
   return {
     overall: degraded ? 'degraded' : 'healthy',
-    checkedAt: new Date().toISOString(),
+    checkedAt,
     dependencies: {
       contextGraph: {
-        state: contextGraph,
+        state: snapshot.contextGraph,
         recovery:
-          contextGraph === 'available'
+          snapshot.contextGraph === 'available'
             ? 'none'
             : 'Status computation is fail-closed. Restore Context MCP, then retry the graph read.',
       },
       knowledgeBase: {
-        state: knowledgeBase,
+        state: snapshot.knowledgeBase,
         recovery:
-          knowledgeBase === 'available'
+          snapshot.knowledgeBase === 'available'
             ? 'none'
             : 'Deterministic status remains usable; evidence explanation degrades until Knowledge Base recovers.',
       },
       contentLakeRead: {
-        state: contentLake.read,
+        state: snapshot.contentLakeRead,
         recovery:
-          contentLake.read === 'available'
+          snapshot.contentLakeRead === 'available'
             ? 'none'
             : 'Do not claim write outcome. Restore Content Lake access and reread before acting.',
       },
       contentLakeWrite: {
-        state: contentLake.write,
+        state: snapshot.contentLakeWrite,
         recovery:
-          contentLake.write === 'available'
+          snapshot.contentLakeWrite === 'available'
             ? 'none'
-            : contentLake.write === 'unverified'
+            : snapshot.contentLakeWrite === 'unverified'
               ? 'No usage document exists to dry-run write permission.'
               : 'Disable consequential remediation until write permission recovers.',
         dryRun: true,
@@ -166,4 +170,19 @@ export async function getRuntimeHealth(): Promise<RuntimeHealth> {
       },
     },
   }
+}
+
+export async function getRuntimeHealth(): Promise<RuntimeHealth> {
+  const [contextGraph, knowledgeBase, contentLake] = await Promise.all([
+    checkContextGraph(),
+    checkKnowledgeBase(),
+    checkContentLake(),
+  ])
+
+  return deriveRuntimeHealth({
+    contextGraph,
+    knowledgeBase,
+    contentLakeRead: contentLake.read,
+    contentLakeWrite: contentLake.write,
+  })
 }
