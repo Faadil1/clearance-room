@@ -22,13 +22,11 @@ jobs:
           node-version: '22.12'
 
       - name: Install
-        run: npm install
+        run: npm ci
 
-      - name: Runtime dependency audit (critical only)
-        run: npm audit --omit=dev --audit-level=critical
+      - name: Engineering quality + regression receipt
+        run: npm run verify:engineering-quality
 
-      - name: Unit and contract tests
-        run: npm test
-
-      - name: Next production build
-        run: npm run app:build
+      - name: Show engineering quality receipt
+        if: always()
+        run: cat evidence/assurance/ENGINEERING-QUALITY-RECEIPT.json || true
