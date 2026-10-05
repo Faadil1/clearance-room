@@ -72,6 +72,38 @@ npm test
 npm run app:build
 ```
 
+## Integrated completion assurance
+
+After configuring the runtime environment, the current one-block verifier is:
+
+```bash
+npm run verify:completion
+```
+
+It performs:
+- runtime env-name verification without printing secrets;
+- functional tests;
+- Next production build;
+- critical runtime dependency audit;
+- Engineering Quality receipt generation;
+- read-only live Runtime Health;
+- Context MCP portfolio + rights-change scans;
+- server-side Time to First Value measurement;
+- Proof Integrity Audit;
+- material UNKNOWN-presence check;
+- optional release-perspective check.
+
+Optional Sanity Content Agent runtime narration can be enabled explicitly because it may consume AI credits:
+
+```bash
+CLEARANCE_ASSURANCE_RUN_AGENT=1 npm run verify:runtime-assurance
+```
+
+The assurance command never seeds or mutates business state and never performs protected submission.
+
+See:
+`evidence/assurance/COMPLETION-BLOCK-RUNBOOK.md`
+
 ## Run the operator product
 
 ```bash
