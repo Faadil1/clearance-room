@@ -32,6 +32,7 @@ This ledger separates what is observed from what is implemented, inferred, or st
 | release-aware perspective support exists but current project has no Content Release | OBSERVED | N/A_CURRENT_RUNTIME | corrected read-only probe classified NO_RELEASE_PRESENT / releaseCount 0; gate reactivates if a release is created |
 | Time to First Value is measured on the live graph path | OBSERVED | LIVE | 442 ms server-side concurrent Context MCP portfolio + rights-change scan |
 | current proof history can be audited without rewriting history | OBSERVED | LIVE | 16 proofs / 3 usages / PASS_WITH_HISTORICAL_WARNINGS; 3 historical duplicate-fresh warnings, 0 audit errors |
+| evaluator-facing desktop design passes TRACE assurance | OBSERVED | LIVE_DESKTOP | runtime recording shows clear thesis, status transition, causal evidence, proof history, bounded-agent write authority, UNKNOWN abstention and domain-native visual hierarchy; mobile runtime remains unrecorded accepted debt |
 | dependency lock is committed and externally re-executable | OBSERVED | EXTERNAL_CI | GitHub-hosted fresh runner used npm ci and completed 42/42 tests + production build successfully; run 37261638163 |
 
 ## Preserved real negative events
