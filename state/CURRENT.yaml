@@ -90,14 +90,13 @@ product_workstream_priority:
   first_live_slice_proven: true
   remaining_material_depth_gaps:
     - write_outcome_unknown_reconciliation_runtime_observation
-    - free_text_status_territory_channel_filter_runtime_proof
     - user_created_scenario_deletion_runtime_proof
     - release_id_runtime_availability_or_explicit_unavailable_classification
     - external_clean_room_reexecution
     - current_Engineering_Quality_receipt
     - TRACE_design_assurance_receipt
   current_primary_workstream: PRODUCT_EXPLOITATION
-  next_highest_value_depth_delta: CLOSE_REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
+  next_highest_value_depth_delta: CLASSIFY_RELEASE_AVAILABILITY_AND_CLOSE_ENGINEERING_QUALITY
   valid_stop_condition: null
   demo_packaging_allowed: false
   workstream_drift_status: CORRECTED_FROM_WORKSTREAM_DRIFT
@@ -149,13 +148,12 @@ completion_block_reconciliation:
   demo_packaging_permission: false
   workstream_drift_status: NO_NEW_DRIFT__PRIOR_DRIFT_CORRECTED
   blocked_transition: BUILD_CANDIDATE_READY
-  exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
+  exact_next_gate: RELEASE_AVAILABILITY_PLUS_ENGINEERING_QUALITY_RERUN
   exact_next_owner: PBPD_AUTHORIZED_IMPLEMENTATION_OWNER
   exact_next_action: >-
-    Pull the current branch and run npm run verify:remaining-readonly. This reruns current Engineering Quality,
-    exercises free-text/status/territory/channel filtering against the live Context MCP portfolio, and classifies
-    Content Release availability read-only via releases::all(). Keep write-outcome-unknown and scenario deletion blocked
-    until explicit safe conditions or human approval exist.
+    Pull the corrected harness and rerun npm run verify:remaining-readonly. Promote Engineering Quality only if the
+    generated-file dirty false positive is gone, and classify release availability only from the corrected releases::all()
+    plus system.release fallback. Keep write-outcome-unknown and scenario deletion protected/unobserved.
 
 
 runtime_assurance_2026_10_05:
@@ -309,3 +307,34 @@ dependency_recovery_runtime_2026_10_05:
   valid_stop_condition: null
   workstream_drift_status: NO_NEW_DRIFT
   exact_next_gate: REMAINING_SAFE_READ_ONLY_RUNTIME_GAPS
+
+
+remaining_readonly_runtime_2026_10_05:
+  evidence: evidence/assurance/REMAINING-READONLY-RUNTIME-2026-10-05.md
+  observed_head: 94637e9a8b9594a1bae14885924ac80d9bbb2adb
+  regression:
+    tests: 42_of_42_PASS
+    production_build: PASS
+    engineering_quality: PASS_WITH_ACCEPTED_DEBT
+    observed_unresolved:
+      - EQ_DIRTY_001_FALSE_POSITIVE_PENDING_RERUN
+      - EQ_AUDIT_HIGH_001_ACCEPTED_DEBT
+  operator_filters:
+    free_text: PROVEN_RUNTIME
+    proposed_status: PROVEN_RUNTIME
+    territory: PROVEN_RUNTIME
+    channel: PROVEN_RUNTIME
+  release_availability:
+    status: BLOCKED_ASSURANCE_BUG
+    observed_primary_query_result: null
+    bug: null_length_dereference
+    fix_committed: true
+    rerun_required: true
+  material_user_capability_delta_since_previous_milestone:
+    truth: OBSERVED
+    capability: >-
+      Operator filtering is now individually runtime-proven across free-text, proposed status, territory and channel
+      on the live portfolio.
+  current_primary_workstream: PRODUCT_EXPLOITATION
+  workstream_drift_status: NO_NEW_DRIFT
+  exact_next_gate: RELEASE_AVAILABILITY_PLUS_ENGINEERING_QUALITY_RERUN
