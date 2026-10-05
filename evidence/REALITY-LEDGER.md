@@ -20,7 +20,7 @@ This ledger separates what is observed from what is implemented, inferred, or st
 | NOT DOCUMENTED produces UNKNOWN in a material runtime case | OBSERVED | LIVE | user-created proposed validTo removed; UI and runtime assurance independently observed CLEAR → UNKNOWN / window UNKNOWN |
 | integrated runtime assurance can inspect live graph/health/TTFV/proof chain without business mutation | OBSERVED | LIVE | verify:completion executed on 17463eb; Runtime Health healthy, live scans completed, TTFV 442 ms, proof audit observed |
 | Engineering Quality receipt can be generated from tests/build/runtime dependency audit | OBSERVED | LOCAL | receipt executed on 17463eb as PASS_WITH_ACCEPTED_DEBT; generated-file dirt handling was corrected afterward and rerun is required |
-| free-text/status/territory/channel filters each work in runtime | UNKNOWN | PARTIAL | filter engine + composition observed; individual controls not all exercised |
+| free-text/status/territory/channel filters each work in runtime | OBSERVED | LIVE | all four filters individually exercised against live portfolio; target user usage remained correctly selectable; prior composition proof also preserved |
 | user-created scenario deletion works in runtime | UNKNOWN | PARTIAL | implementation exists; runtime proof pending |
 | bounded product agent is load-bearing | OBSERVED | LIVE | in-product investigation generated Sanity Content Agent narrative over deterministic CLEAR → UNKNOWN receipt; Context MCP/evaluator/registry active; write authority NONE; agent abstained |
 | Context MCP failure recovers safely | OBSERVED | LOCAL_CONTROLLED_INTEGRATION_FAILURE | process-local unreachable endpoint caused degraded health + fail-closed scan; restoring endpoint returned healthy live scan |
